@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.navitaire.com/WebServices/DataContracts/Session" elementFormDefault="qualified" targetNamespace="http://schemas.navitaire.com/WebServices/DataContracts/Session" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://118.97.213.237:3003/SessionManager.svc?xsd=xsd4" namespace="http://schemas.navitaire.com/WebServices/DataContracts/Common/Enumerations" />
+  <xs:complexType name="LogonRequestData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DomainCode" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="AgentName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Password" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="LocationCode" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="RoleCode" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TerminalInfo" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="LogonRequestData" nillable="true" type="tns:LogonRequestData" />
+  <xs:complexType name="TokenRequest">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Token" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TerminalInfo" nillable="true" type="xs:string" />
+      <xs:element xmlns:q1="http://schemas.navitaire.com/WebServices/DataContracts/Common/Enumerations" minOccurs="0" name="ChannelType" type="q1:ChannelType" />
+      <xs:element xmlns:q2="http://schemas.navitaire.com/WebServices/DataContracts/Common/Enumerations" minOccurs="0" name="SystemType" type="q2:SystemType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TokenRequest" nillable="true" type="tns:TokenRequest" />
+  <xs:complexType name="TransferSessionResponseData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Signature" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TransferSessionResponseData" nillable="true" type="tns:TransferSessionResponseData" />
+</xs:schema>

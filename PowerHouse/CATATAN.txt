@@ -1,0 +1,13 @@
+﻿
+Protokol terima dari client di tentukan sendiri
+- XML
+- TLV
+
+koneksi ke SANDRA menggunakan HTTP REST
+
+akses database pake class sendiri menggunakan teknik caching memory
+
+Client Handler --> PPOBProcessor --> PPOBServerHandler
+                         |
+						 |
+					PPOB Database

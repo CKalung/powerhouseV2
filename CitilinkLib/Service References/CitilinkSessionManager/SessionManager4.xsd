@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.navitaire.com/WebServices/DataContracts/Common/Enumerations" elementFormDefault="qualified" targetNamespace="http://schemas.navitaire.com/WebServices/DataContracts/Common/Enumerations" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://118.97.213.237:3003/SessionManager.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:simpleType name="ChannelType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Default" />
+      <xs:enumeration value="Direct" />
+      <xs:enumeration value="Web" />
+      <xs:enumeration value="GDS" />
+      <xs:enumeration value="API" />
+      <xs:enumeration value="Unmapped">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">-1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ChannelType" nillable="true" type="tns:ChannelType" />
+  <xs:simpleType name="SystemType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Default" />
+      <xs:enumeration value="WinRez" />
+      <xs:enumeration value="FareManager" />
+      <xs:enumeration value="ScheduleManager" />
+      <xs:enumeration value="WinManager" />
+      <xs:enumeration value="ConsoleRez" />
+      <xs:enumeration value="WebRez" />
+      <xs:enumeration value="WebServicesAPI" />
+      <xs:enumeration value="WebServicesESC" />
+      <xs:enumeration value="InternalService" />
+      <xs:enumeration value="WebReporting" />
+      <xs:enumeration value="TaxAndFeeManager" />
+      <xs:enumeration value="DCS" />
+      <xs:enumeration value="Unmapped">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">-1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="SystemType" nillable="true" type="tns:SystemType" />
+</xs:schema>

@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:s0="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:i0="http://schemas.navitaire.com/WebServices" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="AccountManagerClient" targetNamespace="http://tempuri.org/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <import location="http://118.97.213.237:3003/AccountManager.svc?wsdl=wsdl0" namespace="http://schemas.navitaire.com/WebServices" />
+  <types />
+  <binding name="BasicHttpBinding_IAccountManager" type="i0:IAccountManager">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="CommitAccount">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IAccountManager/CommitAccount" style="document" />
+      <input name="CommitAccountRequest">
+        <soap:header message="i0:CommitAccountRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:CommitAccountRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </input>
+      <output name="CommitAccountResponse">
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="FindAccountTransactions">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IAccountManager/FindAccountTransactions" style="document" />
+      <input name="FindAccountTransactionRequest">
+        <soap:header message="i0:FindAccountTransactionRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:FindAccountTransactionRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </input>
+      <output name="FindAccountTransactionResponse">
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="GetAccount">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IAccountManager/GetAccount" style="document" />
+      <input name="GetAccountRequest">
+        <soap:header message="i0:GetAccountRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetAccountRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </input>
+      <output name="GetAccountResponse">
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="GetAccountByReference">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IAccountManager/GetAccountByReference" style="document" />
+      <input name="GetAccountByReferenceRequest">
+        <soap:header message="i0:GetAccountByReferenceRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetAccountByReferenceRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </input>
+      <output name="GetAccountByReferenceResponse">
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="GetAvailableCreditByReference">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IAccountManager/GetAvailableCreditByReference" style="document" />
+      <input name="GetAvailableCreditByReferenceRequest">
+        <soap:header message="i0:GetAvailableCreditByReferenceRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetAvailableCreditByReferenceRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </input>
+      <output name="GetAvailableCreditByReferenceResponse">
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="CommitAccountTransactions">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IAccountManager/CommitAccountTransactions" style="document" />
+      <input name="CommitAccountTransactionsRequest">
+        <soap:header message="i0:CommitAccountTransactionsRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:CommitAccountTransactionsRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </input>
+      <output name="CommitAccountTransactionsResponse">
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="CommitAccountBatch">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IAccountManager/CommitAccountBatch" style="document" />
+      <input name="CommitAccountBatchRequest">
+        <soap:header message="i0:CommitAccountBatchRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:CommitAccountBatchRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </input>
+      <output name="CommitAccountBatchResponse">
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="CommitAccountTransactionBatchEntry">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IAccountManager/CommitAccountTransactionBatchEntry" style="document" />
+      <input name="CommitAccountTransactionsBatchRequest">
+        <soap:header message="i0:CommitAccountTransactionsBatchRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:CommitAccountTransactionsBatchRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </input>
+      <output name="CommitAccountTransactionsBatchResponse">
+        <soap:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+  <service name="AccountManagerClient">
+    <port name="BasicHttpBinding_IAccountManager" binding="tns:BasicHttpBinding_IAccountManager">
+      <soap:address location="http://118.97.213.237:3003/AccountManager.svc" />
+    </port>
+  </service>
+</definitions>

@@ -1,0 +1,6 @@
+﻿
+
+Urutan isi table : person => sys_users => sys_member, baru setelah aktivasi isi table customer
+
+table customer
+approval_status diisi 3 sesudah aktivasi

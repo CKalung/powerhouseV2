@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.navitaire.com/WebServices/DataContracts/Common" elementFormDefault="qualified" targetNamespace="http://schemas.navitaire.com/WebServices/DataContracts/Common" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://118.97.213.237:3003/BookingManager.svc?xsd=xsd4" namespace="http://schemas.navitaire.com/WebServices/DataContracts/Common/Enumerations" />
+  <xs:complexType name="StateMessage">
+    <xs:sequence>
+      <xs:element xmlns:q1="http://schemas.navitaire.com/WebServices/DataContracts/Common/Enumerations" minOccurs="0" name="State" type="q1:MessageState" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="StateMessage" nillable="true" type="tns:StateMessage" />
+  <xs:complexType name="PointOfSale">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:StateMessage">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="AgentCode" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="OrganizationCode" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="DomainCode" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="LocationCode" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PointOfSale" nillable="true" type="tns:PointOfSale" />
+  <xs:complexType name="ArrayOfOtherServiceInformation">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="OtherServiceInformation" nillable="true" type="tns:OtherServiceInformation" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfOtherServiceInformation" nillable="true" type="tns:ArrayOfOtherServiceInformation" />
+  <xs:complexType name="OtherServiceInformation">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Text" nillable="true" type="xs:string" />
+      <xs:element xmlns:q2="http://schemas.navitaire.com/WebServices/DataContracts/Common/Enumerations" minOccurs="0" name="OsiSeverity" type="q2:OSISeverity" />
+      <xs:element minOccurs="0" name="OSITypeCode" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SubType" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="OtherServiceInformation" nillable="true" type="tns:OtherServiceInformation" />
+  <xs:complexType name="FlightDesignator">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CarrierCode" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FlightNumber" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="OpSuffix" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FlightDesignator" nillable="true" type="tns:FlightDesignator" />
+  <xs:complexType name="ArrayOfRecordLocator">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="RecordLocator" nillable="true" type="tns:RecordLocator" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfRecordLocator" nillable="true" type="tns:ArrayOfRecordLocator" />
+  <xs:complexType name="RecordLocator">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:StateMessage">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="SystemDomainCode" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="SystemCode" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="RecordCode" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="InteractionPurpose" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="HostedCarrierCode" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="RecordLocator" nillable="true" type="tns:RecordLocator" />
+</xs:schema>

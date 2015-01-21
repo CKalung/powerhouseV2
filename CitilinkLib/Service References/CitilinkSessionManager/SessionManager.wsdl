@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://schemas.navitaire.com/WebServices" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.navitaire.com/WebServices" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://schemas.navitaire.com/WebServices/Imports">
+      <xsd:import schemaLocation="http://118.97.213.237:3003/SessionManager.svc?xsd=xsd0" namespace="http://schemas.navitaire.com/WebServices/ServiceContracts/SessionService" />
+      <xsd:import schemaLocation="http://118.97.213.237:3003/SessionManager.svc?xsd=xsd3" namespace="http://schemas.navitaire.com/WebServices" />
+      <xsd:import schemaLocation="http://118.97.213.237:3003/SessionManager.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://118.97.213.237:3003/SessionManager.svc?xsd=xsd2" namespace="http://schemas.navitaire.com/WebServices/DataContracts/Session" />
+      <xsd:import schemaLocation="http://118.97.213.237:3003/SessionManager.svc?xsd=xsd4" namespace="http://schemas.navitaire.com/WebServices/DataContracts/Common/Enumerations" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ChangePasswordRequest">
+    <wsdl:part xmlns:q1="http://schemas.navitaire.com/WebServices/ServiceContracts/SessionService" name="parameters" element="q1:ChangePasswordRequest" />
+  </wsdl:message>
+  <wsdl:message name="ChangePasswordRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+  </wsdl:message>
+  <wsdl:message name="ChangePasswordResponse" />
+  <wsdl:message name="LogonRequest">
+    <wsdl:part xmlns:q2="http://schemas.navitaire.com/WebServices/ServiceContracts/SessionService" name="parameters" element="q2:LogonRequest" />
+  </wsdl:message>
+  <wsdl:message name="LogonRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+  </wsdl:message>
+  <wsdl:message name="LogonResponse">
+    <wsdl:part name="parameters" element="tns:LogonResponse" />
+  </wsdl:message>
+  <wsdl:message name="LogoutRequest">
+    <wsdl:part xmlns:q3="http://schemas.navitaire.com/WebServices/ServiceContracts/SessionService" name="parameters" element="q3:LogoutRequest" />
+  </wsdl:message>
+  <wsdl:message name="LogoutRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="LogoutResponse" />
+  <wsdl:message name="TransferSessionRequest">
+    <wsdl:part xmlns:q4="http://schemas.navitaire.com/WebServices/ServiceContracts/SessionService" name="parameters" element="q4:TransferSessionRequest" />
+  </wsdl:message>
+  <wsdl:message name="TransferSessionRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+  </wsdl:message>
+  <wsdl:message name="TransferSessionResponse">
+    <wsdl:part xmlns:q5="http://schemas.navitaire.com/WebServices/ServiceContracts/SessionService" name="parameters" element="q5:TransferSessionResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ISessionManager">
+    <wsdl:operation name="ChangePassword">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/ISessionManager/ChangePassword" name="ChangePasswordRequest" message="tns:ChangePasswordRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/ISessionManager/ChangePasswordResponse" name="ChangePasswordResponse" message="tns:ChangePasswordResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="Logon">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/ISessionManager/Logon" name="LogonRequest" message="tns:LogonRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/ISessionManager/LogonResponse" name="LogonResponse" message="tns:LogonResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="Logout">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/ISessionManager/Logout" name="LogoutRequest" message="tns:LogoutRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/ISessionManager/LogoutResponse" name="LogoutResponse" message="tns:LogoutResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="TransferSession">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/ISessionManager/TransferSession" name="TransferSessionRequest" message="tns:TransferSessionRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/ISessionManager/TransferSessionResponse" name="TransferSessionResponse" message="tns:TransferSessionResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

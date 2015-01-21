@@ -1,0 +1,766 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://schemas.navitaire.com/WebServices" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.navitaire.com/WebServices" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://schemas.navitaire.com/WebServices/Imports">
+      <xsd:import schemaLocation="http://118.97.213.237:3003/BookingManager.svc?xsd=xsd1" namespace="http://schemas.navitaire.com/WebServices" />
+      <xsd:import schemaLocation="http://118.97.213.237:3003/BookingManager.svc?xsd=xsd0" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://118.97.213.237:3003/BookingManager.svc?xsd=xsd2" namespace="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" />
+      <xsd:import schemaLocation="http://118.97.213.237:3003/BookingManager.svc?xsd=xsd3" namespace="http://schemas.navitaire.com/WebServices/DataContracts/Booking" />
+      <xsd:import schemaLocation="http://118.97.213.237:3003/BookingManager.svc?xsd=xsd4" namespace="http://schemas.navitaire.com/WebServices/DataContracts/Common/Enumerations" />
+      <xsd:import schemaLocation="http://118.97.213.237:3003/BookingManager.svc?xsd=xsd5" namespace="http://schemas.navitaire.com/WebServices/DataContracts/Common" />
+      <xsd:import schemaLocation="http://118.97.213.237:3003/BookingManager.svc?xsd=xsd6" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://118.97.213.237:3003/BookingManager.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/System.Collections.Generic" />
+      <xsd:import schemaLocation="http://118.97.213.237:3003/BookingManager.svc?xsd=xsd8" namespace="http://schemas.datacontract.org/2004/07/Navitaire.NewSkies.WebServices.DataContracts.Common.Enumerations" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="CancelInProcessPaymentRequest" />
+  <wsdl:message name="CancelInProcessPaymentRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="CancelInProcessPaymentResponse" />
+  <wsdl:message name="DCCQueryRequest">
+    <wsdl:part xmlns:q1="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q1:DCCQueryRequest" />
+  </wsdl:message>
+  <wsdl:message name="DCCQueryRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="DCCQueryResponse">
+    <wsdl:part xmlns:q2="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q2:DCCQueryResponse" />
+  </wsdl:message>
+  <wsdl:message name="DCCRequest" />
+  <wsdl:message name="DCCRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="DCCPaymentResponse">
+    <wsdl:part xmlns:q3="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q3:DCCPaymentResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPaymentFeePriceRequest">
+    <wsdl:part xmlns:q4="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q4:GetPaymentFeePriceRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetPaymentFeePriceRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetPaymentFeePriceResponse">
+    <wsdl:part xmlns:q5="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q5:GetPaymentFeePriceResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSeatAvailabilityRequest">
+    <wsdl:part xmlns:q6="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q6:GetSeatAvailabilityRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetSeatAvailabilityRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetSeatAvailabilityResponse">
+    <wsdl:part xmlns:q7="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q7:GetSeatAvailabilityResponse" />
+  </wsdl:message>
+  <wsdl:message name="AssignSeatsRequest">
+    <wsdl:part xmlns:q8="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q8:AssignSeatsRequest" />
+  </wsdl:message>
+  <wsdl:message name="AssignSeatsRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="AssignSeatsResponse">
+    <wsdl:part xmlns:q9="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q9:AssignSeatsResponse" />
+  </wsdl:message>
+  <wsdl:message name="UnassignSeatsRequest">
+    <wsdl:part xmlns:q10="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q10:UnassignSeatsRequest" />
+  </wsdl:message>
+  <wsdl:message name="UnassignSeatsRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="UnassignSeatsResponse">
+    <wsdl:part xmlns:q11="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q11:UnassignSeatsResponse" />
+  </wsdl:message>
+  <wsdl:message name="CommitRequest">
+    <wsdl:part xmlns:q12="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q12:CommitRequest" />
+  </wsdl:message>
+  <wsdl:message name="CommitRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="CommitResponse">
+    <wsdl:part xmlns:q13="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q13:CommitResponse" />
+  </wsdl:message>
+  <wsdl:message name="PriceItineraryRequest">
+    <wsdl:part xmlns:q14="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q14:PriceItineraryRequest" />
+  </wsdl:message>
+  <wsdl:message name="PriceItineraryRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="PriceItineraryResponse">
+    <wsdl:part xmlns:q15="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q15:PriceItineraryResponse" />
+  </wsdl:message>
+  <wsdl:message name="SellRequest">
+    <wsdl:part xmlns:q16="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q16:SellRequest" />
+  </wsdl:message>
+  <wsdl:message name="SellRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="SellResponse">
+    <wsdl:part xmlns:q17="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q17:SellResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateFeeStatusRequest1">
+    <wsdl:part xmlns:q18="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="UpdateFeeStatusRequest" element="q18:UpdateFeeStatusRequest" />
+  </wsdl:message>
+  <wsdl:message name="UpdateFeeStatusRequest1_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="UpdateFeeStatusResponse">
+    <wsdl:part xmlns:q19="http://schemas.navitaire.com/WebServices/DataContracts/Booking" name="Succeeded" element="q19:Succeeded" />
+  </wsdl:message>
+  <wsdl:message name="UpdateTicketsRequest">
+    <wsdl:part xmlns:q20="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q20:UpdateTicketsRequest" />
+  </wsdl:message>
+  <wsdl:message name="UpdateTicketsRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="UpdateTicketsResponse">
+    <wsdl:part xmlns:q21="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q21:UpdateTicketsResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpgradeRequest">
+    <wsdl:part xmlns:q22="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q22:UpgradeRequest" />
+  </wsdl:message>
+  <wsdl:message name="UpgradeRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="UpgradeResponse">
+    <wsdl:part xmlns:q23="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q23:UpgradeResponse" />
+  </wsdl:message>
+  <wsdl:message name="DowngradeRequest">
+    <wsdl:part xmlns:q24="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q24:DowngradeRequest" />
+  </wsdl:message>
+  <wsdl:message name="DowngradeRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="DowngradeResponse">
+    <wsdl:part xmlns:q25="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q25:DowngradeResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetUpgradeAvailabilityRequest">
+    <wsdl:part xmlns:q26="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q26:GetUpgradeAvailabilityRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetUpgradeAvailabilityRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetUpgradeAvailabilityResponse">
+    <wsdl:part xmlns:q27="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q27:GetUpgradeAvailabilityResponse" />
+  </wsdl:message>
+  <wsdl:message name="ClearRequest" />
+  <wsdl:message name="ClearRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="ClearResponse" />
+  <wsdl:message name="ChangeSourcePointOfSaleRequest">
+    <wsdl:part xmlns:q28="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q28:ChangeSourcePointOfSaleRequest" />
+  </wsdl:message>
+  <wsdl:message name="ChangeSourcePointOfSaleRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="ChangeSourcePointOfSaleResponse">
+    <wsdl:part xmlns:q29="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q29:ChangeSourcePointOfSaleResponse" />
+  </wsdl:message>
+  <wsdl:message name="MoveJourneyBookingsRequest">
+    <wsdl:part xmlns:q30="http://schemas.navitaire.com/WebServices/DataContracts/Booking" name="MoveJourneyBookingsRequestData" element="q30:MoveJourneyBookingsRequestData" />
+  </wsdl:message>
+  <wsdl:message name="MoveJourneyBookingsRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="MoveJourneyBookingsResponse">
+    <wsdl:part xmlns:q31="http://schemas.navitaire.com/WebServices/DataContracts/Booking" name="MoveJourneyBookingsResponseData" element="q31:MoveJourneyBookingsResponseData" />
+  </wsdl:message>
+  <wsdl:message name="MoveJourneyByKeyRequest">
+    <wsdl:part xmlns:q32="http://schemas.navitaire.com/WebServices/DataContracts/Booking" name="MoveJourneyByKeyRequestData" element="q32:MoveJourneyByKeyRequestData" />
+  </wsdl:message>
+  <wsdl:message name="MoveJourneyByKeyRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="MoveJourneyByKeyResponse">
+    <wsdl:part xmlns:q33="http://schemas.navitaire.com/WebServices/DataContracts/Booking" name="BookingUpdateResponseData" element="q33:BookingUpdateResponseData" />
+  </wsdl:message>
+  <wsdl:message name="GetPostCommitResultsRequest" />
+  <wsdl:message name="GetPostCommitResultsRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetPostCommitResultsResponse">
+    <wsdl:part xmlns:q34="http://schemas.navitaire.com/WebServices/DataContracts/Booking" name="ContinuePulling" element="q34:ContinuePulling" />
+  </wsdl:message>
+  <wsdl:message name="SendItineraryRequest">
+    <wsdl:part name="RecordLocatorReqData" element="tns:RecordLocatorReqData" />
+  </wsdl:message>
+  <wsdl:message name="SendItineraryRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="SendItineraryResponse" />
+  <wsdl:message name="GetEquipmentPropertiesRequest">
+    <wsdl:part xmlns:q35="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q35:GetEquipmentPropertiesRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetEquipmentPropertiesRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetEquipmentPropertiesResponse">
+    <wsdl:part xmlns:q36="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q36:GetEquipmentPropertiesResponse" />
+  </wsdl:message>
+  <wsdl:message name="OverrideFeeRequest">
+    <wsdl:part xmlns:q37="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q37:OverrideFeeRequest" />
+  </wsdl:message>
+  <wsdl:message name="OverrideFeeRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="OverrideFeeResponse">
+    <wsdl:part xmlns:q38="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q38:OverrideFeeResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdatePassengersRequest">
+    <wsdl:part xmlns:q39="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q39:UpdatePassengersRequest" />
+  </wsdl:message>
+  <wsdl:message name="UpdatePassengersRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="UpdatePassengersResponse">
+    <wsdl:part xmlns:q40="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q40:UpdatePassengerResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdatePriceRequest">
+    <wsdl:part xmlns:q41="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q41:UpdatePriceRequest" />
+  </wsdl:message>
+  <wsdl:message name="UpdatePriceRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="UpdatePriceResponse">
+    <wsdl:part xmlns:q42="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q42:UpdatePriceResponse" />
+  </wsdl:message>
+  <wsdl:message name="CaptureBaggageEventRequest">
+    <wsdl:part xmlns:q43="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q43:CaptureBaggageEventRequest" />
+  </wsdl:message>
+  <wsdl:message name="CaptureBaggageEventRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="CaptureBaggageEventResponse">
+    <wsdl:part xmlns:q44="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q44:CaptureBaggageEventResponse" />
+  </wsdl:message>
+  <wsdl:message name="FindBaggageEventRequest">
+    <wsdl:part xmlns:q45="http://schemas.navitaire.com/WebServices/DataContracts/Booking" name="FindBaggageEventRequestData" element="q45:FindBaggageEventRequestData" />
+  </wsdl:message>
+  <wsdl:message name="FindBaggageEventRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="FindBaggageEventResponse">
+    <wsdl:part xmlns:q46="http://schemas.navitaire.com/WebServices/DataContracts/Booking" name="FindBaggageEventResponseData" element="q46:FindBaggageEventResponseData" />
+  </wsdl:message>
+  <wsdl:message name="CalculateGuestValuesRequest">
+    <wsdl:part xmlns:q47="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q47:CalculateGuestValuesRequest" />
+  </wsdl:message>
+  <wsdl:message name="CalculateGuestValuesRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="CalculateGuestValuesResponse">
+    <wsdl:part xmlns:q48="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q48:CalculateGuestValuesResponse" />
+  </wsdl:message>
+  <wsdl:message name="ScorePassengersRequest">
+    <wsdl:part xmlns:q49="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q49:ScorePassengersRequest" />
+  </wsdl:message>
+  <wsdl:message name="ScorePassengersRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="ScorePassengersResponse">
+    <wsdl:part xmlns:q50="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q50:ScorePassengersResponse" />
+  </wsdl:message>
+  <wsdl:message name="BookingCommitRequest">
+    <wsdl:part xmlns:q51="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q51:BookingCommitRequest" />
+  </wsdl:message>
+  <wsdl:message name="BookingCommitRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="BookingCommitResponse">
+    <wsdl:part xmlns:q52="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q52:BookingCommitResponse" />
+  </wsdl:message>
+  <wsdl:message name="ResellSSRRequest">
+    <wsdl:part xmlns:q53="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q53:ResellSSRRequest" />
+  </wsdl:message>
+  <wsdl:message name="ResellSSRRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="ResellSSRResponse">
+    <wsdl:part xmlns:q54="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q54:ResellSSRResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateContactsRequest">
+    <wsdl:part xmlns:q55="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q55:UpdateContactsRequest" />
+  </wsdl:message>
+  <wsdl:message name="UpdateContactsRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="UpdateContactsResponse">
+    <wsdl:part xmlns:q56="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q56:UpdateContactsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAvailabilityRequest">
+    <wsdl:part xmlns:q57="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q57:GetAvailabilityRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetAvailabilityRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetAvailabilityResponse">
+    <wsdl:part xmlns:q58="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q58:GetAvailabilityByTripResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetLowFareAvailabilityRequest">
+    <wsdl:part xmlns:q59="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q59:GetLowFareAvailabilityRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetLowFareAvailabilityRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetLowFareAvailabilityResponse">
+    <wsdl:part xmlns:q60="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q60:GetLowFareAvailabilityResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMoveAvailabilityRequest">
+    <wsdl:part xmlns:q61="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q61:GetMoveAvailabilityRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetMoveAvailabilityRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetMoveAvailabilityResponse">
+    <wsdl:part xmlns:q62="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q62:GetMoveAvailabilityResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMoveFeePriceRequest">
+    <wsdl:part xmlns:q63="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q63:GetMoveFeePriceRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetMoveFeePriceRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetMoveFeePriceResponse">
+    <wsdl:part xmlns:q64="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q64:GetMoveFeePriceResponse" />
+  </wsdl:message>
+  <wsdl:message name="SeparateSegmentByEquipmentRequest">
+    <wsdl:part xmlns:q65="http://schemas.navitaire.com/WebServices/DataContracts/Booking" name="SegmentRequest" element="q65:SegmentRequest" />
+  </wsdl:message>
+  <wsdl:message name="SeparateSegmentByEquipmentRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="SeparateSegmentByEquipmentResponse">
+    <wsdl:part xmlns:q66="http://schemas.navitaire.com/WebServices/DataContracts/Booking" name="LegList" element="q66:LegList" />
+  </wsdl:message>
+  <wsdl:message name="GetSSRAvailabilityRequest">
+    <wsdl:part xmlns:q67="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q67:GetSSRAvailabilityRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetSSRAvailabilityRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetSSRAvailabilityResponse">
+    <wsdl:part xmlns:q68="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q68:GetSSRAvailabilityResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetSSRAvailabilityForBookingRequest">
+    <wsdl:part xmlns:q69="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q69:GetSSRAvailabilityForBookingRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetSSRAvailabilityForBookingRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetSSRAvailabilityForBookingResponse">
+    <wsdl:part xmlns:q70="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q70:GetSSRAvailabilityForBookingResponse" />
+  </wsdl:message>
+  <wsdl:message name="FindBookingRequest">
+    <wsdl:part xmlns:q71="http://schemas.navitaire.com/WebServices/DataContracts/Booking" name="FindBookingRequestData" element="q71:FindBookingRequestData" />
+  </wsdl:message>
+  <wsdl:message name="FindBookingRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="FindBookingResponse">
+    <wsdl:part xmlns:q72="http://schemas.navitaire.com/WebServices/DataContracts/Booking" name="FindBookingRespData" element="q72:FindBookingRespData" />
+  </wsdl:message>
+  <wsdl:message name="GetBookingRequest">
+    <wsdl:part xmlns:q73="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q73:GetBookingRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetBookingRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetBookingResponse">
+    <wsdl:part xmlns:q74="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q74:GetBookingResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetBookingFromStateRequest">
+    <wsdl:part name="parameters" element="tns:GetBookingFromStateRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetBookingFromStateRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetBookingFromStateResponse">
+    <wsdl:part xmlns:q75="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q75:GetBookingFromStateResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetBookingHistoryRequest">
+    <wsdl:part xmlns:q76="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q76:GetBookingHistoryRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetBookingHistoryRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetBookingHistoryResponse">
+    <wsdl:part xmlns:q77="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q77:GetBookingHistoryResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetBookingBaggageRequest">
+    <wsdl:part xmlns:q78="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q78:GetBookingBaggageRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetBookingBaggageRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetBookingBaggageResponse">
+    <wsdl:part xmlns:q79="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q79:GetBookingBaggageResponse" />
+  </wsdl:message>
+  <wsdl:message name="AcceptScheduleChangesRequest">
+    <wsdl:part xmlns:q80="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q80:AcceptScheduleChangesRequest" />
+  </wsdl:message>
+  <wsdl:message name="AcceptScheduleChangesRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="AcceptScheduleChangesResponse" />
+  <wsdl:message name="AddBookingCommentsRequest">
+    <wsdl:part xmlns:q81="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q81:AddBookingCommentsRequest" />
+  </wsdl:message>
+  <wsdl:message name="AddBookingCommentsRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="AddBookingCommentsResponse">
+    <wsdl:part xmlns:q82="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q82:AddBookingCommentsResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordLocatorListRequest">
+    <wsdl:part xmlns:q83="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q83:GetRecordLocatorListRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordLocatorListRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetRecordLocatorListResponse">
+    <wsdl:part xmlns:q84="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q84:GetRecordLocatorListResponse" />
+  </wsdl:message>
+  <wsdl:message name="CancelRequest">
+    <wsdl:part xmlns:q85="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q85:CancelRequest" />
+  </wsdl:message>
+  <wsdl:message name="CancelRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="CancelResponse">
+    <wsdl:part xmlns:q86="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q86:CancelResponse" />
+  </wsdl:message>
+  <wsdl:message name="DivideRequest">
+    <wsdl:part xmlns:q87="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q87:DivideRequest" />
+  </wsdl:message>
+  <wsdl:message name="DivideRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="DivideResponse">
+    <wsdl:part xmlns:q88="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q88:DivideResponse" />
+  </wsdl:message>
+  <wsdl:message name="FareOverrideRequest">
+    <wsdl:part xmlns:q89="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q89:FareOverrideRequest" />
+  </wsdl:message>
+  <wsdl:message name="FareOverrideRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="FareOverrideResponse">
+    <wsdl:part xmlns:q90="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q90:FareOverrideResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetBookingPaymentsRequest">
+    <wsdl:part xmlns:q91="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q91:GetBookingPaymentsRequest" />
+  </wsdl:message>
+  <wsdl:message name="GetBookingPaymentsRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="GetBookingPaymentsResponse">
+    <wsdl:part xmlns:q92="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q92:GetBookingPaymentsResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddPaymentToBookingRequest">
+    <wsdl:part xmlns:q93="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q93:AddPaymentToBookingRequest" />
+  </wsdl:message>
+  <wsdl:message name="AddPaymentToBookingRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="AddPaymentToBookingResponse">
+    <wsdl:part xmlns:q94="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q94:AddPaymentToBookingResponse" />
+  </wsdl:message>
+  <wsdl:message name="AddInProcessPaymentToBookingRequest">
+    <wsdl:part xmlns:q95="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q95:AddInProcessPaymentToBookingRequest" />
+  </wsdl:message>
+  <wsdl:message name="AddInProcessPaymentToBookingRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="AddInProcessPaymentToBookingResponse">
+    <wsdl:part xmlns:q96="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q96:AddInProcessPaymentToBookingResponse" />
+  </wsdl:message>
+  <wsdl:message name="ApplyPromotionRequest">
+    <wsdl:part xmlns:q97="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q97:ApplyPromotionRequest" />
+  </wsdl:message>
+  <wsdl:message name="ApplyPromotionRequest_Headers">
+    <wsdl:part name="ContractVersion" element="tns:ContractVersion" />
+    <wsdl:part name="Signature" element="tns:Signature" />
+  </wsdl:message>
+  <wsdl:message name="ApplyPromotionResponse">
+    <wsdl:part xmlns:q98="http://schemas.navitaire.com/WebServices/ServiceContracts/BookingService" name="parameters" element="q98:ApplyPromotionResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IBookingManager">
+    <wsdl:operation name="CancelInProcessPayment">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/CancelInProcessPayment" name="CancelInProcessPaymentRequest" message="tns:CancelInProcessPaymentRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/CancelInProcessPaymentResponse" name="CancelInProcessPaymentResponse" message="tns:CancelInProcessPaymentResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="DCCQuery">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/DCCQuery" name="DCCQueryRequest" message="tns:DCCQueryRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/DCCQueryResponse" name="DCCQueryResponse" message="tns:DCCQueryResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="AcceptDCCOffer">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/AcceptDCCOffer" name="DCCRequest" message="tns:DCCRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/AcceptDCCOfferResponse" name="DCCPaymentResponse" message="tns:DCCPaymentResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="RejectDCCOffer">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/RejectDCCOffer" name="DCCRequest" message="tns:DCCRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/RejectDCCOfferResponse" name="DCCPaymentResponse" message="tns:DCCPaymentResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="DCCNotOffered">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/DCCNotOffered" name="DCCRequest" message="tns:DCCRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/DCCNotOfferedResponse" name="DCCPaymentResponse" message="tns:DCCPaymentResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPaymentFeePrice">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetPaymentFeePrice" name="GetPaymentFeePriceRequest" message="tns:GetPaymentFeePriceRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetPaymentFeePriceResponse" name="GetPaymentFeePriceResponse" message="tns:GetPaymentFeePriceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSeatAvailability">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetSeatAvailability" name="GetSeatAvailabilityRequest" message="tns:GetSeatAvailabilityRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetSeatAvailabilityResponse" name="GetSeatAvailabilityResponse" message="tns:GetSeatAvailabilityResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="AssignSeats">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/AssignSeats" name="AssignSeatsRequest" message="tns:AssignSeatsRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/AssignSeatsResponse" name="AssignSeatsResponse" message="tns:AssignSeatsResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="UnassignSeats">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/UnassignSeats" name="UnassignSeatsRequest" message="tns:UnassignSeatsRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/UnassignSeatsResponse" name="UnassignSeatsResponse" message="tns:UnassignSeatsResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="Commit">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/Commit" name="CommitRequest" message="tns:CommitRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/CommitResponse" name="CommitResponse" message="tns:CommitResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetItineraryPrice">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetItineraryPrice" name="PriceItineraryRequest" message="tns:PriceItineraryRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetItineraryPriceResponse" name="PriceItineraryResponse" message="tns:PriceItineraryResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="Sell">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/Sell" name="SellRequest" message="tns:SellRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/SellResponse" name="SellResponse" message="tns:SellResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateFeeStatus">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/UpdateFeeStatus" name="UpdateFeeStatusRequest1" message="tns:UpdateFeeStatusRequest1" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/UpdateFeeStatusResponse" name="UpdateFeeStatusResponse" message="tns:UpdateFeeStatusResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateTickets">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/UpdateTickets" name="UpdateTicketsRequest" message="tns:UpdateTicketsRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/UpdateTicketsResponse" name="UpdateTicketsResponse" message="tns:UpdateTicketsResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="Upgrade">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/Upgrade" name="UpgradeRequest" message="tns:UpgradeRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/UpgradeResponse" name="UpgradeResponse" message="tns:UpgradeResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="Downgrade">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/Downgrade" name="DowngradeRequest" message="tns:DowngradeRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/DowngradeResponse" name="DowngradeResponse" message="tns:DowngradeResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetUpgradeAvailability">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetUpgradeAvailability" name="GetUpgradeAvailabilityRequest" message="tns:GetUpgradeAvailabilityRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetUpgradeAvailabilityResponse" name="GetUpgradeAvailabilityResponse" message="tns:GetUpgradeAvailabilityResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="Clear">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/Clear" name="ClearRequest" message="tns:ClearRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/ClearResponse" name="ClearResponse" message="tns:ClearResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="ChangeSourcePointOfSale">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/ChangeSourcePointOfSale" name="ChangeSourcePointOfSaleRequest" message="tns:ChangeSourcePointOfSaleRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/ChangeSourcePointOfSaleResponse" name="ChangeSourcePointOfSaleResponse" message="tns:ChangeSourcePointOfSaleResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="MoveJourneyBookings">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/MoveJourneyBookings" name="MoveJourneyBookingsRequest" message="tns:MoveJourneyBookingsRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/MoveJourneyBookingsResponse" name="MoveJourneyBookingsResponse" message="tns:MoveJourneyBookingsResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="MoveJourney">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/MoveJourney" name="MoveJourneyByKeyRequest" message="tns:MoveJourneyByKeyRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/MoveJourneyResponse" name="MoveJourneyByKeyResponse" message="tns:MoveJourneyByKeyResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPostCommitResults">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetPostCommitResults" name="GetPostCommitResultsRequest" message="tns:GetPostCommitResultsRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetPostCommitResultsResponse" name="GetPostCommitResultsResponse" message="tns:GetPostCommitResultsResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="SendItinerary">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/SendItinerary" name="SendItineraryRequest" message="tns:SendItineraryRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/SendItineraryResponse" name="SendItineraryResponse" message="tns:SendItineraryResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetEquipmentProperties">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetEquipmentProperties" name="GetEquipmentPropertiesRequest" message="tns:GetEquipmentPropertiesRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetEquipmentPropertiesResponse" name="GetEquipmentPropertiesResponse" message="tns:GetEquipmentPropertiesResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="OverrideFee">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/OverrideFee" name="OverrideFeeRequest" message="tns:OverrideFeeRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/OverrideFeeResponse" name="OverrideFeeResponse" message="tns:OverrideFeeResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePassengers">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/UpdatePassengers" name="UpdatePassengersRequest" message="tns:UpdatePassengersRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/UpdatePassengersResponse" name="UpdatePassengersResponse" message="tns:UpdatePassengersResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePrice">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/UpdatePrice" name="UpdatePriceRequest" message="tns:UpdatePriceRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/UpdatePriceResponse" name="UpdatePriceResponse" message="tns:UpdatePriceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="CaptureBaggageEvent">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/CaptureBaggageEvent" name="CaptureBaggageEventRequest" message="tns:CaptureBaggageEventRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/CaptureBaggageEventResponse" name="CaptureBaggageEventResponse" message="tns:CaptureBaggageEventResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="FindBaggageEvent">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/FindBaggageEvent" name="FindBaggageEventRequest" message="tns:FindBaggageEventRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/FindBaggageEventResponse" name="FindBaggageEventResponse" message="tns:FindBaggageEventResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="CalculateGuestValues">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/CalculateGuestValues" name="CalculateGuestValuesRequest" message="tns:CalculateGuestValuesRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/CalculateGuestValuesResponse" name="CalculateGuestValuesResponse" message="tns:CalculateGuestValuesResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="ScorePassengers">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/ScorePassengers" name="ScorePassengersRequest" message="tns:ScorePassengersRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/ScorePassengersResponse" name="ScorePassengersResponse" message="tns:ScorePassengersResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="BookingCommit">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/BookingCommit" name="BookingCommitRequest" message="tns:BookingCommitRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/BookingCommitResponse" name="BookingCommitResponse" message="tns:BookingCommitResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="ResellSSR">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/ResellSSR" name="ResellSSRRequest" message="tns:ResellSSRRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/ResellSSRResponse" name="ResellSSRResponse" message="tns:ResellSSRResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateContacts">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/UpdateContacts" name="UpdateContactsRequest" message="tns:UpdateContactsRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/UpdateContactsResponse" name="UpdateContactsResponse" message="tns:UpdateContactsResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAvailability">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetAvailability" name="GetAvailabilityRequest" message="tns:GetAvailabilityRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetAvailabilityResponse" name="GetAvailabilityResponse" message="tns:GetAvailabilityResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLowFareAvailability">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetLowFareAvailability" name="GetLowFareAvailabilityRequest" message="tns:GetLowFareAvailabilityRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetLowFareAvailabilityResponse" name="GetLowFareAvailabilityResponse" message="tns:GetLowFareAvailabilityResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMoveAvailability">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetMoveAvailability" name="GetMoveAvailabilityRequest" message="tns:GetMoveAvailabilityRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetMoveAvailabilityResponse" name="GetMoveAvailabilityResponse" message="tns:GetMoveAvailabilityResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMoveFeePrice">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetMoveFeePrice" name="GetMoveFeePriceRequest" message="tns:GetMoveFeePriceRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetMoveFeePriceResponse" name="GetMoveFeePriceResponse" message="tns:GetMoveFeePriceResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="SeparateSegmentByEquipment">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/SeparateSegmentByEquipment" name="SeparateSegmentByEquipmentRequest" message="tns:SeparateSegmentByEquipmentRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/SeparateSegmentByEquipmentResponse" name="SeparateSegmentByEquipmentResponse" message="tns:SeparateSegmentByEquipmentResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSSRAvailability">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetSSRAvailability" name="GetSSRAvailabilityRequest" message="tns:GetSSRAvailabilityRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetSSRAvailabilityResponse" name="GetSSRAvailabilityResponse" message="tns:GetSSRAvailabilityResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSSRAvailabilityForBooking">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetSSRAvailabilityForBooking" name="GetSSRAvailabilityForBookingRequest" message="tns:GetSSRAvailabilityForBookingRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetSSRAvailabilityForBookingResponse" name="GetSSRAvailabilityForBookingResponse" message="tns:GetSSRAvailabilityForBookingResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="FindBooking">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/FindBooking" name="FindBookingRequest" message="tns:FindBookingRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/FindBookingResponse" name="FindBookingResponse" message="tns:FindBookingResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBooking">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetBooking" name="GetBookingRequest" message="tns:GetBookingRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetBookingResponse" name="GetBookingResponse" message="tns:GetBookingResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBookingFromState">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetBookingFromState" name="GetBookingFromStateRequest" message="tns:GetBookingFromStateRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetBookingFromStateResponse" name="GetBookingFromStateResponse" message="tns:GetBookingFromStateResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBookingHistory">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetBookingHistory" name="GetBookingHistoryRequest" message="tns:GetBookingHistoryRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetBookingHistoryResponse" name="GetBookingHistoryResponse" message="tns:GetBookingHistoryResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBookingBaggage">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetBookingBaggage" name="GetBookingBaggageRequest" message="tns:GetBookingBaggageRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetBookingBaggageResponse" name="GetBookingBaggageResponse" message="tns:GetBookingBaggageResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="AcceptScheduleChanges">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/AcceptScheduleChanges" name="AcceptScheduleChangesRequest" message="tns:AcceptScheduleChangesRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/AcceptScheduleChangesResponse" name="AcceptScheduleChangesResponse" message="tns:AcceptScheduleChangesResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="AddBookingComments">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/AddBookingComments" name="AddBookingCommentsRequest" message="tns:AddBookingCommentsRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/AddBookingCommentsResponse" name="AddBookingCommentsResponse" message="tns:AddBookingCommentsResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordLocatorList">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetRecordLocatorList" name="GetRecordLocatorListRequest" message="tns:GetRecordLocatorListRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetRecordLocatorListResponse" name="GetRecordLocatorListResponse" message="tns:GetRecordLocatorListResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="Cancel">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/Cancel" name="CancelRequest" message="tns:CancelRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/CancelResponse" name="CancelResponse" message="tns:CancelResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="Divide">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/Divide" name="DivideRequest" message="tns:DivideRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/DivideResponse" name="DivideResponse" message="tns:DivideResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="FareOverride">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/FareOverride" name="FareOverrideRequest" message="tns:FareOverrideRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/FareOverrideResponse" name="FareOverrideResponse" message="tns:FareOverrideResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBookingPayments">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetBookingPayments" name="GetBookingPaymentsRequest" message="tns:GetBookingPaymentsRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/GetBookingPaymentsResponse" name="GetBookingPaymentsResponse" message="tns:GetBookingPaymentsResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="AddPaymentToBooking">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/AddPaymentToBooking" name="AddPaymentToBookingRequest" message="tns:AddPaymentToBookingRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/AddPaymentToBookingResponse" name="AddPaymentToBookingResponse" message="tns:AddPaymentToBookingResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="AddInProcessPaymentToBooking">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/AddInProcessPaymentToBooking" name="AddInProcessPaymentToBookingRequest" message="tns:AddInProcessPaymentToBookingRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/AddInProcessPaymentToBookingResponse" name="AddInProcessPaymentToBookingResponse" message="tns:AddInProcessPaymentToBookingResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="ApplyPromotion">
+      <wsdl:input wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/ApplyPromotion" name="ApplyPromotionRequest" message="tns:ApplyPromotionRequest" />
+      <wsdl:output wsaw:Action="http://schemas.navitaire.com/WebServices/IBookingManager/ApplyPromotionResponse" name="ApplyPromotionResponse" message="tns:ApplyPromotionResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

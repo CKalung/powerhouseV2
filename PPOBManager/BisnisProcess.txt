@@ -1,0 +1,35 @@
+﻿
+Menggunakan CanonicalPath untuk pembeda jenis transaksi dari client:
+
+Account:
+- Registrasi: /PPOB-Service/acc/10001
+- Edit: /PPOB-Service/acc/10002
+- ResetPassword: /PPOB-Service/acc/10003
+
+Transaksi QVA
+- Registrasi: /PPOB-Service/trx/20000
+- CekSaldo/Inquiry: /PPOB-Service/trx/20001
+- Purchase: /PPOB-Service/trx/20002
+- TopUp: /PPOB-Service/trx/20003
+- Transfer: /PPOB-Service/trx/20004
+
+Field-field nu registrasi PPOB:
+- Nama depan
+- Nama belakang
+- no HP
+- No KTP
+- Tempat Lahir
+- Tanggal lahir
+- Kelamin
+- Alamat
+- Kota
+- RT
+- RW
+- Kab/Kota
+- Kodepos
+- Propinsi
+- Nama ibu kandung
+- Jenis anggota (Biasa / Distributor)
+
+- Username
+- Password

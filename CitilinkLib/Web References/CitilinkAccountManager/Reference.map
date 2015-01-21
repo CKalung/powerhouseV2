@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DiscoveryClientResultsFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <DiscoveryClientResult filename="AccountManager.wsdl" referenceType="System.Web.Services.Discovery.ContractReference" url="http://118.97.213.237:3003/AccountManager.svc?wsdl=wsdl0" />
+    <DiscoveryClientResult filename="AccountManager.disco" referenceType="System.Web.Services.Discovery.DiscoveryDocumentReference" url="http://118.97.213.237:3003/AccountManager.svc?disco" />
+    <DiscoveryClientResult filename="AccountManager.xsd" referenceType="System.Web.Services.Discovery.SchemaReference" url="http://118.97.213.237:3003/AccountManager.svc?xsd=xsd0" />
+    <DiscoveryClientResult filename="AccountManager1.xsd" referenceType="System.Web.Services.Discovery.SchemaReference" url="http://118.97.213.237:3003/AccountManager.svc?xsd=xsd1" />
+    <DiscoveryClientResult filename="AccountManager2.xsd" referenceType="System.Web.Services.Discovery.SchemaReference" url="http://118.97.213.237:3003/AccountManager.svc?xsd=xsd2" />
+    <DiscoveryClientResult filename="AccountManager3.xsd" referenceType="System.Web.Services.Discovery.SchemaReference" url="http://118.97.213.237:3003/AccountManager.svc?xsd=xsd3" />
+    <DiscoveryClientResult filename="AccountManager4.xsd" referenceType="System.Web.Services.Discovery.SchemaReference" url="http://118.97.213.237:3003/AccountManager.svc?xsd=xsd4" />
+    <DiscoveryClientResult filename="AccountManager5.xsd" referenceType="System.Web.Services.Discovery.SchemaReference" url="http://118.97.213.237:3003/AccountManager.svc?xsd=xsd5" />
+    <DiscoveryClientResult filename="AccountManager1.wsdl" referenceType="System.Web.Services.Discovery.ContractReference" url="http://118.97.213.237:3003/AccountManager.svc?wsdl" />
+  </Results>
+</DiscoveryClientResultsFile>

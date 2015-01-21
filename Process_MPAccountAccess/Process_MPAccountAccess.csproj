@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7C14FCC3-2DBA-4596-829A-27B06BEF17C4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Process_MPAccountAccess</RootNamespace>
+    <AssemblyName>Process_MPAccountAccess</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <ReleaseVersion>2.1</ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountTransactions.cs" />
+    <Compile Include="Process_Account.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Process_Applications.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\JsonLibs\JsonLibs.csproj">
+      <Project>{91AD3C36-250F-4ECA-A64E-EE47443D3462}</Project>
+      <Name>JsonLibs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LOG-Handler\LOG-Handler.csproj">
+      <Project>{A13870D0-7883-4309-9F17-0609E35762E5}</Project>
+      <Name>LOG-Handler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PPOBDatabase\PPOBDatabase.csproj">
+      <Project>{D0AD1740-3D52-404F-8EE0-B290D8DA3310}</Project>
+      <Name>PPOBDatabase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PPOBHttpRestData\PPOBHttpRestData.csproj">
+      <Project>{99F52472-227A-4244-BE51-7309C5DECDB6}</Project>
+      <Name>PPOBHttpRestData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PPOBServerHandler\PPOBServerHandler.csproj">
+      <Project>{40AAB52B-80CF-4281-A665-A30C64069603}</Project>
+      <Name>PPOBServerHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PublicSettings\PublicSettings.csproj">
+      <Project>{9E43FB83-C8A8-42CA-AB48-6165A409A755}</Project>
+      <Name>PublicSettings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SMSHandler\SMSHandler.csproj">
+      <Project>{D6F0E58A-916D-471C-9933-341F1B4BF871}</Project>
+      <Name>SMSHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StaticCommonLibrary\StaticCommonLibrary.csproj">
+      <Project>{3C7F8F54-4FD7-4000-8401-EFE9D20E26D8}</Project>
+      <Name>StaticCommonLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TransferReguler\TransferReguler.csproj">
+      <Project>{E108589E-E44B-42F2-A29C-C013F440C9D1}</Project>
+      <Name>TransferReguler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Process_iVoteHandler\Process_iVoteHandler.csproj">
+      <Project>{801D4176-E550-457B-A414-1BDDEA42A738}</Project>
+      <Name>Process_iVoteHandler</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="453ee1d6-b3eb-415c-ba14-d9c5a449d3cc" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://118.97.213.237:3003/SessionManager.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="SessionManager.xsd" MetadataType="Schema" ID="048b415a-6628-42dd-9b9f-4fa9389cf7ad" SourceId="1" SourceUrl="http://118.97.213.237:3003/SessionManager.svc?xsd=xsd2" />
+    <MetadataFile FileName="SessionManager1.xsd" MetadataType="Schema" ID="18691114-f8b0-4245-9f34-9b965cebaf01" SourceId="1" SourceUrl="http://118.97.213.237:3003/SessionManager.svc?xsd=xsd3" />
+    <MetadataFile FileName="SessionManager2.xsd" MetadataType="Schema" ID="721eb2b0-956c-488d-a02a-20a736e175fd" SourceId="1" SourceUrl="http://118.97.213.237:3003/SessionManager.svc?xsd=xsd0" />
+    <MetadataFile FileName="SessionManager3.xsd" MetadataType="Schema" ID="62f3b394-396c-48eb-a489-bc4facf9456a" SourceId="1" SourceUrl="http://118.97.213.237:3003/SessionManager.svc?xsd=xsd1" />
+    <MetadataFile FileName="SessionManager.disco" MetadataType="Disco" ID="44da6d93-8720-4099-b82c-ff95d98f0ca9" SourceId="1" SourceUrl="http://118.97.213.237:3003/SessionManager.svc?disco" />
+    <MetadataFile FileName="SessionManager4.xsd" MetadataType="Schema" ID="0bb5d55d-6757-4fa9-87a7-8d0b3f0984a9" SourceId="1" SourceUrl="http://118.97.213.237:3003/SessionManager.svc?xsd=xsd4" />
+    <MetadataFile FileName="SessionManagerClient.wsdl" MetadataType="Wsdl" ID="7b532d6f-544f-4968-aa18-a08ce8bb1aab" SourceId="1" SourceUrl="http://118.97.213.237:3003/SessionManager.svc?wsdl" />
+    <MetadataFile FileName="SessionManager.wsdl" MetadataType="Wsdl" ID="ff0b30dd-cc19-4d0d-bcf8-20d3c5f85f5e" SourceId="1" SourceUrl="http://118.97.213.237:3003/SessionManager.svc?wsdl=wsdl0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

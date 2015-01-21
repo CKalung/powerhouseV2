@@ -1,0 +1,3 @@
+﻿{"fiAmount":0,"fiPhone":"628112250588","fiApplicationId":"000","fiRequestCode":"00",
+"fiTransactionType":1,
+"fiCustomerNumber":"0021006666023","fiProductCode":"PRD00001"}

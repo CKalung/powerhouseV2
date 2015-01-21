@@ -1,0 +1,629 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:i0="http://schemas.navitaire.com/WebServices" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="BookingManagerClient" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:import namespace="http://schemas.navitaire.com/WebServices" location="http://118.97.213.237:3003/BookingManager.svc?wsdl=wsdl0" />
+  <wsdl:types />
+  <wsdl:binding name="BasicHttpBinding_IBookingManager" type="i0:IBookingManager">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="CancelInProcessPayment">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/CancelInProcessPayment" style="document" />
+      <wsdl:input name="CancelInProcessPaymentRequest">
+        <soap:header message="i0:CancelInProcessPaymentRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:CancelInProcessPaymentRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="CancelInProcessPaymentResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DCCQuery">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/DCCQuery" style="document" />
+      <wsdl:input name="DCCQueryRequest">
+        <soap:header message="i0:DCCQueryRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:DCCQueryRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="DCCQueryResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AcceptDCCOffer">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/AcceptDCCOffer" style="document" />
+      <wsdl:input name="DCCRequest">
+        <soap:header message="i0:DCCRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:DCCRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="DCCPaymentResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RejectDCCOffer">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/RejectDCCOffer" style="document" />
+      <wsdl:input name="DCCRequest">
+        <soap:header message="i0:DCCRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:DCCRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="DCCPaymentResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DCCNotOffered">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/DCCNotOffered" style="document" />
+      <wsdl:input name="DCCRequest">
+        <soap:header message="i0:DCCRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:DCCRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="DCCPaymentResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPaymentFeePrice">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetPaymentFeePrice" style="document" />
+      <wsdl:input name="GetPaymentFeePriceRequest">
+        <soap:header message="i0:GetPaymentFeePriceRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetPaymentFeePriceRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetPaymentFeePriceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSeatAvailability">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetSeatAvailability" style="document" />
+      <wsdl:input name="GetSeatAvailabilityRequest">
+        <soap:header message="i0:GetSeatAvailabilityRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetSeatAvailabilityRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetSeatAvailabilityResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AssignSeats">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/AssignSeats" style="document" />
+      <wsdl:input name="AssignSeatsRequest">
+        <soap:header message="i0:AssignSeatsRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:AssignSeatsRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="AssignSeatsResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UnassignSeats">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/UnassignSeats" style="document" />
+      <wsdl:input name="UnassignSeatsRequest">
+        <soap:header message="i0:UnassignSeatsRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:UnassignSeatsRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="UnassignSeatsResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Commit">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/Commit" style="document" />
+      <wsdl:input name="CommitRequest">
+        <soap:header message="i0:CommitRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:CommitRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="CommitResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetItineraryPrice">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetItineraryPrice" style="document" />
+      <wsdl:input name="PriceItineraryRequest">
+        <soap:header message="i0:PriceItineraryRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:PriceItineraryRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="PriceItineraryResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Sell">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/Sell" style="document" />
+      <wsdl:input name="SellRequest">
+        <soap:header message="i0:SellRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:SellRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="SellResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateFeeStatus">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/UpdateFeeStatus" style="document" />
+      <wsdl:input name="UpdateFeeStatusRequest1">
+        <soap:header message="i0:UpdateFeeStatusRequest1_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:UpdateFeeStatusRequest1_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="UpdateFeeStatusResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateTickets">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/UpdateTickets" style="document" />
+      <wsdl:input name="UpdateTicketsRequest">
+        <soap:header message="i0:UpdateTicketsRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:UpdateTicketsRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="UpdateTicketsResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Upgrade">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/Upgrade" style="document" />
+      <wsdl:input name="UpgradeRequest">
+        <soap:header message="i0:UpgradeRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:UpgradeRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="UpgradeResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Downgrade">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/Downgrade" style="document" />
+      <wsdl:input name="DowngradeRequest">
+        <soap:header message="i0:DowngradeRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:DowngradeRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="DowngradeResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetUpgradeAvailability">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetUpgradeAvailability" style="document" />
+      <wsdl:input name="GetUpgradeAvailabilityRequest">
+        <soap:header message="i0:GetUpgradeAvailabilityRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetUpgradeAvailabilityRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetUpgradeAvailabilityResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Clear">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/Clear" style="document" />
+      <wsdl:input name="ClearRequest">
+        <soap:header message="i0:ClearRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:ClearRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="ClearResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeSourcePointOfSale">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/ChangeSourcePointOfSale" style="document" />
+      <wsdl:input name="ChangeSourcePointOfSaleRequest">
+        <soap:header message="i0:ChangeSourcePointOfSaleRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:ChangeSourcePointOfSaleRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="ChangeSourcePointOfSaleResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MoveJourneyBookings">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/MoveJourneyBookings" style="document" />
+      <wsdl:input name="MoveJourneyBookingsRequest">
+        <soap:header message="i0:MoveJourneyBookingsRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:MoveJourneyBookingsRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="MoveJourneyBookingsResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="MoveJourney">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/MoveJourney" style="document" />
+      <wsdl:input name="MoveJourneyByKeyRequest">
+        <soap:header message="i0:MoveJourneyByKeyRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:MoveJourneyByKeyRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="MoveJourneyByKeyResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPostCommitResults">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetPostCommitResults" style="document" />
+      <wsdl:input name="GetPostCommitResultsRequest">
+        <soap:header message="i0:GetPostCommitResultsRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetPostCommitResultsRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetPostCommitResultsResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendItinerary">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/SendItinerary" style="document" />
+      <wsdl:input name="SendItineraryRequest">
+        <soap:header message="i0:SendItineraryRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:SendItineraryRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="SendItineraryResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetEquipmentProperties">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetEquipmentProperties" style="document" />
+      <wsdl:input name="GetEquipmentPropertiesRequest">
+        <soap:header message="i0:GetEquipmentPropertiesRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetEquipmentPropertiesRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetEquipmentPropertiesResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OverrideFee">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/OverrideFee" style="document" />
+      <wsdl:input name="OverrideFeeRequest">
+        <soap:header message="i0:OverrideFeeRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:OverrideFeeRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="OverrideFeeResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePassengers">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/UpdatePassengers" style="document" />
+      <wsdl:input name="UpdatePassengersRequest">
+        <soap:header message="i0:UpdatePassengersRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:UpdatePassengersRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="UpdatePassengersResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdatePrice">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/UpdatePrice" style="document" />
+      <wsdl:input name="UpdatePriceRequest">
+        <soap:header message="i0:UpdatePriceRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:UpdatePriceRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="UpdatePriceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CaptureBaggageEvent">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/CaptureBaggageEvent" style="document" />
+      <wsdl:input name="CaptureBaggageEventRequest">
+        <soap:header message="i0:CaptureBaggageEventRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:CaptureBaggageEventRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="CaptureBaggageEventResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FindBaggageEvent">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/FindBaggageEvent" style="document" />
+      <wsdl:input name="FindBaggageEventRequest">
+        <soap:header message="i0:FindBaggageEventRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:FindBaggageEventRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="FindBaggageEventResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CalculateGuestValues">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/CalculateGuestValues" style="document" />
+      <wsdl:input name="CalculateGuestValuesRequest">
+        <soap:header message="i0:CalculateGuestValuesRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:CalculateGuestValuesRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="CalculateGuestValuesResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ScorePassengers">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/ScorePassengers" style="document" />
+      <wsdl:input name="ScorePassengersRequest">
+        <soap:header message="i0:ScorePassengersRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:ScorePassengersRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="ScorePassengersResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BookingCommit">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/BookingCommit" style="document" />
+      <wsdl:input name="BookingCommitRequest">
+        <soap:header message="i0:BookingCommitRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:BookingCommitRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="BookingCommitResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ResellSSR">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/ResellSSR" style="document" />
+      <wsdl:input name="ResellSSRRequest">
+        <soap:header message="i0:ResellSSRRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:ResellSSRRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="ResellSSRResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateContacts">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/UpdateContacts" style="document" />
+      <wsdl:input name="UpdateContactsRequest">
+        <soap:header message="i0:UpdateContactsRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:UpdateContactsRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="UpdateContactsResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAvailability">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetAvailability" style="document" />
+      <wsdl:input name="GetAvailabilityRequest">
+        <soap:header message="i0:GetAvailabilityRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetAvailabilityRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetAvailabilityResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLowFareAvailability">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetLowFareAvailability" style="document" />
+      <wsdl:input name="GetLowFareAvailabilityRequest">
+        <soap:header message="i0:GetLowFareAvailabilityRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetLowFareAvailabilityRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetLowFareAvailabilityResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMoveAvailability">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetMoveAvailability" style="document" />
+      <wsdl:input name="GetMoveAvailabilityRequest">
+        <soap:header message="i0:GetMoveAvailabilityRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetMoveAvailabilityRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetMoveAvailabilityResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMoveFeePrice">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetMoveFeePrice" style="document" />
+      <wsdl:input name="GetMoveFeePriceRequest">
+        <soap:header message="i0:GetMoveFeePriceRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetMoveFeePriceRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetMoveFeePriceResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SeparateSegmentByEquipment">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/SeparateSegmentByEquipment" style="document" />
+      <wsdl:input name="SeparateSegmentByEquipmentRequest">
+        <soap:header message="i0:SeparateSegmentByEquipmentRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:SeparateSegmentByEquipmentRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="SeparateSegmentByEquipmentResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSSRAvailability">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetSSRAvailability" style="document" />
+      <wsdl:input name="GetSSRAvailabilityRequest">
+        <soap:header message="i0:GetSSRAvailabilityRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetSSRAvailabilityRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetSSRAvailabilityResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSSRAvailabilityForBooking">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetSSRAvailabilityForBooking" style="document" />
+      <wsdl:input name="GetSSRAvailabilityForBookingRequest">
+        <soap:header message="i0:GetSSRAvailabilityForBookingRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetSSRAvailabilityForBookingRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetSSRAvailabilityForBookingResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FindBooking">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/FindBooking" style="document" />
+      <wsdl:input name="FindBookingRequest">
+        <soap:header message="i0:FindBookingRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:FindBookingRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="FindBookingResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBooking">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetBooking" style="document" />
+      <wsdl:input name="GetBookingRequest">
+        <soap:header message="i0:GetBookingRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetBookingRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetBookingResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBookingFromState">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetBookingFromState" style="document" />
+      <wsdl:input name="GetBookingFromStateRequest">
+        <soap:header message="i0:GetBookingFromStateRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetBookingFromStateRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetBookingFromStateResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBookingHistory">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetBookingHistory" style="document" />
+      <wsdl:input name="GetBookingHistoryRequest">
+        <soap:header message="i0:GetBookingHistoryRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetBookingHistoryRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetBookingHistoryResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBookingBaggage">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetBookingBaggage" style="document" />
+      <wsdl:input name="GetBookingBaggageRequest">
+        <soap:header message="i0:GetBookingBaggageRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetBookingBaggageRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetBookingBaggageResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AcceptScheduleChanges">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/AcceptScheduleChanges" style="document" />
+      <wsdl:input name="AcceptScheduleChangesRequest">
+        <soap:header message="i0:AcceptScheduleChangesRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:AcceptScheduleChangesRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="AcceptScheduleChangesResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddBookingComments">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/AddBookingComments" style="document" />
+      <wsdl:input name="AddBookingCommentsRequest">
+        <soap:header message="i0:AddBookingCommentsRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:AddBookingCommentsRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="AddBookingCommentsResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecordLocatorList">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetRecordLocatorList" style="document" />
+      <wsdl:input name="GetRecordLocatorListRequest">
+        <soap:header message="i0:GetRecordLocatorListRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetRecordLocatorListRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetRecordLocatorListResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Cancel">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/Cancel" style="document" />
+      <wsdl:input name="CancelRequest">
+        <soap:header message="i0:CancelRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:CancelRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="CancelResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Divide">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/Divide" style="document" />
+      <wsdl:input name="DivideRequest">
+        <soap:header message="i0:DivideRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:DivideRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="DivideResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="FareOverride">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/FareOverride" style="document" />
+      <wsdl:input name="FareOverrideRequest">
+        <soap:header message="i0:FareOverrideRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:FareOverrideRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="FareOverrideResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBookingPayments">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/GetBookingPayments" style="document" />
+      <wsdl:input name="GetBookingPaymentsRequest">
+        <soap:header message="i0:GetBookingPaymentsRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:GetBookingPaymentsRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="GetBookingPaymentsResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddPaymentToBooking">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/AddPaymentToBooking" style="document" />
+      <wsdl:input name="AddPaymentToBookingRequest">
+        <soap:header message="i0:AddPaymentToBookingRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:AddPaymentToBookingRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="AddPaymentToBookingResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddInProcessPaymentToBooking">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/AddInProcessPaymentToBooking" style="document" />
+      <wsdl:input name="AddInProcessPaymentToBookingRequest">
+        <soap:header message="i0:AddInProcessPaymentToBookingRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:AddInProcessPaymentToBookingRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="AddInProcessPaymentToBookingResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ApplyPromotion">
+      <soap:operation soapAction="http://schemas.navitaire.com/WebServices/IBookingManager/ApplyPromotion" style="document" />
+      <wsdl:input name="ApplyPromotionRequest">
+        <soap:header message="i0:ApplyPromotionRequest_Headers" part="ContractVersion" use="literal" />
+        <soap:header message="i0:ApplyPromotionRequest_Headers" part="Signature" use="literal" />
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="ApplyPromotionResponse">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="BookingManagerClient">
+    <wsdl:port name="BasicHttpBinding_IBookingManager" binding="tns:BasicHttpBinding_IBookingManager">
+      <soap:address location="http://118.97.213.237:3003/BookingManager.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

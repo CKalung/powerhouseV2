@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:s0="http://schemas.navitaire.com/WebServices" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://schemas.navitaire.com/WebServices" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.navitaire.com/WebServices" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xs:schema xmlns:tns="http://schemas.navitaire.com/WebServices/Imports" targetNamespace="http://schemas.navitaire.com/WebServices/Imports" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:import schemaLocation="http://118.97.213.237:3003/AccountManager.svc?xsd=xsd0" namespace="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" />
+      <xs:import schemaLocation="http://118.97.213.237:3003/AccountManager.svc?xsd=xsd5" namespace="http://schemas.navitaire.com/WebServices" />
+      <xs:import schemaLocation="http://118.97.213.237:3003/AccountManager.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xs:import schemaLocation="http://118.97.213.237:3003/AccountManager.svc?xsd=xsd2" namespace="http://schemas.navitaire.com/WebServices/DataContracts/Account" />
+      <xs:import schemaLocation="http://118.97.213.237:3003/AccountManager.svc?xsd=xsd3" namespace="http://schemas.navitaire.com/WebServices/DataContracts/Common" />
+      <xs:import schemaLocation="http://118.97.213.237:3003/AccountManager.svc?xsd=xsd4" namespace="http://schemas.navitaire.com/WebServices/DataContracts/Common/Enumerations" />
+    </xs:schema>
+  </types>
+  <message name="CommitAccountRequest">
+    <part xmlns:q1="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q1:CommitAccountRequest" />
+  </message>
+  <message name="CommitAccountRequest_Headers">
+    <part name="ContractVersion" element="tns:ContractVersion" />
+    <part name="Signature" element="tns:Signature" />
+  </message>
+  <message name="CommitAccountResponse">
+    <part xmlns:q2="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q2:CommitAccountResponse" />
+  </message>
+  <message name="FindAccountTransactionRequest">
+    <part xmlns:q3="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q3:FindAccountTransactionRequest" />
+  </message>
+  <message name="FindAccountTransactionRequest_Headers">
+    <part name="ContractVersion" element="tns:ContractVersion" />
+    <part name="Signature" element="tns:Signature" />
+  </message>
+  <message name="FindAccountTransactionResponse">
+    <part xmlns:q4="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q4:FindAccountTransactionResponse" />
+  </message>
+  <message name="GetAccountRequest">
+    <part xmlns:q5="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q5:GetAccountRequest" />
+  </message>
+  <message name="GetAccountRequest_Headers">
+    <part name="ContractVersion" element="tns:ContractVersion" />
+    <part name="Signature" element="tns:Signature" />
+  </message>
+  <message name="GetAccountResponse">
+    <part xmlns:q6="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q6:GetAccountResponse" />
+  </message>
+  <message name="GetAccountByReferenceRequest">
+    <part xmlns:q7="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q7:GetAccountByReferenceRequest" />
+  </message>
+  <message name="GetAccountByReferenceRequest_Headers">
+    <part name="ContractVersion" element="tns:ContractVersion" />
+    <part name="Signature" element="tns:Signature" />
+  </message>
+  <message name="GetAccountByReferenceResponse">
+    <part xmlns:q8="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q8:GetAccountByReferenceResponse" />
+  </message>
+  <message name="GetAvailableCreditByReferenceRequest">
+    <part xmlns:q9="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q9:GetAvailableCreditByReferenceRequest" />
+  </message>
+  <message name="GetAvailableCreditByReferenceRequest_Headers">
+    <part name="ContractVersion" element="tns:ContractVersion" />
+    <part name="Signature" element="tns:Signature" />
+  </message>
+  <message name="GetAvailableCreditByReferenceResponse">
+    <part xmlns:q10="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q10:GetAvailableCreditByReferenceResponse" />
+  </message>
+  <message name="CommitAccountTransactionsRequest">
+    <part xmlns:q11="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q11:CommitAccountTransactionsRequest" />
+  </message>
+  <message name="CommitAccountTransactionsRequest_Headers">
+    <part name="ContractVersion" element="tns:ContractVersion" />
+    <part name="Signature" element="tns:Signature" />
+  </message>
+  <message name="CommitAccountTransactionsResponse">
+    <part xmlns:q12="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q12:CommitAccountTransactionsResponse" />
+  </message>
+  <message name="CommitAccountBatchRequest">
+    <part xmlns:q13="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q13:CommitAccountBatchRequest" />
+  </message>
+  <message name="CommitAccountBatchRequest_Headers">
+    <part name="ContractVersion" element="tns:ContractVersion" />
+    <part name="Signature" element="tns:Signature" />
+  </message>
+  <message name="CommitAccountBatchResponse">
+    <part xmlns:q14="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q14:CommitAccountBatchResponse" />
+  </message>
+  <message name="CommitAccountTransactionsBatchRequest">
+    <part xmlns:q15="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q15:CommitAccountTransactionsBatchRequest" />
+  </message>
+  <message name="CommitAccountTransactionsBatchRequest_Headers">
+    <part name="ContractVersion" element="tns:ContractVersion" />
+    <part name="Signature" element="tns:Signature" />
+  </message>
+  <message name="CommitAccountTransactionsBatchResponse">
+    <part xmlns:q16="http://schemas.navitaire.com/WebServices/ServiceContracts/AccountService" name="parameters" element="q16:CommitAccountTransactionsBatchResponse" />
+  </message>
+  <portType name="IAccountManager">
+    <operation name="CommitAccount">
+      <input wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/CommitAccount" name="CommitAccountRequest" message="tns:CommitAccountRequest" />
+      <output wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/CommitAccountResponse" name="CommitAccountResponse" message="tns:CommitAccountResponse" />
+    </operation>
+    <operation name="FindAccountTransactions">
+      <input wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/FindAccountTransactions" name="FindAccountTransactionRequest" message="tns:FindAccountTransactionRequest" />
+      <output wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/FindAccountTransactionsResponse" name="FindAccountTransactionResponse" message="tns:FindAccountTransactionResponse" />
+    </operation>
+    <operation name="GetAccount">
+      <input wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/GetAccount" name="GetAccountRequest" message="tns:GetAccountRequest" />
+      <output wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/GetAccountResponse" name="GetAccountResponse" message="tns:GetAccountResponse" />
+    </operation>
+    <operation name="GetAccountByReference">
+      <input wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/GetAccountByReference" name="GetAccountByReferenceRequest" message="tns:GetAccountByReferenceRequest" />
+      <output wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/GetAccountByReferenceResponse" name="GetAccountByReferenceResponse" message="tns:GetAccountByReferenceResponse" />
+    </operation>
+    <operation name="GetAvailableCreditByReference">
+      <input wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/GetAvailableCreditByReference" name="GetAvailableCreditByReferenceRequest" message="tns:GetAvailableCreditByReferenceRequest" />
+      <output wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/GetAvailableCreditByReferenceResponse" name="GetAvailableCreditByReferenceResponse" message="tns:GetAvailableCreditByReferenceResponse" />
+    </operation>
+    <operation name="CommitAccountTransactions">
+      <input wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/CommitAccountTransactions" name="CommitAccountTransactionsRequest" message="tns:CommitAccountTransactionsRequest" />
+      <output wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/CommitAccountTransactionsResponse" name="CommitAccountTransactionsResponse" message="tns:CommitAccountTransactionsResponse" />
+    </operation>
+    <operation name="CommitAccountBatch">
+      <input wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/CommitAccountBatch" name="CommitAccountBatchRequest" message="tns:CommitAccountBatchRequest" />
+      <output wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/CommitAccountBatchResponse" name="CommitAccountBatchResponse" message="tns:CommitAccountBatchResponse" />
+    </operation>
+    <operation name="CommitAccountTransactionBatchEntry">
+      <input wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/CommitAccountTransactionBatchEntry" name="CommitAccountTransactionsBatchRequest" message="tns:CommitAccountTransactionsBatchRequest" />
+      <output wsaw:Action="http://schemas.navitaire.com/WebServices/IAccountManager/CommitAccountTransactionBatchEntryResponse" name="CommitAccountTransactionsBatchResponse" message="tns:CommitAccountTransactionsBatchResponse" />
+    </operation>
+  </portType>
+</definitions>
