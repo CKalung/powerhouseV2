@@ -297,6 +297,10 @@ namespace BPJS_THT
 				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Mandatory fields not found", "");
 			}
 
+//			if (!jsonConv.isExists ("fiOutletCode")) {
+//				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Mandatory outletcode fields not found", "");
+//			}
+
 			try
 			{
 				appID = ((string)jsonConv["fiApplicationId"]).Trim();
@@ -307,6 +311,7 @@ namespace BPJS_THT
 				cardBalance = (int)jsonConv["fiCardBalance"];
 				cardNumber = ((string)jsonConv["fiUserCardNumber"]).Trim ();
 				totalAmount = (int)jsonConv["fiAmount"];
+				//outletCode = ((string)jsonConv["fiOutletCode"]).Trim ();
 			}
 			catch
 			{
@@ -418,7 +423,7 @@ namespace BPJS_THT
 				    IconoxSvrResp,
 				    skrg.ToString ("yyyy-MM-dd HH:mm:ss"),
 				    true, 
-				    failedReason, trxNumber, false, providerProduct.fIncludeFee, "", 
+				failedReason, trxNumber, false, providerProduct.fIncludeFee, "", "",
 				    out xError)) {
 				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Failed to save transaction log", "");
 			}
@@ -671,7 +676,7 @@ namespace BPJS_THT
 				IconoxSvrResp,
 				skrg.ToString ("yyyy-MM-dd HH:mm:ss"),
 				true, 
-				"", trxNumber, false, providerProduct.fIncludeFee, "", 
+				"", trxNumber, false, providerProduct.fIncludeFee, "", "",
 				out xError)) {
 				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Failed to save transaction log", "");
 			}

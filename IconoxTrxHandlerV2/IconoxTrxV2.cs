@@ -353,6 +353,7 @@ namespace IconoxTrxHandlerV2
 			string SamCSN = "";
 			string certificate = "";
 			string cardChallenge = "";
+			string outletCode = "";
 
 			productCode = commonSettings.getString ("IconoxTopUpClientProductCode");
 
@@ -382,6 +383,10 @@ namespace IconoxTrxHandlerV2
 				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field type or format", "");
 			}
 
+			if (!additionalData.isExists ("fiOutletCode")) {
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Mandatory outletcode fields not found", "");
+			}
+
 			if(!checkMandatoryFields(additionalData, addFields))
 			{
 				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Mandatory fields not found", "");
@@ -393,6 +398,7 @@ namespace IconoxTrxHandlerV2
 				strxDateTime = ((string)additionalData["fiTrxDateTime"]).Trim ();
 				cardBalance = (int)additionalData["fiBalance"];
 				//SamCSN = ((string)additionalData["fiSAMCSN"]).Trim ();
+				outletCode = ((string)jsonConv["fiOutletCode"]).Trim ();
 				certificate = ((string)additionalData["fiCertificate"]).Trim ();
 			}
 			catch
@@ -618,7 +624,7 @@ namespace IconoxTrxHandlerV2
 				IconoxSvrResp,
 				skrg.ToString ("yyyy-MM-dd HH:mm:ss"),
 				true, 
-				"", trxNumber, false, providerProduct.fIncludeFee, "", 
+				"", trxNumber, false, providerProduct.fIncludeFee, "", outletCode,
 				out xError)) {
 				LogWriter.showDEBUG (this, "=========== GAGAL INSERT LOG ======");
 				// return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Failed to save transaction log", "");

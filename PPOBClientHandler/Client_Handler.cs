@@ -161,7 +161,7 @@ namespace PPOBClientHandler
 
             if (CommonConfigs.getString("SslEnabled").ToUpper().Trim() == "TRUE")
             {
-                System.Net.ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
+                //System.Net.ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
                 //string certPath = System.IO.Path.Combine(
                 //    CommonConfigs.getString("SslCertificatePath"), "serverCert.cer");
                 string certPath = System.IO.Path.Combine(
@@ -173,7 +173,9 @@ namespace PPOBClientHandler
 				X509Certificate2 serverCert = new X509Certificate2(certPath, 
 					CommonConfigs.getString("SslCertificatePassword"));
 
+				LogWriter.showDEBUG(this,"Create Async Callback SSL Server");
                 onAuthenticateAsServer = new AsyncCallback(OnAuthenticateAsServer);
+				LogWriter.showDEBUG(this,"Beres create Async Callback SSL Server");
 
                 this.serverCert = serverCert;
                 this.checkCertifcateRevocation = false;
@@ -181,6 +183,7 @@ namespace PPOBClientHandler
                 //this.sslProtocols = SslProtocols.Default;
                 this.sslProtocols = SslProtocols.Tls12;
 
+				LogWriter.showDEBUG(this,"Panggil setSoketSSL ");
                 setSocketForSSL(sock);
             }
             else

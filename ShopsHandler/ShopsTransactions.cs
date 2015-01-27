@@ -291,6 +291,7 @@ namespace ShopsHandler
 			string userPhone = "";
 			string securityToken = "";
 			string SamCSN = "";
+			string OutletCode = "";
 			JsonLibs.MyJsonArray productList;
 
 			if (!jsonConv.JSONParse (clientData.Body)) {
@@ -310,7 +311,7 @@ namespace ShopsHandler
 				userPhone = ((string)jsonConv ["fiPhone"]).Trim ();
 				groupProductCode = ((string)jsonConv ["fiGroupProductCode"]).Trim ();
 				securityToken = ((string)jsonConv ["fiToken"]).Trim ();
-
+				OutletCode = ((string)jsonConv ["fiOutletCode"]).Trim ();
 				productList = (JsonLibs.MyJsonArray)jsonConv ["fiProductList"];
 			} catch {
 				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "406", "Invalid field type or format", "");
@@ -397,7 +398,7 @@ namespace ShopsHandler
 				clientData.Body,
 				    trxRecTime.ToString ("yyyy-MM-dd HH:mm:ss"),
 				    true, 
-				"", trxNumber, false, providerProduct.fIncludeFee, SamCSN, 
+				"", trxNumber, false, providerProduct.fIncludeFee, SamCSN, OutletCode,
 				    out xError)) {
 				LogWriter.showDEBUG (this, "Gagal Insert Log....!! CEK LOG DI FILE");
 			}

@@ -1432,7 +1432,7 @@ namespace PPOBDatabase
             string json_iso_inquiry, string json_inquiry_send_time, string json_iso_inquiry_received,
             string json_iso_trx_inquiry_time, string json_iso_trx, string json_iso_trx_send_time,
             string json_iso_trx_received, string json_iso_trx_received_time, bool is_success,
-			string failedReason, string trxNumber, bool canReversal, bool include_fee, string SamCSN, 
+			string failedReason, string trxNumber, bool canReversal, bool include_fee, string SamCSN, string OutletCode, 
             out Exception ExError)
         {
 			//strJson = "SmartCardLog: "+fiPurchaseLog; jika dari smartcard
@@ -1453,8 +1453,10 @@ namespace PPOBDatabase
 			                      "is_success, " +
 			                      "failed_reason," +
 			                      "trx_number,reversal_granted,include_fee";
-			if(SamCSN!="")
-				sql += ", sam_csn";
+//			if(SamCSN!="")
+//				sql += ", sam_csn";
+			if(OutletCode!="")
+				sql += ", outlet_code";
 			sql+= ") VALUES (";
 
             sql += TransactionReffId.ToString() + ",'" + product_code + "','" + provider_product_code + "','" + distributor_phone + "','" +
@@ -1469,8 +1471,10 @@ namespace PPOBDatabase
                 is_success.ToString() + ",'" + failedReason + "','" + trxNumber + "'," +
 				canReversal.ToString() +","+ include_fee.ToString();
 
-			if(SamCSN!="")
-				sql+= ",'"+ SamCSN.ToUpper () + "'";
+//			if(SamCSN!="")
+//				sql+= ",'"+ SamCSN.ToUpper () + "'";
+			if(OutletCode!="")
+				sql+= ",'"+ OutletCode.ToUpper () + "'";
 			sql+= ");";
 
             LogWriter.showDEBUG(this, " ========================== SQL Insert Transaction \r\n"+ sql);

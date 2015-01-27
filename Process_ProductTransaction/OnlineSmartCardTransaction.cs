@@ -458,7 +458,7 @@ namespace Process_ProductTransaction
 				trxRecTime.ToString ("yyyy-MM-dd HH:mm:ss"),
 				true, 
 				failedReason, trxNumber, false, providerProduct.fIncludeFee,
-				"", out xError)) {
+				"", "", out xError)) {
 				// Jadwalkan masuk database
 				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492",
 					"Failed to save transaction log", "");

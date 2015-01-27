@@ -280,7 +280,7 @@ namespace Process_ProductTransaction
 				skrg.ToString("yyyy-MM-dd HH:mm:ss"),
 				true,
 				description, trxNumber, false, true,
-				"",out xError))
+				"","",out xError))
 			{
 				// gagal masuk database
 				LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Failed on insert Transaction Log for Free purchase");

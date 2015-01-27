@@ -82,6 +82,7 @@ namespace IconoxOnlineHandler
 
 		public long uCardLog_TransactionID=0; // ini belum bisa diisi di class ini
 		public string uCardLog_SamCSN="";
+		public string uCardLog_OutletCode="";
 		public string uCardLog_CardPurchaseLog="";
 		public string uCardLog_Description;
 		public int uCardLog_PreviousBalance=0;
@@ -678,7 +679,7 @@ namespace IconoxOnlineHandler
 		private bool Nitrogen_SmartCardTransaction (string appID, DateTime fiTrxDateTime,
 			string fiUserCardNumber, int fiBalance, int fiQuantity, ref bool isSuccessPayment,
 			ref string strRecJson, ref int traceNumber, string trxNumber,
-			string fiStrTrxDateTime, string fiSAMCSN, string fiCertificate, string fiPurchaseLog,
+			string fiStrTrxDateTime, string fiSAMCSN, string fiOutletCode, string fiCertificate, string fiPurchaseLog,
 			ref string failedReason, ref string HttpReply, ref bool alreadyPaid){
 
 			traceNumber = localDB.getNextProductTraceNumber();
@@ -687,6 +688,7 @@ namespace IconoxOnlineHandler
 			uCardLog_PreviousBalance = fiBalance;
 			uCardLog_CardPurchaseLog = fiPurchaseLog;
 			uCardLog_SamCSN = fiSAMCSN;
+			uCardLog_OutletCode = fiOutletCode;
 
 			// cek apakah kartu terdaftar di database
 			string fReason = "";
@@ -879,10 +881,11 @@ namespace IconoxOnlineHandler
 		private bool Nitrogen_CashTransaction (string appID, DateTime fiTrxDateTime,
 			string fiUserCardNumber, int fiBalance, int fiQuantity, ref bool isSuccessPayment,
 			ref string strRecJson, ref int traceNumber, string trxNumber,
-			string fiStrTrxDateTime, string fiSAMCSN, string fiCertificate, string fiPurchaseLog,
+			string fiStrTrxDateTime, string fiSAMCSN, string fiOutletCode, string fiCertificate, string fiPurchaseLog,
 			ref string failedReason, ref string HttpReply, ref bool alreadyPaid){
 
 			uCardLog_SamCSN = fiSAMCSN;
+			uCardLog_OutletCode = fiOutletCode;
 
 			traceNumber = localDB.getNextProductTraceNumber();
 			alreadyPaid = false;
@@ -999,7 +1002,8 @@ namespace IconoxOnlineHandler
 			// Ada tambahan data untuk transaksi iconox, subjson dari fiAdditional
 			if ((!AdditionalJson.ContainsKey("fiTrxDateTime")) || 
 				(!AdditionalJson.ContainsKey("fiBalance")) || 
-				(!AdditionalJson.ContainsKey("fiSAMCSN")) || 
+//				(!AdditionalJson.ContainsKey("fiSAMCSN")) || 
+				(!AdditionalJson.ContainsKey("fiOutletCode")) || 
 				(!AdditionalJson.ContainsKey("fiQuantity")) || 
 				(!AdditionalJson.ContainsKey("fiCertificate")) ||
 				(!AdditionalJson.ContainsKey("fiLogPurchase")) 
@@ -1013,15 +1017,20 @@ namespace IconoxOnlineHandler
 			int fiBalance;
 			int fiQuantity;
 			string fiStrTrxDateTime;
-			string fiSAMCSN;
+			string fiSAMCSN="";
 			string fiCertificate;
 			string fiUserCardNumber;
 			string fiPurchaseLog;
+			string fiOutletCode;
+
+			if(AdditionalJson.isExists ("fiSAMCSN")){
+				fiSAMCSN = ((string)AdditionalJson["fiSAMCSN"]).Trim();
+			}
 			try{
 				fiBalance = (int)AdditionalJson["fiBalance"];
 				fiQuantity = (int)AdditionalJson["fiQuantity"];
 				fiStrTrxDateTime = ((string)AdditionalJson["fiTrxDateTime"]).Trim();
-				fiSAMCSN = ((string)AdditionalJson["fiSAMCSN"]).Trim();
+				fiOutletCode = ((string)AdditionalJson["fiOutletCode"]).Trim();
 				fiCertificate = ((string)AdditionalJson["fiCertificate"]).Trim();
 				fiPurchaseLog = ((string)AdditionalJson["fiLogPurchase"]).Trim();
 				fiUserCardNumber = transactionReference.Trim();
@@ -1078,7 +1087,7 @@ namespace IconoxOnlineHandler
 				isCardTransaction=false;
 				return Nitrogen_CashTransaction (appID, fiTrxDateTime, fiUserCardNumber, 
 					fiBalance, fiQuantity, ref isSuccessPayment, ref strRecJson, ref traceNumber, 
-					trxNumber, fiStrTrxDateTime, fiSAMCSN, fiCertificate, fiPurchaseLog,
+					trxNumber, fiStrTrxDateTime, fiSAMCSN, fiOutletCode, fiCertificate, fiPurchaseLog,
 					ref failedReason, ref HttpReply, ref sudahBayar);
 			} else {
 				// Transaksi menggunakan kartu
@@ -1086,7 +1095,7 @@ namespace IconoxOnlineHandler
 				isCardTransaction=true;
 				return Nitrogen_SmartCardTransaction (appID, fiTrxDateTime, fiUserCardNumber, 
 					fiBalance, fiQuantity, ref isSuccessPayment, ref strRecJson, ref traceNumber, 
-					trxNumber, fiStrTrxDateTime, fiSAMCSN, fiCertificate, fiPurchaseLog,
+					trxNumber, fiStrTrxDateTime, fiSAMCSN, fiOutletCode, fiCertificate, fiPurchaseLog,
 					ref failedReason, ref HttpReply, ref sudahBayar);
 			}
 		}

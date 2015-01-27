@@ -561,6 +561,7 @@ namespace Process_ProductTransaction
 			// ==== KHUSUSON UNTUK NITROGEN.... = TRANSAKSI OFFLINE
 			// ==============================================================
 			string SamCSN="";
+			string OutletCode="";
 			string trxUCardLog="";
 			int cardBalance=0;
 			// Untuk Provider DAM atau Nitrogen saja untuk pembayaran Iconox
@@ -820,6 +821,7 @@ namespace Process_ProductTransaction
 
 					transaksiKartu = IconoxTrx.isCardTransaction;
 					SamCSN = IconoxTrx.uCardLog_SamCSN;
+					OutletCode = IconoxTrx.uCardLog_SamCSN;
 					trxUCardLog = IconoxTrx.uCardLog_CardPurchaseLog;
 					cardBalance = IconoxTrx.uCardLog_PreviousBalance;
 					if ((failedReason == "") || (failedReason=="-"))
@@ -850,7 +852,7 @@ namespace Process_ProductTransaction
                         trxRecTime.ToString("yyyy-MM-dd HH:mm:ss"),
 				//isSuccessPayment, 
 				(isSuccessPayment && fTrx), 
-				failedReason, trxNumber, canReversal, providerProduct.fIncludeFee, SamCSN, 
+				failedReason, trxNumber, canReversal, providerProduct.fIncludeFee, SamCSN, OutletCode, 
                         out xError))
             {
 				LogWriter.showDEBUG (this, "Gagal Insert Log....!! CEK LOG DI FILE");
@@ -2681,7 +2683,7 @@ namespace Process_ProductTransaction
                         ((isError == false) ? "Success":"Failed"),
                         rxTime.ToString("yyyy-MM-dd HH:mm:ss"),
                         (isError == false), errMssg, trxNumber, false, providerProduct.fIncludeFee,
-						"", out xError))
+						"", "", out xError))
             {
                 // Jadwalkan masuk database
                 TransactionLog.write(TransactionRef_id, productCode, providerProduct.ProviderProductCode, providerProduct.ProviderCode,

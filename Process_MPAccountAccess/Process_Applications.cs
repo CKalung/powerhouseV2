@@ -242,6 +242,8 @@ namespace Process_MPAccountAccess
 				//"SUDAH ADA APLIKASI VERSI TERBARU DI GOOGLE PLAY, MOHON PERBAHARUI\r\n(There is new version available in Google Play, please update it!)", "");
 			}
 
+			LogWriter.show (this, "Minimum Version = " + minVersion.ToString () + "\r\nAppVersion = " + version.ToString ());
+
 			try
             {
                 fiPassword = ((string)jsonConv["fiPassword"]).Trim();
