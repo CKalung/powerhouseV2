@@ -61,5 +61,9 @@
       <Project>{D0AD1740-3D52-404F-8EE0-B290D8DA3310}</Project>
       <Name>PPOBDatabase</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TransferReguler\TransferReguler.csproj">
+      <Project>{E108589E-E44B-42F2-A29C-C013F440C9D1}</Project>
+      <Name>TransferReguler</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

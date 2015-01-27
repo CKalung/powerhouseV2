@@ -178,62 +178,18 @@ namespace ShopsHandler
 //			return true;
 //		}
 
-		public string NitrogenShopMakeOrder(){
-
-			// INGAT INI TOKO NITROGEN, lain AliExpress.......
-
-			string[] fields = { "fiApplicationId", "fiProductList",  "fiPhone", "fiGroupProductCode", "fiSAMCSN", "fiToken"};
-
-			string appID = "";
-			string groupProductCode = "";
-			string userPhone = "";
-			string securityToken = "";
-			string SamCSN = "";
-			JsonLibs.MyJsonArray productList;
-
-			if (!jsonConv.JSONParse(clientData.Body))
-			{
-				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "407", "Invalid data format", "");
-			}
-
-			if(!checkMandatoryFields(jsonConv, fields))
-			{
-				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Mandatory fields not found", "");
-			}
-
-			if (jsonConv.isExists ("fiSAMCSN")) {
-				SamCSN = ((string)jsonConv["fiSAMCSN"]).Trim ();
-			}
-
-			try
-			{
-				appID = ((string)jsonConv["fiApplicationId"]).Trim();
-				userPhone = ((string)jsonConv["fiPhone"]).Trim ();
-				groupProductCode = ((string)jsonConv["fiGroupProductCode"]).Trim ();
-				securityToken = ((string)jsonConv["fiToken"]).Trim ();
-
-				productList = (JsonLibs.MyJsonArray)jsonConv["fiProductList"];
-			}
-			catch
-			{
-				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field type or format", "");
-			}
-
-			ReformatPhoneNumber (ref userPhone);
-
-			if (!cek_SecurityToken (userPhone, securityToken)) {
-				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "504", "Invalid session or security", "");
-			}
-
-
+		private string getProviderInfo(string productCode, out PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct){
+			Exception exrr = null;
+			providerProduct = null;
+			//int baseAmount = 0;
 			int adminFee = 0;
-			Exception xError = null;
-
-			PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct = null;
+			//int customerFeeAmount = 0;
+			//PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct;
+			//Console.WriteLine("ProductCode = " + productCode);
 			try
 			{
-				providerProduct = localDB.getProviderProductInfo(groupProductCode, out xError);
-				if (xError != null)
+				providerProduct = localDB.getProviderProductInfo(productCode, out exrr);
+				if (exrr != null)
 				{
 					return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Provider product data not found", "");
 				}
@@ -244,25 +200,216 @@ namespace ShopsHandler
 				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Failed on geting provider product data", "");
 			}
 
-			long TransactionRef_id = localDB.getTransactionReffIdSequence(out xError);
+			return "";
+		}
+
+		private bool getBaseAndFeeAmountFromProduct(string productCode, string appId,	//string providerCode, 
+			ref decimal adminFee, int TotalAmount = 0)
+		{
+			Exception xError = null;
+			int admFee = 0;
+			//if (!localDB.getAdminFeeAndCustomerFee(productCode, providerCode, TotalAmount,
+			if (!localDB.getAdminFeeAndCustomerFee(productCode, appId, TotalAmount,
+				ref admFee, out xError))
+			{
+				return false;
+			}
+			adminFee = admFee;
+			return true;
+		}
+
+		private string getAdminFee(string productCode, string appID, decimal productAmount, ref decimal adminFee){
+			try {
+				//LogWriter.showDEBUG (this, " productAmount: " + productAmount);
+				//if (!getBaseAndFeeAmountFromProduct (productCode, providerProduct.ProviderCode,
+				if (!getBaseAndFeeAmountFromProduct (productCode, appID,
+					ref adminFee, decimal.ToInt32 (productAmount))) {
+					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Fee data not found", "");
+				}
+			} catch (Exception ex) {
+				LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Error get fee data : " + ex.getCompleteErrMsg ());
+				//Console.WriteLine(ex.StackTrace);
+				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Error get fee data", "");
+			}
+			return "";
+		}
+
+		private void getBonggol(PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct, 
+			decimal adminFee, ref decimal bonggol, ref decimal nilaiMasukLog){
+			LogWriter.showDEBUG (this,"Asup Product Purchase");
+			if (providerProduct.fIncludeFee)
+			{
+				LogWriter.showDEBUG (this,"Asup Product Toko Include fee");
+				bonggol = providerProduct.CurrentPrice;
+				nilaiMasukLog = bonggol - adminFee;
+			}
+			else
+			{
+				LogWriter.showDEBUG (this,"Asup Product Toko Exclude fee");
+				bonggol = providerProduct.CurrentPrice + adminFee;
+				nilaiMasukLog = providerProduct.CurrentPrice;
+			}
+		}
+
+		private string transferPaymentFromCustomer(string userId, 
+			PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct, decimal paymentAmount,
+			long TransactionRef_id, ref string qvaInvoiceNumber, ref bool qvaReversalRequired){
+			// ===== AMBIL PEMBAYARAN DARI CUSTOMER
+			LogWriter.show (this, "Get payment from Customer " + paymentAmount.ToString ());
+			using (TransferReguler.CollectTransfer TransferReg =
+				new TransferReguler.CollectTransfer (commonSettings)) {
+				try {
+					string errMessage = "";
+					string errCode = "";
+
+					if (!TransferReg.PayFromCustomer (userId, 
+						providerProduct.TransactionCodeSufix, 1, decimal.ToInt32 (paymentAmount),
+						TransactionRef_id, PPOBDatabase.PPOBdbLibs.eTransactionType.PPOB, 
+						"Get payment from shop customer", ref qvaInvoiceNumber, ref qvaReversalRequired, 
+						ref errCode, ref errMessage)) {
+						if (qvaReversalRequired)
+							TransferReg.Reversal (TransactionRef_id, qvaInvoiceNumber, ref errCode, ref errMessage);
+						LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Transfer failed : [" + errCode + "]" + errMessage);
+						return HTTPRestDataConstruct.constructHTTPRestResponse (400, errCode, errMessage, "");
+					}
+				} catch (Exception ex) {
+					LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Transfer failed : " + ex.getCompleteErrMsg ());
+					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Failed to do payment", "");
+				}
+			}
+			return "";
+		}
+
+		public string NitrogenShopMakeOrder(){
+
+			// INGAT INI TOKO NITROGEN, lain AliExpress.......
+
+			string[] fields = { "fiApplicationId", "fiProductList",  "fiPhone", "fiGroupProductCode", "fiSAMCSN", "fiToken" };
+
+			string appID = "";
+			string groupProductCode = "";
+			string userPhone = "";
+			string securityToken = "";
+			string SamCSN = "";
+			JsonLibs.MyJsonArray productList;
+
+			if (!jsonConv.JSONParse (clientData.Body)) {
+				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "407", "Invalid data format", "");
+			}
+
+			if (!checkMandatoryFields (jsonConv, fields)) {
+				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "406", "Mandatory fields not found", "");
+			}
+
+			if (jsonConv.isExists ("fiSAMCSN")) {
+				SamCSN = ((string)jsonConv ["fiSAMCSN"]).Trim ();
+			}
+
+			try {
+				appID = ((string)jsonConv ["fiApplicationId"]).Trim ();
+				userPhone = ((string)jsonConv ["fiPhone"]).Trim ();
+				groupProductCode = ((string)jsonConv ["fiGroupProductCode"]).Trim ();
+				securityToken = ((string)jsonConv ["fiToken"]).Trim ();
+
+				productList = (JsonLibs.MyJsonArray)jsonConv ["fiProductList"];
+			} catch {
+				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "406", "Invalid field type or format", "");
+			}
+
+			if(productList.Count <=0)
+				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "426", "1 product minimum to buy", "");
+
+			ReformatPhoneNumber (ref userPhone);
+
+			if (!cek_SecurityToken (userPhone, securityToken)) {
+				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "504", "Invalid session or security", "");
+			}
+
+
+			int adminFee = 0;
+			Exception xError = null;
+
+			PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProductGroup = null;
+			string rslt = getProviderInfo (groupProductCode, out providerProductGroup);
+			if (rslt != "")
+				return rslt;
+
 			xError = null;
 
-			decimal TotalBelanja = 0;
-
 			if (productList.Count == 0) {
-				LogWriter.show(this, "Product list empty");
-				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "442", "No product in list", "");
+				LogWriter.show (this, "Product list empty");
+				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "442", "No product in list", "");
 			}
 
+			decimal totalHarga = 0;
+			decimal totalAdmin = 0;
+			string prdCode = "";
+			int quantity = 0;
+			decimal admFee = 0;
+			decimal totalBonggol = 0;
+			decimal bongol = 0;
+			decimal totalNilaiMasukLog = 0;
+			decimal tmpNilaiMasukLog = 0;
+			PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct = null;
 			for (int i = 0; i < productList.Count; i++) {
 				JsonLibs.MyJsonLib aProduct = (JsonLibs.MyJsonLib)productList [i];
-				string prdCode = ((string)aProduct ["fiProductCode"]).Trim ();
-				string quantity = ((int)aProduct ["fiQuantity"]);
+				prdCode = ((string)aProduct ["fiProductCode"]).Trim ();
+				quantity = ((int)aProduct ["fiQuantity"]);
+				rslt = getProviderInfo (prdCode, out providerProduct);
+				if (rslt != "")
+					return rslt;
+				totalHarga += providerProduct.CurrentPrice;
+				rslt = getAdminFee (prdCode, appID, providerProduct.CurrentPrice, ref admFee);
+				if (rslt != "")
+					return rslt;
 
+				getBonggol (providerProduct, admFee, ref bongol, ref tmpNilaiMasukLog);
+				totalBonggol += bongol;
+				totalNilaiMasukLog += tmpNilaiMasukLog;
+				totalAdmin += admFee;
 			}
 
+			string userId = cUserIDHeader + userPhone;
+			long TransactionRef_id = localDB.getTransactionReffIdSequence (out xError);
+			bool qvaReversalRequired = false;
+			string qvaInvoiceNumber = "";
 
-			return HTTPRestDataConstruct.constructHTTPRestResponse(200, "204", "Not implemented YET", "");
+			// ===== AMBIL PEMBAYARAN DARI CUSTOMER
+			rslt = transferPaymentFromCustomer (userId, providerProduct, totalHarga,
+				TransactionRef_id, ref qvaInvoiceNumber, ref qvaReversalRequired);
+
+			if (rslt != "")
+				return rslt;
+		
+			string trxNumber = localDB.getProductTrxNumber(out xError);
+			int traceNumber = localDB.getNextProductTraceNumber();
+			DateTime skrg = DateTime.Now;
+			DateTime trxTime = skrg;
+			DateTime trxRecTime = skrg;
+
+			if (!localDB.insertCompleteTransactionLog (TransactionRef_id, groupProductCode, providerProductGroup.ProviderProductCode,
+				    userId.Substring (commonSettings.getString ("UserIdHeader").Length), "SHOP TRX",
+				totalNilaiMasukLog.ToString (), traceNumber.ToString (), trxTime.ToString ("yyyy-MM-dd HH:mm:ss"),
+				totalAdmin.ToString (), providerProductGroup.ProviderCode, providerProductGroup.CogsPriceId,
+				    0, 0, "", skrg.ToString ("yyyy-MM-dd HH:mm:ss"), "", skrg.ToString ("yyyy-MM-dd HH:mm:ss"),
+				    "",
+				    trxTime.ToString ("yyyy-MM-dd HH:mm:ss"),
+				clientData.Body,
+				    trxRecTime.ToString ("yyyy-MM-dd HH:mm:ss"),
+				    true, 
+				"", trxNumber, false, providerProduct.fIncludeFee, SamCSN, 
+				    out xError)) {
+				LogWriter.showDEBUG (this, "Gagal Insert Log....!! CEK LOG DI FILE");
+			}
+
+			LogWriter.write(this, LogWriter.logCodeEnum.INFO, "Transaction toko success from " + userId);
+
+			jsonConv.Clear ();
+			jsonConv.Add ("fiResponseCode", "00");
+			jsonConv.Add ("fiTransactionId", TransactionRef_id);
+			jsonConv.Add ("fiTrxNumber", trxNumber);
+
+			return HTTPRestDataConstruct.constructHTTPRestResponse(200, "200", "Success", jsonConv.JSONConstruct ());
 		}
 
 	}

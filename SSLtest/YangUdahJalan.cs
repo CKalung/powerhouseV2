@@ -77,11 +77,11 @@ namespace SSLtest
     {
     }
 
-	class Program2
+	class SslMainTest
     {
 
 #if (USE_FILE_BASED_CERTIFICATE)
-    static X509Certificate certFile = null;
+    static X509Certificate2 certFile = null;
 #else
         static X509Certificate2 certFile = null;
 #endif
@@ -92,15 +92,29 @@ namespace SSLtest
         public static void StartAsServer()
         {
 #if (USE_FILE_BASED_CERTIFICATE)
+			/*
+			 * SUPAYA bisa digunakan di mono linux, 
+			 * setelah generate sertifikat file .cer/.crt, .csr, .key, .key.org, .key.secure, 
+			 * kita butuh generate sertifikat yang didalamnya ada privatekey juga. tapi terencrypt dengan password
+			 * yang mempunyai extension .pfx / pkcs#12
+			 * Gunakan perintah (jika nama filenya public key "server.crt" dan private key "server.key"):
+			 * 		$ openssl pkcs12 -export -in server.crt -inkey server.key -out mycert.pfx
+			 * isi passwordnya.
+			 * Baru pasang di koding pake: 
+			 * 		X509Certificate2 cert = new X509Certificate2("server.pfx","password");
+			*/
+
+
 			//			string cfile = Environment.MachineName + ".cer";
 			//string cfile = "powerhouse.crt";
-			string cfile = "server.crt";
+			//string cfile = "server.crt";
+			string cfile = "server.pfx";
 			//string certFilePath = @"C:\Projects\536\Samples\SSLSample\" + cfile;
 			string certFilePath = @"/home/kusumah/Projects/PowerHouse/PPOB-Gate/SSLtest/bin/Debug/SSLkeys/" + cfile;
 			//string certFilePath = @"/etc/ssl/certs/" + cfile;
       if (!File.Exists(certFilePath))
         certFilePath = cfile;
-      certFile = new X509Certificate(certFilePath);
+      certFile = new X509Certificate2(certFilePath, "d4mpt");
 #else
             X509Store store = new X509Store(StoreName.My,
               StoreLocation.LocalMachine);
@@ -124,11 +138,13 @@ namespace SSLtest
 
         public static void ProcessClient(TcpClient client)
         {
+			Console.WriteLine ("Koneksi masuk...");
             SslStream ssls = new SslStream(client.GetStream(), false);
             try
             {
                 ssls.AuthenticateAsServer(certFile, false,
-                  SslProtocols.Tls, true);
+					SslProtocols.Tls12, true);
+				Console.WriteLine ("Otentikasi beres...");
                 ssls.ReadTimeout = 500000;
                 ssls.WriteTimeout = 500000;
                 StartReaderSenderThreads(ssls);
@@ -160,7 +176,32 @@ namespace SSLtest
 
             Console.WriteLine("Certificate error: {0}", sslPolicyErrors);
 
-			return true;
+			if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateNotAvailable)
+				return false;
+
+			string msg = "";
+			bool accept = true;
+			if ((sslPolicyErrors &
+				SslPolicyErrors.RemoteCertificateChainErrors) == SslPolicyErrors.RemoteCertificateChainErrors)
+			{
+				foreach (X509ChainStatus item in chain.ChainStatus)
+				{
+					msg += " 1 " + item.Status;
+					if (item.Status != X509ChainStatusFlags.RevocationStatusUnknown &&
+						item.Status != X509ChainStatusFlags.OfflineRevocation)
+						break;
+
+					if (item.Status != X509ChainStatusFlags.NoError)
+					{
+						msg += "\r\n    -" + item.StatusInformation;
+						accept = false;
+					}
+				}
+			}
+			Console.WriteLine (msg + ": Accept = " + accept);
+
+			return accept;
+			//return true;
             // Do not allow this client to communicate with unauthenticated servers.
 			//return false;
         }
@@ -200,6 +241,8 @@ namespace SSLtest
             while (true)
             {
                 string message = ReadMessage(ssls);
+				if (message.Length == 0)
+					break;
                 System.Console.WriteLine("Remote: " + message);
                 if (message.ToLower().Equals("\\quit"))
                 {

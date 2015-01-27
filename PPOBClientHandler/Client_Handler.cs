@@ -94,7 +94,7 @@ namespace PPOBClientHandler
         PublicSettings.Settings CommonConfigs;
 
         #region SSL
-        X509Certificate serverCert;
+        X509Certificate2 serverCert;
         //RemoteCertificateValidationCallback certValidationCallback;
         //SecureConnectionResultsCallback connectionCallback;
         //AsyncCallback onAcceptConnection;
@@ -167,9 +167,11 @@ namespace PPOBClientHandler
                 string certPath = System.IO.Path.Combine(
                     CommonConfigs.getString("SslCertificatePath"),
                     CommonConfigs.getString("SslCertificateFilename"));
-                Console.WriteLine("Loading Server Cert From: " + certPath);
+				LogWriter.show(this,"Loading Server Cert From: " + certPath);
                 //X509Certificate serverCert = X509Certificate.CreateFromCertFile(certPath);
-                X509Certificate serverCert = new X509Certificate(certPath);
+                //X509Certificate serverCert = new X509Certificate(certPath);
+				X509Certificate2 serverCert = new X509Certificate2(certPath, 
+					CommonConfigs.getString("SslCertificatePassword"));
 
                 onAuthenticateAsServer = new AsyncCallback(OnAuthenticateAsServer);
 
@@ -177,7 +179,7 @@ namespace PPOBClientHandler
                 this.checkCertifcateRevocation = false;
                 this.clientCertificateRequired = false;
                 //this.sslProtocols = SslProtocols.Default;
-                this.sslProtocols = SslProtocols.Tls;
+                this.sslProtocols = SslProtocols.Tls12;
 
                 setSocketForSSL(sock);
             }
@@ -339,55 +341,58 @@ namespace PPOBClientHandler
         private void readyAuthenticateSSL(Socket client, int recTO, bool retrigger = false)
         {
             SslStream sslStream = null;
-            if (client != null)
-            {
-                try
-                {
-                    bool leaveStreamOpen = false;//close the socket when done
+			if (client != null) {
+				try {
+					bool leaveStreamOpen = false;//close the socket when done
 
-                    sslStream = new SslStream(new NetworkStream(client), leaveStreamOpen);
-                    sl = sslStream;
+					LogWriter.show (this, "Get SSL Stream");
+					sslStream = new SslStream (new NetworkStream (client), leaveStreamOpen);
+					sl = sslStream;
 
-                    Console.WriteLine("Begin authenticate");
-                    sslStream.BeginAuthenticateAsServer(this.serverCert,
-                        this.clientCertificateRequired,
-                        this.sslProtocols,
-                        this.checkCertifcateRevocation,//checkCertifcateRevocation
-                        this.onAuthenticateAsServer,
-                        sslStream);
+					LogWriter.show (this, "Begin authenticate");
+					sslStream.BeginAuthenticateAsServer (this.serverCert,
+						this.clientCertificateRequired,
+						this.sslProtocols,
+						this.checkCertifcateRevocation,//checkCertifcateRevocation
+						this.onAuthenticateAsServer,
+						sslStream);
 
-                    fExitThread = false;		// ditambah didieu
-                    ctrTO = recTO;		    // initial timeout 15 detik, untuk data pertama
-                    MyTimeOut = new Thread(new ThreadStart(ConnTimeOut));
-                    MyTimeOut.Start();
+					fExitThread = false;		// ditambah didieu
+					ctrTO = recTO;		    // initial timeout 15 detik, untuk data pertama
+					MyTimeOut = new Thread (new ThreadStart (ConnTimeOut));
+					MyTimeOut.Start ();
 
-                }
-                catch (Exception ex)
-                {
-                    LogWriter.show(this, "Socket already disconnected.");
-                    disconnect();
-                }
-            }
+				} catch (Exception ex) {
+					LogWriter.show (this, "Socket already disconnected.");
+					disconnect ();
+				}
+			} else {
+				LogWriter.show(this, "Socket already disconnected.");
+				disconnect();
+			}
         }
 
         void OnAuthenticateAsServer(IAsyncResult result)
         {
-            Console.WriteLine("Siap end authenticate");
+			LogWriter.show(this,"Siap end authenticate");
             SslStream sslStream = null;
             try
             {
                 sslStream = result.AsyncState as SslStream;
-                Console.WriteLine("End kan authenticate");
+				LogWriter.show (this, "End kan TLS authenticate"); 
+				//Console.WriteLine("End kan authenticate");
                 sslStream.EndAuthenticateAsServer(result);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("CUEKkeun Errorna " + ex.Message);
+                //Console.WriteLine("CUEKkeun Errorna " + ex.Message);
+				LogWriter.show (this, "CUEKkeun Errorna " + ex.Message);
             }
 
             try
             {
-                Console.WriteLine("Beres authenticate");
+                //Console.WriteLine("Beres authenticate TLS");
+				LogWriter.show (this, "Beres authenticate TLS");
                 //this.connectionCallback(this, new SecureConnectionResults(sslStream));
 
                 SslStateObject state = new SslStateObject();
@@ -399,7 +404,7 @@ namespace PPOBClientHandler
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Errorna " + ex.Message);
+                //Console.WriteLine("Errorna " + ex.Message);
                 LogWriter.show(this, "Socket already disconnected.");
                 disconnect();
             }

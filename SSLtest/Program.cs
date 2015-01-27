@@ -58,7 +58,7 @@ namespace SSLtest
 
 		}
 
-		static void Main2a(string[] args)
+		static void Main(string[] args)
 		{
 			Stream stream;
 //			ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
@@ -180,7 +180,7 @@ namespace SSLtest
 			return false;
 		}
 
-        static void Main(string[] args)
+        static void Main2c(string[] args)
         {
             SecureTcpServer server = null;
             SecureTcpClient client = null;

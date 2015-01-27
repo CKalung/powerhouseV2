@@ -642,39 +642,39 @@ namespace Process_ProductTransaction
                 try
                 {
 					if(productAmount>0){		// kalo pembayaran gratis, gak usah transfer
-					if(pembayaranDariEwallet){
-						// ====== PEMBAYARAN DARI EWALLET
-						LogWriter.show(this, "Get payment from EWallet");
-						LogWriter.showDEBUG (this,"4. Product Purchase productAmount = " + productAmount.ToString ());
-						if (!TransferReg.PayFromCustomerEwallet( 
-							providerProduct.TransactionCodeSufix, PpobType, productAmount,
-							TransactionRef_id, PPOBDatabase.PPOBdbLibs.eTransactionType.PPOB, 
-							"Get payment from customer Ewallet", ref qvaInvoiceNumber, ref qvaReversalRequired, 
-							ref errCode, ref errMessage))
-						{
-							if(qvaReversalRequired)
-								TransferReg.Reversal(TransactionRef_id,qvaInvoiceNumber, ref errCode, ref errMessage);
-							LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Transfer failed : [" + errCode + "]" + errMessage);
-							return HTTPRestDataConstruct.constructHTTPRestResponse(400, errCode, errMessage, "");
-						}
-					}else{
-	                    // ===== AMBIL PEMBAYARAN DARI CUSTOMER
-						LogWriter.show(this, "Get payment from Customer");
-						LogWriter.showDEBUG (this,"5. Product Purchase productAmount = " + productAmount.ToString ());
-	                    if (!TransferReg.PayFromCustomer(userId, 
-							providerProduct.TransactionCodeSufix, PpobType, productAmount,
-							TransactionRef_id, PPOBDatabase.PPOBdbLibs.eTransactionType.PPOB, 
-							"Get payment from customer", ref qvaInvoiceNumber, ref qvaReversalRequired, 
-							ref errCode, ref errMessage))
-	                    {
-							if(qvaReversalRequired)
-								TransferReg.Reversal(TransactionRef_id,qvaInvoiceNumber, ref errCode, ref errMessage);
-	                        LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Transfer failed : [" + errCode + "]" + errMessage);
-							return HTTPRestDataConstruct.constructHTTPRestResponse(400, errCode, errMessage, "");
-						}
+						if(pembayaranDariEwallet){
+							// ====== PEMBAYARAN DARI EWALLET
+							LogWriter.show(this, "Get payment from EWallet");
+							//LogWriter.showDEBUG (this,"4. Product Purchase productAmount = " + productAmount.ToString ());
+							if (!TransferReg.PayFromCustomerEwallet( 
+								providerProduct.TransactionCodeSufix, PpobType, productAmount,
+								TransactionRef_id, PPOBDatabase.PPOBdbLibs.eTransactionType.PPOB, 
+								"Get payment from customer Ewallet", ref qvaInvoiceNumber, ref qvaReversalRequired, 
+								ref errCode, ref errMessage))
+							{
+								if(qvaReversalRequired)
+									TransferReg.Reversal(TransactionRef_id,qvaInvoiceNumber, ref errCode, ref errMessage);
+								LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Transfer failed : [" + errCode + "]" + errMessage);
+								return HTTPRestDataConstruct.constructHTTPRestResponse(400, errCode, errMessage, "");
+							}
+						}else{
+		                    // ===== AMBIL PEMBAYARAN DARI CUSTOMER
+							LogWriter.show(this, "Get payment from Customer");
+							//LogWriter.showDEBUG (this,"5. Product Purchase productAmount = " + productAmount.ToString ());
+		                    if (!TransferReg.PayFromCustomer(userId, 
+								providerProduct.TransactionCodeSufix, PpobType, productAmount,
+								TransactionRef_id, PPOBDatabase.PPOBdbLibs.eTransactionType.PPOB, 
+								"Get payment from customer", ref qvaInvoiceNumber, ref qvaReversalRequired, 
+								ref errCode, ref errMessage))
+		                    {
+								if(qvaReversalRequired)
+									TransferReg.Reversal(TransactionRef_id,qvaInvoiceNumber, ref errCode, ref errMessage);
+		                        LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Transfer failed : [" + errCode + "]" + errMessage);
+								return HTTPRestDataConstruct.constructHTTPRestResponse(400, errCode, errMessage, "");
+							}
 						}
 					}
-                }
+				}
                 catch (Exception ex)
                 {
                     LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Transfer failed : " + ex.getCompleteErrMsg());
@@ -1280,16 +1280,23 @@ namespace Process_ProductTransaction
 
 			// perbaharui token hanya pada saat login saja
 			string securityToken = "";
-			if (jsonConv.ContainsKey("fiToken"))
-			{
-				try
-				{
-					securityToken = ((string)jsonConv["fiToken"]).Trim();
-				}
-				catch{ }
-			}	//else securityToken = CommonLibrary.generateToken();
+//			if (jsonConv.ContainsKey("fiToken"))
+//			{
+//			try
+//			{
+//				securityToken = ((string)jsonConv["fiToken"]).Trim();
+//			}
+//			catch{ 
+//				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid token field", "");
+//			}
+//			}	//else securityToken = CommonLibrary.generateToken();
 
-            //  Yang harus disiapkan
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref securityToken, ref httprepl)) {
+				return httprepl;
+			}
+
+			//  Yang harus disiapkan
             // switch berdasarkan requestCode
             switch(requestCode)
             {
@@ -1424,6 +1431,12 @@ namespace Process_ProductTransaction
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field type or format", "");
             }
 
+			string token = "";
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref token, ref httprepl)) {
+				return httprepl;
+			}
+
             ReformatPhoneNumber(ref userPhone);
 
             string userId = cUserIDHeader + userPhone;
@@ -1433,18 +1446,18 @@ namespace Process_ProductTransaction
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid phone number", "");
             }
 
-            if (!localDB.isAccountExist(userPhone, out xError))
-            {
-                if (xError != null)
-                {
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Failed to check user in database", "");
-                }
-                else
-                {
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "User unregistered", "");
-                }
-            }
-
+//            if (!localDB.isAccountExist(userPhone, out xError))
+//            {
+//                if (xError != null)
+//                {
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Failed to check user in database", "");
+//                }
+//                else
+//                {
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "User unregistered", "");
+//                }
+//            }
+//
             string resp="";
             PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct = null;
             if (!checkAirlinesProductCode(productCode, ref resp, ref providerProduct))
@@ -1613,6 +1626,12 @@ namespace Process_ProductTransaction
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field type or format", "");
             }
 
+			string token = "";
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref token, ref httprepl)) {
+				return httprepl;
+			}
+
             string[] CarrierCodes;
             string[] FlightNumbers;
             DateTime[] STDs;
@@ -1770,6 +1789,12 @@ namespace Process_ProductTransaction
                 LogWriter.write(this, LogWriter.logCodeEnum.ERROR, ex.getCompleteErrMsg());
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field type or format", "");
             }
+
+			string token = "";
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref token, ref httprepl)) {
+				return httprepl;
+			}
 
             //public struct InfSellReq
             //{
@@ -1983,6 +2008,12 @@ namespace Process_ProductTransaction
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field type or format", "");
             }
 
+			string token = "";
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref token, ref httprepl)) {
+				return httprepl;
+			}
+
             string[] CarrierCodes;
             string[] FlightNumbers;
             DateTime[] STDs;
@@ -2120,6 +2151,12 @@ namespace Process_ProductTransaction
             {
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field type or format", "");
             }
+
+			string token = "";
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref token, ref httprepl)) {
+				return httprepl;
+			}
 
             if (!checkMandatoryFields(contactFields, ContactPerson))
             {
@@ -2333,6 +2370,12 @@ namespace Process_ProductTransaction
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field type or format", "");
             }
 
+			string token = "";
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref token, ref httprepl)) {
+				return httprepl;
+			}
+
             bool isError = false;
             string errMssg = "";
             JsonLibs.MyJsonLib ret;
@@ -2491,7 +2534,7 @@ namespace Process_ProductTransaction
 
         private string ProductAirlinesCommit(HTTPRestConstructor.HttpRestRequest clientData)
         {
-            string[] fields = { "fiPhone", "fiPassword", "fiApplicationId", "fiProductCode", 
+            string[] fields = { "fiPhone", "fiToken", "fiApplicationId", "fiProductCode", 
                                   "fiSignature", "fiPaxCount" };
             string hasil = "";
             string userPhone = "";
@@ -2504,7 +2547,6 @@ namespace Process_ProductTransaction
             string appID = "";
             string productCode = "";
             string clientSignature = "";
-            string password = "";
 
             int paxCount = 0;
 
@@ -2514,28 +2556,34 @@ namespace Process_ProductTransaction
                 productCode = ((string)jsonConv["fiProductCode"]).Trim();
                 clientSignature = (string)jsonConv["fiSignature"];
                 paxCount = (int)jsonConv["fiPaxCount"];
-                password = ((string)jsonConv["fiPassword"]).Trim().ToLower();
+                //password = ((string)jsonConv["fiPassword"]).Trim().ToLower();
             }
             catch
             {
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field type or format", "");
             }
 
-            // cek dengan database, apakah password sama?
-            if (!localDB.isUserPasswordEqual(userPhone, password, out xError))
-            {
-                if (xError != null)
-                {
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
-                }
-                else
-                {
-                    // password error
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
-                }
-            }
-            // password ok
+			string token = "";
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref token, ref httprepl)) {
+				return httprepl;
+			}
 
+//            // cek dengan database, apakah password sama?
+//            if (!localDB.isUserPasswordEqual(userPhone, password, out xError))
+//            {
+//                if (xError != null)
+//                {
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
+//                }
+//                else
+//                {
+//                    // password error
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
+//                }
+//            }
+//            // password ok
+//
             bool isError = false;
             string errMssg = "";
             JsonLibs.MyJsonLib ret;
@@ -2740,7 +2788,7 @@ namespace Process_ProductTransaction
             }
             catch
             {
-                 httpRepl = HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid token field", "");
+                 httpRepl = HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "No session token or invalid token field", "");
                  return false;
             }
 

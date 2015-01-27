@@ -61,12 +61,14 @@ namespace FMHandler
             { localDB.Dispose(); }
             catch { //LogWriter.showDEBUG(this, "ASUP EX5"); 
             }
+			jsonTemp.Dispose ();
         }
 
         FMModule fm;
         HostTCPClient tcp;        // sementara
         HTTPRestConstructor HTTPRestDataConstruct;
         JsonLibs.MyJsonLib jsonConv;
+		JsonLibs.MyJsonLib jsonTemp;
         PublicSettings.Settings commonSettings;
         PPOBDatabase.PPOBdbLibs localDB;
         Exception xError;
@@ -78,6 +80,7 @@ namespace FMHandler
             commonSettings = CommonSettings;
             tcp = new HostTCPClient(commonSettings.getString("FmQueueHost"), commonSettings.getInt("FmQueuePort"));
             jsonConv = new JsonLibs.MyJsonLib();
+			jsonTemp = new JsonLibs.MyJsonLib ();
             HTTPRestDataConstruct = new HTTPRestConstructor();
             fm = new FMModule(commonSettings);
             localDB = new PPOBDatabase.PPOBdbLibs(commonSettings.DbHost, commonSettings.DbPort,
@@ -147,7 +150,6 @@ namespace FMHandler
             LogWriter.show(this, "DEBUG== Reading ISO");
             DateTime skrg = DateTime.Now;
 
-            string fiToken = "TMPFIXED";
             //string trxNumber = localDB.getProductTrxNumber(out xError);
 
             // 3. Read Balasan ISO Msg
@@ -165,10 +167,11 @@ namespace FMHandler
                 {
                     jsonConv.Clear();
                     jsonConv.Add("fiToken", securityToken);
-                    jsonConv.Add("fiPrivateData", "Need reversal");
+					jsonTemp.Clear ();
+					jsonTemp.Add ("MESSAGE", "Need reversal");
+					jsonConv.Add("fiPrivateData", jsonTemp);
                     jsonConv.Add("fiResponseCode", "99");
                     jsonConv.Add("fiTransactionId", "FM1" + traceNumber.ToString().PadLeft(6, '0'));
-                    jsonConv.Add("fiToken", fiToken);
                     jsonConv.Add("fiTrxNumber", trxNumber);
                     // jika transaksi pembayaran, pake return fiReversalAllowed
                     if ((isoType == 3) && (transactionType == 0)) jsonConv.Add("fiReversalAllowed", canReversal);
@@ -194,10 +197,11 @@ namespace FMHandler
                 {
                     jsonConv.Clear();
                     jsonConv.Add("fiToken", securityToken);
-                    jsonConv.Add("fiPrivateData", "Need reversal");
+					jsonTemp.Clear ();
+					jsonTemp.Add ("MESSAGE", "Need reversal");
+					jsonConv.Add("fiPrivateData", jsonTemp);
                     jsonConv.Add("fiResponseCode", "99");
                     jsonConv.Add("fiTransactionId", "FM1" + traceNumber.ToString().PadLeft(6, '0'));
-                    jsonConv.Add("fiToken", fiToken);
                     jsonConv.Add("fiTrxNumber", trxNumber);
                     // jika transaksi pembayaran, pake return fiReversalAllowed
                     //if ((isoType == 3) && (transactionType == 0)) 
@@ -221,10 +225,11 @@ namespace FMHandler
                 {
                     jsonConv.Clear();
                     jsonConv.Add("fiToken", securityToken);
-                    jsonConv.Add("fiPrivateData", "Need reversal");
+					jsonTemp.Clear ();
+					jsonTemp.Add ("MESSAGE", "Need reversal");
+					jsonConv.Add("fiPrivateData", jsonTemp);
                     jsonConv.Add("fiResponseCode", "99");
                     jsonConv.Add("fiTransactionId", "FM1" + traceNumber.ToString().PadLeft(6, '0'));
-                    jsonConv.Add("fiToken", fiToken);
                     jsonConv.Add("fiTrxNumber", trxNumber);
                     // jika transaksi pembayaran, pake return fiReversalAllowed
                     if ((isoType == 3) && (transactionType == 0)) jsonConv.Add("fiReversalAllowed", canReversal);
@@ -245,10 +250,11 @@ namespace FMHandler
                 {
                     jsonConv.Clear();
                     jsonConv.Add("fiToken", securityToken);
-                    jsonConv.Add("fiPrivateData", "Need reversal");
+					jsonTemp.Clear ();
+					jsonTemp.Add ("MESSAGE", "Need reversal");
+					jsonConv.Add("fiPrivateData", jsonTemp);
                     jsonConv.Add("fiResponseCode", "99");
                     jsonConv.Add("fiTransactionId", "FM1" + traceNumber.ToString().PadLeft(6, '0'));
-                    jsonConv.Add("fiToken", fiToken);
                     jsonConv.Add("fiTrxNumber", trxNumber);
                     // jika transaksi pembayaran, pake return fiReversalAllowed
                     if ((isoType == 3) && (transactionType == 0)) jsonConv.Add("fiReversalAllowed", canReversal);
@@ -273,10 +279,11 @@ namespace FMHandler
             if (fiPrivateData == "") fiPrivateData = "..";
             jsonConv.Clear();
             jsonConv.Add("fiToken", securityToken);
-            jsonConv.Add("fiPrivateData", fiPrivateData);
+			jsonTemp.Clear ();
+			jsonTemp.Add ("MESSAGE", fiPrivateData);
+			jsonConv.Add("fiPrivateData", jsonTemp);
             jsonConv.Add("fiResponseCode", fiResponseCode);
             jsonConv.Add("fiTransactionId", "FM1" + traceNumber.ToString().PadLeft(6,'0'));
-            jsonConv.Add("fiToken", fiToken);
             jsonConv.Add("fiTrxNumber", trxNumber);
             // jika transaksi pembayaran, pake return fiReversalAllowed
             if((isoType==3) && (transactionType == 0)) jsonConv.Add("fiReversalAllowed", canReversal);
@@ -399,7 +406,6 @@ namespace FMHandler
             string fiAmount;
             string fiPrivateData;
             string fiResponseCode;
-            string fiToken = "TMPFIXED";
             int fiAdminFee = adminFee;
 
             if (fIncludeAdminFee)
@@ -422,9 +428,10 @@ namespace FMHandler
             jsonConv.Clear();
             jsonConv.Add("fiToken", securityToken);
             jsonConv.Add("fiAmount", productAmount);
-            jsonConv.Add("fiPrivateData", fiPrivateData);
+			jsonTemp.Clear ();
+			jsonTemp.Add ("MESSAGE", fiPrivateData);
+			jsonConv.Add("fiPrivateData", jsonTemp);
             jsonConv.Add("fiResponseCode", fiResponseCode);
-            jsonConv.Add("fiToken", fiToken);
             jsonConv.Add("fiAdminFee", fiAdminFee);
             jsonConv.Add("fiTrxNumber", trxNumber);
 
