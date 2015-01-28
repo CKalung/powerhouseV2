@@ -408,7 +408,7 @@ namespace NitrogenClientHandler
 			try {
 				// ProviderCode diganti 000 khusus untuk ambil data topup
 				if (!localDB.getPercentAdminFee (commonSettings.getString ("IconoxTopUpClientProductCode"),
-					"000", ref topUpPercentFee, out exer)) {
+					1,"000", ref topUpPercentFee, out exer)) {
 					LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Error get TopUp fee percent data");
 					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Error get TopUp fee percent data", "");
 				}
@@ -432,12 +432,12 @@ namespace NitrogenClientHandler
 			return hasil;
 		}
 
-		private bool getBaseAndFeeAmountFromProduct(string productCode, string appID,	//string providerCode, 
+		private bool getBaseAndFeeAmountFromProduct(string productCode, int quantity, string appID,	//string providerCode, 
 			ref decimal adminFee, int TotalAmount = 0)
 		{
 			Exception exer;
 			//if (!localDB.getAdminFeeAndCustomerFee(productCode, providerCode, TotalAmount,
-			if (!localDB.getAdminFeeAndCustomerFee(productCode, appID, TotalAmount,
+			if (!localDB.getAdminFeeAndCustomerFee(productCode, quantity, appID, TotalAmount,
 				ref adminFee, out exer))
 				return false;
 			else
@@ -583,7 +583,7 @@ namespace NitrogenClientHandler
 				//LogWriter.showDEBUG (this, " productAmount: " + productAmount);
 				// hitung adminFee dari total product amount, bukan setelah dipotong topup
 				//if (!getBaseAndFeeAmountFromProduct (productCode, providerProduct.ProviderCode,
-				if (!getBaseAndFeeAmountFromProduct (productCode, appID,
+				if (!getBaseAndFeeAmountFromProduct (productCode, 1, appID,
 					ref adminFee, totalProductAmount)) {
 					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Fee data not found", "");
 				}

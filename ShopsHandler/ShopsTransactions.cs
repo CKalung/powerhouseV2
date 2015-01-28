@@ -203,13 +203,13 @@ namespace ShopsHandler
 			return "";
 		}
 
-		private bool getBaseAndFeeAmountFromProduct(string productCode, string appId,	//string providerCode, 
+		private bool getBaseAndFeeAmountFromProduct(string productCode, int quantity, string appId,	//string providerCode, 
 			ref decimal adminFee, int TotalAmount = 0)
 		{
 			Exception xError = null;
 			int admFee = 0;
 			//if (!localDB.getAdminFeeAndCustomerFee(productCode, providerCode, TotalAmount,
-			if (!localDB.getAdminFeeAndCustomerFee(productCode, appId, TotalAmount,
+			if (!localDB.getAdminFeeAndCustomerFee(productCode, quantity, appId, TotalAmount,
 				ref admFee, out xError))
 			{
 				return false;
@@ -218,11 +218,11 @@ namespace ShopsHandler
 			return true;
 		}
 
-		private string getAdminFee(string productCode, string appID, decimal productAmount, ref decimal adminFee){
+		private string getAdminFee(string productCode, int quantity, string appID, decimal productAmount, ref decimal adminFee){
 			try {
 				//LogWriter.showDEBUG (this, " productAmount: " + productAmount);
 				//if (!getBaseAndFeeAmountFromProduct (productCode, providerProduct.ProviderCode,
-				if (!getBaseAndFeeAmountFromProduct (productCode, appID,
+				if (!getBaseAndFeeAmountFromProduct (productCode, quantity, appID,
 					ref adminFee, decimal.ToInt32 (productAmount))) {
 					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Fee data not found", "");
 				}
@@ -234,20 +234,20 @@ namespace ShopsHandler
 			return "";
 		}
 
-		private void getBonggol(PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct, 
+		private void getBonggol(PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct, int quantity,
 			decimal adminFee, ref decimal bonggol, ref decimal nilaiMasukLog){
 			LogWriter.showDEBUG (this,"Asup Product Purchase");
 			if (providerProduct.fIncludeFee)
 			{
 				LogWriter.showDEBUG (this,"Asup Product Toko Include fee");
-				bonggol = providerProduct.CurrentPrice;
+				bonggol = providerProduct.CurrentPrice * quantity;
 				nilaiMasukLog = bonggol - adminFee;
 			}
 			else
 			{
 				LogWriter.showDEBUG (this,"Asup Product Toko Exclude fee");
-				bonggol = providerProduct.CurrentPrice + adminFee;
-				nilaiMasukLog = providerProduct.CurrentPrice;
+				bonggol = (providerProduct.CurrentPrice * quantity) + adminFee;
+				nilaiMasukLog = providerProduct.CurrentPrice * quantity;
 			}
 		}
 
@@ -284,7 +284,8 @@ namespace ShopsHandler
 
 			// INGAT INI TOKO NITROGEN, lain AliExpress.......
 
-			string[] fields = { "fiApplicationId", "fiProductList",  "fiPhone", "fiGroupProductCode", "fiSAMCSN", "fiToken" };
+			string[] fields = { "fiApplicationId", "fiProductList",  "fiPhone", "fiGroupProductCode", 
+				"fiSAMCSN", "fiOutletCode", "fiToken" };
 
 			string appID = "";
 			string groupProductCode = "";
@@ -359,12 +360,12 @@ namespace ShopsHandler
 				rslt = getProviderInfo (prdCode, out providerProduct);
 				if (rslt != "")
 					return rslt;
-				totalHarga += providerProduct.CurrentPrice;
-				rslt = getAdminFee (prdCode, appID, providerProduct.CurrentPrice, ref admFee);
+				totalHarga += providerProduct.CurrentPrice * quantity;
+				rslt = getAdminFee (prdCode, quantity, appID, providerProduct.CurrentPrice, ref admFee);
 				if (rslt != "")
 					return rslt;
 
-				getBonggol (providerProduct, admFee, ref bongol, ref tmpNilaiMasukLog);
+				getBonggol (providerProduct, quantity, admFee, ref bongol, ref tmpNilaiMasukLog);
 				totalBonggol += bongol;
 				totalNilaiMasukLog += tmpNilaiMasukLog;
 				totalAdmin += admFee;

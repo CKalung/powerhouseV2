@@ -87,6 +87,31 @@ namespace Process_MPAccountAccess
             else if (phone[0] == '+') phone = phone.Substring(1);
         }
 
+		private bool cek_TokenSecurity(string userPhone, JsonLibs.MyJsonLib jsont, 
+			ref string token, ref string httpRepl)
+		{
+			token = "";
+			try
+			{
+				token = ((string)jsont["fiToken"]).Trim();
+			}
+			catch
+			{
+				httpRepl = HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "No session token or invalid token field", "");
+				return false;
+			}
+
+			// cek detek sessionnya
+			if (!CommonLibrary.isSessionExist(userPhone, token))
+			{
+				LOG_Handler.LogWriter.showDEBUG (this, "Cek Token Session: " + userPhone + 
+					", token: " + token);
+				httpRepl = HTTPRestDataConstruct.constructHTTPRestResponse(400, "504", "Invalid session", "");
+				return false;
+			}
+			return true;
+		}
+
         public string AccountTransfer(HTTPRestConstructor.HttpRestRequest clientData)
         {
             //using (QvaTransactions QVA = new QvaTransactions(commonSettings.getString("SandraHost"), commonSettings.getInt("SandraPort"), localDB))
@@ -108,16 +133,18 @@ namespace Process_MPAccountAccess
             }
             // TAMPUNG data json dari Client
 
-            string passw = "";
-            string userPhone = "";
+			string passw = "";
+			string securityToken = "";
+			string userPhone = "";
             string targetPhone = "";
             int amount = 0;
 			string appID = "";
             try
             {
 				appID = ((string)jsonConv["fiApplicationId"]).Trim();
-                passw = ((string)jsonConv["fiPassword"]).Trim();
-                amount = ((int)jsonConv["fiAmount"]);
+				passw = ((string)jsonConv["fiPassword"]).Trim();
+				//securityToken = ((string)jsonConv["fiToken"]).Trim();
+				amount = ((int)jsonConv["fiAmount"]);
                 targetPhone = ((string)jsonConv["fiTargetPhone"]).Trim();
                 userPhone = ((string)jsonConv["fiPhone"]).Trim().Replace("-", "");
             }
@@ -134,6 +161,10 @@ namespace Process_MPAccountAccess
             ReformatPhoneNumber(ref userPhone);
             ReformatPhoneNumber(ref targetPhone);
 
+//			string httprepl = "";
+//			if (!cek_TokenSecurity (userPhone, jsonConv, ref securityToken, ref httprepl)) {
+//				return httprepl;
+//			}
             if (!localDB.isUserPasswordEqual(userPhone, passw, out xError))
             {
                 if (xError != null)
@@ -194,7 +225,7 @@ namespace Process_MPAccountAccess
 				//Console.WriteLine(" productAmount " + productAmount);
 				//Console.WriteLine(" intNYA : " + int.Parse(productAmount));
 				//if (!localDB.getAdminFeeAndCustomerFee(productCode, providerProduct.ProviderCode, amount,
-				if (!localDB.getAdminFeeAndCustomerFee(productCode, appID, amount,
+				if (!localDB.getAdminFeeAndCustomerFee(productCode,1, appID, amount,
 					ref adminFee, out xError))
 				{
 					return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Fee data not found", "");
@@ -1039,7 +1070,7 @@ namespace Process_MPAccountAccess
             //if (!localDB.getAdminFeeAndCustomerFee(commonSettings.getString("CashInProductCode"), providerProduct.ProviderCode, ref adminFee, ref sellerFee, out xError))
             if (!localDB.getAdminFeeAndCustomerFee(commonSettings.getString("CashInProductCode"),
 				//providerProduct.ProviderCode, (decimal)amount, ref adminFee, out xError))
-				appID, (decimal)amount, ref adminFee, out xError))
+				1,appID, (decimal)amount, ref adminFee, out xError))
             {
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Failed on geting admin fee", "");
             }
@@ -1197,7 +1228,7 @@ namespace Process_MPAccountAccess
             //int sellerFee = 0;
             int adminFee = 0;
             if (!localDB.getAdminFeeAndCustomerFee(commonSettings.getString("CashInProductCode"), 
-				appID,(decimal) amount, ref adminFee, out xError))
+				1,appID,(decimal) amount, ref adminFee, out xError))
 				//providerProduct.ProviderCode,(decimal) amount, ref adminFee, out xError))
             {
                 //writeLogCashIn(providerProduct, userPhone, customerPhone, amount, adminFee, false,
@@ -1474,7 +1505,7 @@ namespace Process_MPAccountAccess
             int adminFee = 0;
             //int sellerFee = 0;
 			//if (!localDB.getAdminFeeAndCustomerFee(commonSettings.getString("CashOutProductCode"), providerProduct.ProviderCode,(decimal)amount, ref adminFee, out xError))
-			if (!localDB.getAdminFeeAndCustomerFee(commonSettings.getString("CashOutProductCode"), appID,(decimal)amount, ref adminFee, out xError))
+			if (!localDB.getAdminFeeAndCustomerFee(commonSettings.getString("CashOutProductCode"),1, appID,(decimal)amount, ref adminFee, out xError))
             {
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Failed on geting admin fee", "");
             }
@@ -1631,7 +1662,7 @@ namespace Process_MPAccountAccess
             int adminFee = 0;
             if (!localDB.getAdminFeeAndCustomerFee(commonSettings.getString("CashOutProductCode"), 
 				//providerProduct.ProviderCode,(decimal)amount, ref adminFee, out xError))
-				appID,(decimal)amount, ref adminFee, out xError))
+				1,appID,(decimal)amount, ref adminFee, out xError))
             {
                 //writeLogCashOut(providerProduct, userPhone, customerPhone, amount, adminFee, false,
                 //    sendTime.ToString("yyyy-MM-dd HH:mm:ss"), productCode);
@@ -1926,7 +1957,7 @@ namespace Process_MPAccountAccess
             int adminFee = 0;
             //int sellerFee = 0;
 			//if (!localDB.getAdminFeeAndCustomerFee(productCode, providerProduct.ProviderCode,(decimal) amount, ref adminFee, out xError))
-			if (!localDB.getAdminFeeAndCustomerFee(productCode, appID,(decimal) amount, ref adminFee, out xError))
+			if (!localDB.getAdminFeeAndCustomerFee(productCode, 1, appID,(decimal) amount, ref adminFee, out xError))
             {
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Failed on geting admin fee", "");
             }
@@ -2096,7 +2127,7 @@ namespace Process_MPAccountAccess
             //int distributorFee = 0;
             int adminFee = 0;
 			//if (!localDB.getAdminFeeAndCustomerFee(productCode, providerProduct.ProviderCode,
-			if (!localDB.getAdminFeeAndCustomerFee(productCode, appID,
+			if (!localDB.getAdminFeeAndCustomerFee(productCode, 1, appID,
                 (decimal)amount,ref adminFee, out xError))
             {
                 //writeLogCashIn(providerProduct, userPhone, customerPhone, amount, adminFee, false,

@@ -499,9 +499,10 @@ namespace Process_ProductTransaction
 
 			}
 
-			string SamCSN = "SAM-Online";	// untuk purchase online
+			string SamCSN = "";	// untuk purchase online
+			string OutletCode = "";	// untuk purchase online
 			// masukkeun ditable ucard_transaction
-			if (!localDB.addCardTransactionLog (TransactionRef_id,SamCSN,trxUCardLog,cardBalance,
+			if (!localDB.addCardTransactionLog (TransactionRef_id, OutletCode,trxUCardLog,cardBalance,
 				out xError)) {
 				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492",
 					"Failed to save card transaction log", "");

@@ -209,7 +209,7 @@ namespace IconoxTrxHandlerV2
 				//					}
 				// ProviderCode diganti 000 khusus untuk ambil data topup
 				if (!localDB.getPercentAdminFee (commonSettings.getString ("IconoxTopUpClientProductCode"),
-					"000", ref topUpPercentFee, out exrr)) {
+					1,"000", ref topUpPercentFee, out exrr)) {
 					LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Error get TopUp fee percent data");
 					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Error get TopUp fee percent data", "");
 				}
@@ -281,18 +281,18 @@ namespace IconoxTrxHandlerV2
 			return "";
 		}
 
-		private bool getBaseAndFeeAmountFromProduct(string productCode, string appID,	//string providerCode, 
-			ref int adminFee, int TotalAmount = 0)
-		{
-			Exception xError = null;
-			//if (!localDB.getAdminFeeAndCustomerFee(productCode, providerCode, TotalAmount,
-			if (!localDB.getAdminFeeAndCustomerFee(productCode, appID, TotalAmount,
-				ref adminFee, out xError))
-			{
-				return false;
-			}
-			return true;
-		}
+//		private bool getBaseAndFeeAmountFromProduct(string productCode, string appID,	//string providerCode, 
+//			ref int adminFee, int TotalAmount = 0)
+//		{
+//			Exception xError = null;
+//			//if (!localDB.getAdminFeeAndCustomerFee(productCode, providerCode, TotalAmount,
+//			if (!localDB.getAdminFeeAndCustomerFee(productCode, appID, TotalAmount,
+//				ref adminFee, out xError))
+//			{
+//				return false;
+//			}
+//			return true;
+//		}
 
 		private string bayarDariPetugasKePenampung(string userId, 
 			PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct,
@@ -632,7 +632,7 @@ namespace IconoxTrxHandlerV2
 			}
 
 			// insert log ucard_transaction
-			if (!localDB.addCardTransactionLog (TransactionRef_id,"", "", cardBalance, appID,
+			if (!localDB.addCardTransactionLog (TransactionRef_id, outletCode, "", cardBalance, appID,
 				out xError)) {
 				// sudah di catat
 				LogWriter.showDEBUG (this, "=========== GAGAL INSERT LOG KARTU ======");

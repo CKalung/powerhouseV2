@@ -779,11 +779,12 @@ namespace PPOBDatabase
         //    else return true;
         //}
 
-		public bool getPriceAndFeeProduct(string productCode, string providerCode, 
+		public bool getPriceAndFeeProduct(string productCode, int quantity, string providerCode, 
 			decimal baseAmount, ref string ProductName, ref int SellPrice, 
 			ref int AdminFee, ref int DistributorFee, 
 			out Exception ExError)
 		{
+			// quantity hanya dihitung jika bukan persentase
 			try {
 				string sql = "SELECT b.name as prd_name, "
 				            + "d.name as fee_name, "
@@ -843,7 +844,7 @@ namespace PPOBDatabase
 				} else {
 					// fix value
 					decimal fixVal = decimal.Parse (sFeeFixValue);
-					AdminFee = decimal.ToInt32 (Math.Floor (fixVal));
+					AdminFee = decimal.ToInt32 (Math.Floor (fixVal)) * quantity;
 					//AdminFee = iFeeFixValue;
 				}
 				if (bCustFeeType) {
@@ -853,7 +854,7 @@ namespace PPOBDatabase
 				} else {
 					// fix value
 					decimal cfixVal = decimal.Parse (sCustFeeFixValue);
-					DistributorFee = decimal.ToInt32 (Math.Floor (cfixVal));
+					DistributorFee = decimal.ToInt32 (Math.Floor (cfixVal)) * quantity;
 				}
 				return true;
 			} catch (Exception exErr) {
@@ -864,9 +865,10 @@ namespace PPOBDatabase
 
 		}
 
-		public bool getAdminFeeAndCustomerFee(string productCode, string appId,  //string providerCode, 
+		public bool getAdminFeeAndCustomerFee(string productCode, int quantity, string appId,  //string providerCode, 
 			decimal baseAmount, ref int AdminFee, ref int AgentFee, out Exception ExError)
         {
+			// quantity hanya dihitung jika bukan persentase
             string sql = "SELECT d.id as fee_id, d.name as fee_name, b.value as fee_value, " +
                             "COALESCE(a.feetype, false) as feetype," +
                             "COALESCE(a.percent_value,0) as percent_value, " +
@@ -909,7 +911,7 @@ namespace PPOBDatabase
             {
                 // fix value
                 decimal fixVal = decimal.Parse(sFeeFixValue);
-                AdminFee = decimal.ToInt32(Math.Floor(fixVal));
+				AdminFee = decimal.ToInt32(Math.Floor(fixVal)) * quantity;
                 //AdminFee = iFeeFixValue;
             }
 			if (bCustFeeType)
@@ -922,14 +924,15 @@ namespace PPOBDatabase
 			{
 				// fix value
 				decimal cfixVal = decimal.Parse(sCustFeeFixValue);
-				AgentFee = decimal.ToInt32(Math.Floor(cfixVal));
+				AgentFee = decimal.ToInt32(Math.Floor(cfixVal)) * quantity;
 			}
             return true;
         }
 
-		public bool getPercentAdminFee(string productCode, string providerCode, 
+		public bool getPercentAdminFee(string productCode, int quantity, string providerCode, 
 			ref decimal percentFee, out Exception ExError)
 		{
+			// quantity hanya dihitung jika bukan persentase
 			string sql = "SELECT d.id as fee_id, d.name as fee_name, b.value as fee_value, " +
 				"COALESCE(a.feetype, false) as feetype," +
 				"COALESCE(a.percent_value,0) as percent_value, " +
@@ -970,9 +973,10 @@ namespace PPOBDatabase
 			}
 		}
 
-		public bool getAdminFeeAndCustomerFee(string productCode, string appId, //string providerCode, 
+		public bool getAdminFeeAndCustomerFee(string productCode, int quantity, string appId, //string providerCode, 
 			decimal baseAmount, ref int AdminFee, out Exception ExError)
 		{
+			// quantity hanya dihitung jika bukan persentase
 			string sql = "SELECT d.id as fee_id, d.name as fee_name, b.value as fee_value, " +
 			             "COALESCE(a.feetype, false) as feetype," +
 			             "COALESCE(a.percent_value,0) as percent_value, " +
@@ -1013,15 +1017,16 @@ namespace PPOBDatabase
 			{
 				// fix value
 				decimal fixVal = decimal.Parse(sFeeFixValue);
-				AdminFee = decimal.ToInt32(Math.Floor(fixVal));
+				AdminFee = decimal.ToInt32(Math.Floor(fixVal)) * quantity;
 				//AdminFee = iFeeFixValue;
 			}
 			return true;
 		}
 
-		public bool getAdminFeeAndCustomerFee(string productCode, string appId, //string providerCode, 
+		public bool getAdminFeeAndCustomerFee(string productCode, int quantity, string appId, //string providerCode, 
 			decimal baseAmount, ref decimal AdminFee, out Exception ExError)
 		{
+			// quantity hanya dihitung jika bukan persentase
 			string sql = "SELECT d.id as fee_id, d.name as fee_name, b.value as fee_value, " +
 				"COALESCE(a.feetype, false) as feetype," +
 				"COALESCE(a.percent_value,0) as percent_value, " +
@@ -1062,7 +1067,7 @@ namespace PPOBDatabase
 			{
 				// fix value
 				decimal fixVal = decimal.Parse(sFeeFixValue);
-				AdminFee = Math.Floor(fixVal);
+				AdminFee = Math.Floor(fixVal) * quantity;
 				//AdminFee = iFeeFixValue;
 			}
 			return true;
@@ -3569,21 +3574,21 @@ namespace PPOBDatabase
 
 		// ================ END OF Product List Query ====================
 
-		public bool addCardTransactionLog(long transactionID, string samCSN,
+		public bool addCardTransactionLog(long transactionID, string outletCode, 
 			string cardPurchaseLog, int previousBalance, string sourceId, out Exception ExError){
 			ExError = null;
-			string sqlCheck = "SELECT sam_csn FROM ucard_transaction WHERE trx_id = " + transactionID.ToString ();
+			string sqlCheck = "SELECT outlet_code FROM ucard_transaction WHERE trx_id = " + transactionID.ToString ();
 			string sql = "INSERT INTO ucard_transaction ( " +
 				"trx_id,card_purchase_log,created_time, previous_balance";
-			if(samCSN!="")
-				sql += ", sam_csn";
+			if(outletCode!="")
+				sql += ", outlet_code";
 			if(sourceId!="")
 				sql += ", source_id";
 			sql += ") VALUES (";
 			sql += transactionID.ToString () + ",'" + cardPurchaseLog + "','" +
 				DateTime.Now.ToString ("yyyy-MM-dd HH:mm:ss") + "'," + previousBalance.ToString ();
-			if(samCSN!="")
-				sql += ",'" + samCSN.ToUpper () + "'";
+			if(outletCode!="")
+				sql += ",'" + outletCode + "'";
 			if(sourceId!="")
 				sql += ",'" + sourceId.ToUpper () + "'";
 			sql += ")";
@@ -3629,20 +3634,20 @@ namespace PPOBDatabase
 		/// <param name="cardPurchaseLog">Card purchase log.</param>
 		/// <param name="previousBalance">Previous balance.</param>
 		/// <param name="ExError">Exception error output.</param>
-		public bool addCardTransactionLog(long transactionID, string samCSN,
+		public bool addCardTransactionLog(long transactionID, string outletCode,
 			string cardPurchaseLog, int previousBalance, out Exception ExError){
 			ExError = null;
-			string sqlCheck = "SELECT sam_csn FROM ucard_transaction WHERE trx_id = " + transactionID.ToString ();
+			string sqlCheck = "SELECT outlet_code FROM ucard_transaction WHERE trx_id = " + transactionID.ToString ();
 			string sql = "INSERT INTO ucard_transaction ( " +
 			             "trx_id,card_purchase_log,created_time, previous_balance";
-			if(samCSN!="")
-				sql += ", sam_csn";
+			if(outletCode!="")
+				sql += ", outlet_code";
 			sql += ") VALUES (";
 			sql += transactionID.ToString () + ",'" + cardPurchaseLog + "','" +
 			DateTime.Now.ToString ("yyyy-MM-dd HH:mm:ss") + "'," + previousBalance.ToString ();
-			if(samCSN!="")
-				sql += ",'" + samCSN.ToUpper ();
-			sql += "')";
+			if(outletCode!="")
+				sql += ",'" + outletCode + "'";
+			sql += ")";
 	
 			int i = 0;
 			if (!querympPr (sqlCheck, ref i, out ExError)) {

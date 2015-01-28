@@ -83,6 +83,7 @@ namespace IconoxOnlineHandler
 		public long uCardLog_TransactionID=0; // ini belum bisa diisi di class ini
 		public string uCardLog_SamCSN="";
 		public string uCardLog_OutletCode="";
+		public int uCardLog_Quantity=1;
 		public string uCardLog_CardPurchaseLog="";
 		public string uCardLog_Description;
 		public int uCardLog_PreviousBalance=0;
@@ -158,6 +159,7 @@ namespace IconoxOnlineHandler
 			// Ada tambahan data untuk transaksi iconox, subjson dari fiAdditional
 			if ((!AdditionalJson.ContainsKey("fiTrxDateTime")) || 
 				(!AdditionalJson.ContainsKey("fiSAMCSN")) || 
+				(!AdditionalJson.ContainsKey("fiOutletCode")) || 
 				(!AdditionalJson.ContainsKey("fiCardChallenge")) || 
 				(!AdditionalJson.ContainsKey("fiCertificate")))
 			{
@@ -174,6 +176,7 @@ namespace IconoxOnlineHandler
 			try{
 				fiStrTrxDateTime = ((string)AdditionalJson["fiTrxDateTime"]).Trim();
 				fiSAMCSN = ((string)AdditionalJson["fiSAMCSN"]).Trim();
+				uCardLog_OutletCode = ((string)AdditionalJson["fiOutletCode"]).Trim();
 				fiCertificate = ((string)AdditionalJson["fiCertificate"]).Trim();
 				fiUserCardChallenge = ((string)AdditionalJson["fiCardChallenge"]).Trim();
 				fiUserCardNumber = transactionReference.Trim();
@@ -340,6 +343,7 @@ namespace IconoxOnlineHandler
 			// Ada tambahan data untuk transaksi iconox, subjson dari fiAdditional
 			if ((!AdditionalJson.ContainsKey("fiTrxDateTime")) || 
 				(!AdditionalJson.ContainsKey("fiSAMCSN")) || 
+				(!AdditionalJson.ContainsKey("fiOutletCode")) || 
 				(!AdditionalJson.ContainsKey("fiBalance")) || 
 				(!AdditionalJson.ContainsKey("fiCardChallenge")) || 
 				(!AdditionalJson.ContainsKey("fiCertificate")))
@@ -362,6 +366,7 @@ namespace IconoxOnlineHandler
 				fiCertificate = ((string)AdditionalJson["fiCertificate"]).Trim();
 				fiUserCardChallenge = ((string)AdditionalJson["fiCardChallenge"]).Trim();
 				fiUserCardNumber = transactionReference.Trim();
+				uCardLog_OutletCode = ((string)AdditionalJson["fiOutletCode"]).Trim();
 //				if (AdditionalJson.ContainsKey("fiUserCardNumber"))
 //					fiUserCardNumber = ((string)AdditionalJson["fiUserCardNumber"]).Trim();
 			}
@@ -591,7 +596,7 @@ namespace IconoxOnlineHandler
 			if ((!AdditionalJson.ContainsKey("fiTrxDateTime")) || 
 				(!AdditionalJson.ContainsKey("fiBalance")) || 
 				(!AdditionalJson.ContainsKey("fiSAMCSN")) || 
-				(!AdditionalJson.ContainsKey("fiQuantity")) || 
+//				(!AdditionalJson.ContainsKey("fiQuantity")) || 
 				(!AdditionalJson.ContainsKey("fiCertificate")) ||
 				(!AdditionalJson.ContainsKey("fiLogPurchase")) 
 			)
@@ -602,7 +607,7 @@ namespace IconoxOnlineHandler
 				return true;
 			}
 			int fiBalance;
-			int fiQuantity;
+//			int fiQuantity;
 			string fiStrTrxDateTime;
 //			string fiSAMCSN;
 //			string fiCertificate;
@@ -610,7 +615,7 @@ namespace IconoxOnlineHandler
 //			string fiPurchaseLog;
 			try{
 				fiBalance = (int)AdditionalJson["fiBalance"];
-				fiQuantity = (int)AdditionalJson["fiQuantity"];
+//				fiQuantity = (int)AdditionalJson["fiQuantity"];
 				fiStrTrxDateTime = ((string)AdditionalJson["fiTrxDateTime"]).Trim();
 //				fiSAMCSN = ((string)AdditionalJson["fiSAMCSN"]).Trim();
 //				fiCertificate = ((string)AdditionalJson["fiCertificate"]).Trim();
@@ -643,7 +648,7 @@ namespace IconoxOnlineHandler
 			Exception ExError = null;
 			string dbTraceNum = "";
 			if (localDB.isOfflineTransactionExist(agentPhone, appID, productCode, fiTrxDateTime, 
-				fiQuantity, ref dbTraceNum, true, out ExError))
+				uCardLog_Quantity, ref dbTraceNum, true, out ExError))
 			{
 				// Data sudah ada di database, anggap sukses
 				//				// perbaharui token 
@@ -679,7 +684,7 @@ namespace IconoxOnlineHandler
 		private bool Nitrogen_SmartCardTransaction (string appID, DateTime fiTrxDateTime,
 			string fiUserCardNumber, int fiBalance, int fiQuantity, ref bool isSuccessPayment,
 			ref string strRecJson, ref int traceNumber, string trxNumber,
-			string fiStrTrxDateTime, string fiSAMCSN, string fiOutletCode, string fiCertificate, string fiPurchaseLog,
+			string fiStrTrxDateTime, string fiCertificate, string fiPurchaseLog,
 			ref string failedReason, ref string HttpReply, ref bool alreadyPaid){
 
 			traceNumber = localDB.getNextProductTraceNumber();
@@ -687,8 +692,6 @@ namespace IconoxOnlineHandler
 
 			uCardLog_PreviousBalance = fiBalance;
 			uCardLog_CardPurchaseLog = fiPurchaseLog;
-			uCardLog_SamCSN = fiSAMCSN;
-			uCardLog_OutletCode = fiOutletCode;
 
 			// cek apakah kartu terdaftar di database
 			string fReason = "";
@@ -752,7 +755,7 @@ namespace IconoxOnlineHandler
 			jsonConv.Add ("fiAgentPhone",agentPhone);
 			jsonConv.Add ("fiDateTime",fiStrTrxDateTime);
 			jsonConv.Add ("fiAmount",trxAmount);
-			jsonConv.Add ("fiSAMCSN",fiSAMCSN);
+			jsonConv.Add ("fiSAMCSN",uCardLog_SamCSN);
 			jsonConv.Add ("fiCertificate",fiCertificate);
 			jsonConv.Add ("fiPurchaseLog", fiPurchaseLog);
 
@@ -881,11 +884,8 @@ namespace IconoxOnlineHandler
 		private bool Nitrogen_CashTransaction (string appID, DateTime fiTrxDateTime,
 			string fiUserCardNumber, int fiBalance, int fiQuantity, ref bool isSuccessPayment,
 			ref string strRecJson, ref int traceNumber, string trxNumber,
-			string fiStrTrxDateTime, string fiSAMCSN, string fiOutletCode, string fiCertificate, string fiPurchaseLog,
+			string fiStrTrxDateTime, string fiCertificate, string fiPurchaseLog,
 			ref string failedReason, ref string HttpReply, ref bool alreadyPaid){
-
-			uCardLog_SamCSN = fiSAMCSN;
-			uCardLog_OutletCode = fiOutletCode;
 
 			traceNumber = localDB.getNextProductTraceNumber();
 			alreadyPaid = false;
@@ -899,7 +899,7 @@ namespace IconoxOnlineHandler
 			jsonConv.Add ("fiAgentPhone",agentPhone);
 			jsonConv.Add ("fiDateTime",fiStrTrxDateTime);
 			jsonConv.Add ("fiAmount",trxAmount);
-			jsonConv.Add ("fiSAMCSN",fiSAMCSN);
+			jsonConv.Add ("fiSAMCSN",uCardLog_SamCSN);
 			jsonConv.Add ("fiCertificate",fiCertificate);
 			jsonConv.Add ("fiPurchaseLog", fiPurchaseLog);
 
@@ -1004,7 +1004,6 @@ namespace IconoxOnlineHandler
 				(!AdditionalJson.ContainsKey("fiBalance")) || 
 //				(!AdditionalJson.ContainsKey("fiSAMCSN")) || 
 				(!AdditionalJson.ContainsKey("fiOutletCode")) || 
-				(!AdditionalJson.ContainsKey("fiQuantity")) || 
 				(!AdditionalJson.ContainsKey("fiCertificate")) ||
 				(!AdditionalJson.ContainsKey("fiLogPurchase")) 
 				)
@@ -1015,22 +1014,22 @@ namespace IconoxOnlineHandler
 				return false;
 			}
 			int fiBalance;
-			int fiQuantity;
+//			int fiQuantity;
 			string fiStrTrxDateTime;
 			string fiSAMCSN="";
 			string fiCertificate;
 			string fiUserCardNumber;
 			string fiPurchaseLog;
-			string fiOutletCode;
+//			string fiOutletCode;
 
 			if(AdditionalJson.isExists ("fiSAMCSN")){
 				fiSAMCSN = ((string)AdditionalJson["fiSAMCSN"]).Trim();
 			}
 			try{
 				fiBalance = (int)AdditionalJson["fiBalance"];
-				fiQuantity = (int)AdditionalJson["fiQuantity"];
+//				fiQuantity = (int)AdditionalJson["fiQuantity"];
 				fiStrTrxDateTime = ((string)AdditionalJson["fiTrxDateTime"]).Trim();
-				fiOutletCode = ((string)AdditionalJson["fiOutletCode"]).Trim();
+				uCardLog_OutletCode = ((string)AdditionalJson["fiOutletCode"]).Trim();
 				fiCertificate = ((string)AdditionalJson["fiCertificate"]).Trim();
 				fiPurchaseLog = ((string)AdditionalJson["fiLogPurchase"]).Trim();
 				fiUserCardNumber = transactionReference.Trim();
@@ -1049,6 +1048,8 @@ namespace IconoxOnlineHandler
 				LOG_Handler.LogWriter.showDEBUG (this, "uCardLog_Description = " + uCardLog_Description);
 			}catch{
 			}
+
+			uCardLog_SamCSN = fiSAMCSN;
 
 //			// TRIK : Untuk memasukkan purchase log di Transaction Log di class Process_Product.cs
 //			if (fiPurchaseLog != "")
@@ -1086,16 +1087,16 @@ namespace IconoxOnlineHandler
 				// dana di debet dari rekening petugas
 				isCardTransaction=false;
 				return Nitrogen_CashTransaction (appID, fiTrxDateTime, fiUserCardNumber, 
-					fiBalance, fiQuantity, ref isSuccessPayment, ref strRecJson, ref traceNumber, 
-					trxNumber, fiStrTrxDateTime, fiSAMCSN, fiOutletCode, fiCertificate, fiPurchaseLog,
+					fiBalance, uCardLog_Quantity, ref isSuccessPayment, ref strRecJson, ref traceNumber, 
+					trxNumber, fiStrTrxDateTime, fiCertificate, fiPurchaseLog,
 					ref failedReason, ref HttpReply, ref sudahBayar);
 			} else {
 				// Transaksi menggunakan kartu
 				// dana di debet dari rekening titipan iconox
 				isCardTransaction=true;
 				return Nitrogen_SmartCardTransaction (appID, fiTrxDateTime, fiUserCardNumber, 
-					fiBalance, fiQuantity, ref isSuccessPayment, ref strRecJson, ref traceNumber, 
-					trxNumber, fiStrTrxDateTime, fiSAMCSN, fiOutletCode, fiCertificate, fiPurchaseLog,
+					fiBalance, uCardLog_Quantity, ref isSuccessPayment, ref strRecJson, ref traceNumber, 
+					trxNumber, fiStrTrxDateTime, fiCertificate, fiPurchaseLog,
 					ref failedReason, ref HttpReply, ref sudahBayar);
 			}
 		}

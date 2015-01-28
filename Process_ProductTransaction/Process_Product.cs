@@ -112,12 +112,12 @@ namespace Process_ProductTransaction
 
         //private bool getBaseAndFeeAmountFromProduct(string productCode, string providerCode,
         //    ref int adminFee, ref int customerFeeAmount, int TotalAmount = 0)
-		private bool getBaseAndFeeAmountFromProduct(string productCode, string appId,	//string providerCode, 
+		private bool getBaseAndFeeAmountFromProduct(string productCode, int quantity, string appId,	//string providerCode, 
 			ref int adminFee, int TotalAmount = 0)
         {
 
 			//if (!localDB.getAdminFeeAndCustomerFee(productCode, providerCode, TotalAmount,
-			if (!localDB.getAdminFeeAndCustomerFee(productCode, appId, TotalAmount,
+			if (!localDB.getAdminFeeAndCustomerFee(productCode, quantity, appId, TotalAmount,
                 ref adminFee, out xError))
             {
                 return false;
@@ -140,12 +140,12 @@ namespace Process_ProductTransaction
             return true;
         }
 
-		private bool getAdminAndCustomerFeeFromProduct(string productCode, string appId,	//string providerCode, 
+		private bool getAdminAndCustomerFeeFromProduct(string productCode, int quantity, string appId,	//string providerCode, 
 			ref int adminFee, ref int customerFee, int TotalAmount = 0)
 		{
 
 			//if (!localDB.getAdminFeeAndCustomerFee(productCode, providerCode, TotalAmount,
-			if (!localDB.getAdminFeeAndCustomerFee(productCode, appId, TotalAmount,
+			if (!localDB.getAdminFeeAndCustomerFee(productCode, quantity, appId, TotalAmount,
 				ref adminFee, out xError))
 			{
 				return false;
@@ -224,7 +224,7 @@ namespace Process_ProductTransaction
                 //Console.WriteLine(" productAmount " + productAmount);
                 //Console.WriteLine(" intNYA : " + int.Parse(productAmount));
 				//if (!getBaseAndFeeAmountFromProduct(productCode, providerProduct.ProviderCode,
-				if (!getBaseAndFeeAmountFromProduct(productCode, appID,
+				if (!getBaseAndFeeAmountFromProduct(productCode, 1, appID,
                     ref adminFee))
                 {
                     return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Fee data not found", "");
@@ -335,7 +335,7 @@ namespace Process_ProductTransaction
 			{
 				//Console.WriteLine(" productAmount " + productAmount);
 				//Console.WriteLine(" intNYA : " + int.Parse(productAmount));
-				if (!localDB.getPriceAndFeeProduct(productCode, providerProduct.ProviderCode,0, 
+				if (!localDB.getPriceAndFeeProduct(productCode, 1, providerProduct.ProviderCode,0, 
 					ref productName, ref sellPrice, ref adminFee, ref distributorFee,out exrr))
 				{
 					return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Fee data not found", "");
@@ -360,7 +360,7 @@ namespace Process_ProductTransaction
 		//public JsonLibs.MyJsonLib jsonTrxFromClient;
 
         private string ProviderTransaction(string appID, string userId, string securityToken, int PpobType,
-            string customerProductNumber, string productCode, int productAmount,
+			string customerProductNumber, string productCode, int productAmount, int Quantity,
             string userPhone = "", string ownerId = "", string ownerPhone = "")
         {
             string errCode = "00"; string errMessage = "";
@@ -422,6 +422,8 @@ namespace Process_ProductTransaction
 			decimal topUpPercentFee = 0;
 			bool isPembayaranDenganKartu = false;
 
+			providerProduct.CurrentPrice *= Quantity;	// pengali jika produk
+
 			// SERVICE/PEMBAYARAN amount diambil dari productAmount dari client, 
 			// jika pembelian, amount diambil dari currentPrice
 			int nilaiTransaksiKeProvider = providerProduct.CurrentPrice;
@@ -452,7 +454,7 @@ namespace Process_ProductTransaction
 					//					}
 					// ProviderCode diganti 000 khusus untuk ambil data topup
 					if (!localDB.getPercentAdminFee (commonSettings.getString ("IconoxTopUpClientProductCode"),
-						"000", ref topUpPercentFee, out xError)) {
+						Quantity, "000", ref topUpPercentFee, out xError)) {
 						LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Error get TopUp fee percent data");
 						return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Error get TopUp fee percent data", "");
 					}
@@ -484,7 +486,7 @@ namespace Process_ProductTransaction
 				try {
 					//LogWriter.showDEBUG (this, " productAmount: " + productAmount);
 					//if (!getBaseAndFeeAmountFromProduct (productCode, providerProduct.ProviderCode,
-					if (!getBaseAndFeeAmountFromProduct (productCode, appID,
+					if (!getBaseAndFeeAmountFromProduct (productCode, Quantity, appID,
 						ref adminFee, cardProductAmount)) {
 						return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Fee data not found", "");
 					}
@@ -498,7 +500,7 @@ namespace Process_ProductTransaction
 				try {
 					//LogWriter.showDEBUG (this, " productAmount: " + productAmount);
 					//if (!getBaseAndFeeAmountFromProduct (productCode, providerProduct.ProviderCode,
-					if (!getBaseAndFeeAmountFromProduct (productCode, appID,
+					if (!getBaseAndFeeAmountFromProduct (productCode, Quantity, appID,
 						   ref adminFee, productAmount)) {
 						return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Fee data not found", "");
 					}
@@ -811,6 +813,7 @@ namespace Process_ProductTransaction
 					IconoxTrx.productCode = productCode;
 					IconoxTrx.clientData = clientDataSource;
 					IconoxTrx.providerCode = providerProduct.ProviderCode;
+					IconoxTrx.uCardLog_Quantity = Quantity;
 					IconoxTrx.AdditionalJson = ((JsonLibs.MyJsonLib)jsonConv["fiAdditional"]);
 
 					fTrx = IconoxTrx.productTransaction(appID, userId, customerProductNumber,
@@ -821,7 +824,7 @@ namespace Process_ProductTransaction
 
 					transaksiKartu = IconoxTrx.isCardTransaction;
 					SamCSN = IconoxTrx.uCardLog_SamCSN;
-					OutletCode = IconoxTrx.uCardLog_SamCSN;
+					OutletCode = IconoxTrx.uCardLog_OutletCode;
 					trxUCardLog = IconoxTrx.uCardLog_CardPurchaseLog;
 					cardBalance = IconoxTrx.uCardLog_PreviousBalance;
 					if ((failedReason == "") || (failedReason=="-"))
@@ -875,7 +878,7 @@ namespace Process_ProductTransaction
 			// JIka transaksi kartu, maka simpan di table ucard_transaction
 			if (transaksiKartu) {
 				LogWriter.showDEBUG (this, "== Add CardTransactionLog ");
-				if (!localDB.addCardTransactionLog (TransactionRef_id,SamCSN,trxUCardLog,cardBalance,
+				if (!localDB.addCardTransactionLog (TransactionRef_id,OutletCode,trxUCardLog,cardBalance,
 					out xError)) {
 					LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "FATAL Failed to save Card Transaction Log");
 //					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492",
@@ -986,10 +989,12 @@ namespace Process_ProductTransaction
 				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Unregistered provider: " + providerProduct.ProviderCode, "");
             }
 
+			int Quantity = 1;
+
             try
             {
 				//if (!getBaseAndFeeAmountFromProduct(productCode, providerProduct.ProviderCode,
-				if (!getBaseAndFeeAmountFromProduct(productCode, appID,
+				if (!getBaseAndFeeAmountFromProduct(productCode, Quantity, appID,
                     ref adminFee, productAmount))
                 {
                     return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Fee data not found", "");
@@ -1004,7 +1009,6 @@ namespace Process_ProductTransaction
 
             // SERVICE/PEMBAYARAN amount diambil dari productAmount dari client, 
             // jika pembelian, amount diambil dari currentPrice
-            int nilaiTransaksiKeProvider = providerProduct.CurrentPrice;
 
             if (providerProduct.ProductType == PPOBDatabase.PPOBdbLibs.ProductTypeEnum.PRODUCT)
             {
@@ -1019,7 +1023,7 @@ namespace Process_ProductTransaction
                 }
             }
             //productAmount = prdAmount.ToString();
-            nilaiTransaksiKeProvider = providerProduct.CurrentPrice;
+			int nilaiTransaksiKeProvider = providerProduct.CurrentPrice;
 
             //bool bypassReversal = false;
             bool isLastTransaction = false;
@@ -1280,6 +1284,11 @@ namespace Process_ProductTransaction
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "No data to process", "");
             }
 
+			int quantity = 1;
+			if (jsonConv.isExists ("fiQuantity")) {
+				quantity = (int)jsonConv["fiQuantity"];
+			}
+
 			// perbaharui token hanya pada saat login saja
 			string securityToken = "";
 //			if (jsonConv.ContainsKey("fiToken"))
@@ -1309,13 +1318,13 @@ namespace Process_ProductTransaction
                     if (ownerPhone == "")
                     {
                         return ProviderTransaction(appID, userId, securityToken, transactionType,
-						customerProductNumber, productCode, productAmount, unFormatedUserPhone);
+						customerProductNumber, productCode, productAmount, quantity, unFormatedUserPhone);
                     }
                     else
                     {
                         return ProviderTransaction(appID, userId, securityToken, transactionType,
-                                customerProductNumber, productCode, productAmount,
-                                userPhone, ownerId, ownerPhone);
+							customerProductNumber, productCode, productAmount, quantity,
+                            userPhone, ownerId, ownerPhone);
                     }
                 case 2: //reversal
                     return ProviderReversal(appID, userId, securityToken, transactionType,
@@ -2439,7 +2448,7 @@ namespace Process_ProductTransaction
             try
             {
 				//if (!getBaseAndFeeAmountFromProduct(productCode, ProviderCode,
-				if (!getBaseAndFeeAmountFromProduct(productCode, appID,
+				if (!getBaseAndFeeAmountFromProduct(productCode, 1, appID,
                     ref adminFee, TotalAmount))
                 {
                     ErrRepl = HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Fee data not found", "");
@@ -2632,7 +2641,7 @@ namespace Process_ProductTransaction
                 }
 
 				//if (!localDB.getAdminFeeAndCustomerFee(productCode, providerProduct.ProviderCode,
-				if (!localDB.getAdminFeeAndCustomerFee(productCode, appID,
+				if (!localDB.getAdminFeeAndCustomerFee(productCode,1, appID,
                     totalBaseAmount,
                     ref adminFee, out xError))
                 {

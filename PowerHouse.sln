@@ -111,6 +111,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IconoxTrxHandlerV2", "Icono
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopsHandler", "ShopsHandler\ShopsHandler.csproj", "{B7A36362-64B2-451F-8F49-05EB701C819A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocketAsyncServer", "..\TcpServer-NewMethod\SocketAsyncServer\SocketAsyncServer.csproj", "{5FFE844E-4674-4A69-9F18-2122C5C27BC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -301,6 +303,18 @@ Global
 		{59026922-9954-47D0-B2C0-5F8599860FE5}.Release|x64.Build.0 = Release|Any CPU
 		{59026922-9954-47D0-B2C0-5F8599860FE5}.Release|x86.ActiveCfg = Release|Any CPU
 		{59026922-9954-47D0-B2C0-5F8599860FE5}.Release|x86.Build.0 = Release|Any CPU
+		{5FFE844E-4674-4A69-9F18-2122C5C27BC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FFE844E-4674-4A69-9F18-2122C5C27BC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FFE844E-4674-4A69-9F18-2122C5C27BC8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5FFE844E-4674-4A69-9F18-2122C5C27BC8}.Debug|x64.Build.0 = Debug|Any CPU
+		{5FFE844E-4674-4A69-9F18-2122C5C27BC8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5FFE844E-4674-4A69-9F18-2122C5C27BC8}.Debug|x86.Build.0 = Debug|Any CPU
+		{5FFE844E-4674-4A69-9F18-2122C5C27BC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FFE844E-4674-4A69-9F18-2122C5C27BC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FFE844E-4674-4A69-9F18-2122C5C27BC8}.Release|x64.ActiveCfg = Release|Any CPU
+		{5FFE844E-4674-4A69-9F18-2122C5C27BC8}.Release|x64.Build.0 = Release|Any CPU
+		{5FFE844E-4674-4A69-9F18-2122C5C27BC8}.Release|x86.ActiveCfg = Release|Any CPU
+		{5FFE844E-4674-4A69-9F18-2122C5C27BC8}.Release|x86.Build.0 = Release|Any CPU
 		{6793A46A-B263-4D8D-8BCC-723BDBA4264C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6793A46A-B263-4D8D-8BCC-723BDBA4264C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6793A46A-B263-4D8D-8BCC-723BDBA4264C}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -783,7 +797,6 @@ Global
 		{FD7CF20F-3F7D-4738-8350-8E8882DB7275}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = PPOB-Gate\PPOB-Gate.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

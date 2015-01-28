@@ -429,7 +429,7 @@ namespace BPJS_THT
 			}
 
 			// insert log ucard_transaction
-			if (!localDB.addCardTransactionLog (TransactionRef_id,"", respLastTrxLog, cardBalance, appID,
+			if (!localDB.addCardTransactionLog (TransactionRef_id, "", respLastTrxLog, cardBalance, appID,
 				out xError)) {
 				// sudah di catat
 			}
