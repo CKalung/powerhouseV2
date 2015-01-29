@@ -168,7 +168,7 @@ namespace FMHandler
                     jsonConv.Clear();
                     jsonConv.Add("fiToken", securityToken);
 					jsonTemp.Clear ();
-					jsonTemp.Add ("MESSAGE", "Need reversal");
+					jsonTemp.Add ("fiMessage", "Need reversal");
 					jsonConv.Add("fiPrivateData", jsonTemp);
                     jsonConv.Add("fiResponseCode", "99");
                     jsonConv.Add("fiTransactionId", "FM1" + traceNumber.ToString().PadLeft(6, '0'));
@@ -198,7 +198,7 @@ namespace FMHandler
                     jsonConv.Clear();
                     jsonConv.Add("fiToken", securityToken);
 					jsonTemp.Clear ();
-					jsonTemp.Add ("MESSAGE", "Need reversal");
+					jsonTemp.Add ("fiMessage", "Need reversal");
 					jsonConv.Add("fiPrivateData", jsonTemp);
                     jsonConv.Add("fiResponseCode", "99");
                     jsonConv.Add("fiTransactionId", "FM1" + traceNumber.ToString().PadLeft(6, '0'));
@@ -226,7 +226,7 @@ namespace FMHandler
                     jsonConv.Clear();
                     jsonConv.Add("fiToken", securityToken);
 					jsonTemp.Clear ();
-					jsonTemp.Add ("MESSAGE", "Need reversal");
+					jsonTemp.Add ("fiMessage", "Need reversal");
 					jsonConv.Add("fiPrivateData", jsonTemp);
                     jsonConv.Add("fiResponseCode", "99");
                     jsonConv.Add("fiTransactionId", "FM1" + traceNumber.ToString().PadLeft(6, '0'));
@@ -251,7 +251,7 @@ namespace FMHandler
                     jsonConv.Clear();
                     jsonConv.Add("fiToken", securityToken);
 					jsonTemp.Clear ();
-					jsonTemp.Add ("MESSAGE", "Need reversal");
+					jsonTemp.Add ("fiMessage", "Need reversal");
 					jsonConv.Add("fiPrivateData", jsonTemp);
                     jsonConv.Add("fiResponseCode", "99");
                     jsonConv.Add("fiTransactionId", "FM1" + traceNumber.ToString().PadLeft(6, '0'));
@@ -280,7 +280,7 @@ namespace FMHandler
             jsonConv.Clear();
             jsonConv.Add("fiToken", securityToken);
 			jsonTemp.Clear ();
-			jsonTemp.Add ("MESSAGE", fiPrivateData);
+			jsonTemp.Add ("fiMessage", fiPrivateData);
 			jsonConv.Add("fiPrivateData", jsonTemp);
             jsonConv.Add("fiResponseCode", fiResponseCode);
             jsonConv.Add("fiTransactionId", "FM1" + traceNumber.ToString().PadLeft(6,'0'));
@@ -429,7 +429,7 @@ namespace FMHandler
             jsonConv.Add("fiToken", securityToken);
             jsonConv.Add("fiAmount", productAmount);
 			jsonTemp.Clear ();
-			jsonTemp.Add ("MESSAGE", fiPrivateData);
+			jsonTemp.Add ("fiMessage", fiPrivateData);
 			jsonConv.Add("fiPrivateData", jsonTemp);
             jsonConv.Add("fiResponseCode", fiResponseCode);
             jsonConv.Add("fiAdminFee", fiAdminFee);

@@ -460,8 +460,8 @@ namespace Process_ProductTransaction
 					}
 					// NOTE : Disini nanti dana diambil dari Account Iconox TITIPAN atau bukan tergantung dengan kartu atau bukannya
 
-						productAmount = providerProduct.CurrentPrice;
-						cardProductAmount = productAmount;	// 100% nya
+					productAmount = providerProduct.CurrentPrice;
+					cardProductAmount = productAmount;	// 100% nya
 
 					LogWriter.showDEBUG (this, "productAmount = "+productAmount.ToString ());
 

@@ -285,7 +285,7 @@ namespace ShopsHandler
 			// INGAT INI TOKO NITROGEN, lain AliExpress.......
 
 			string[] fields = { "fiApplicationId", "fiProductList",  "fiPhone", "fiGroupProductCode", 
-				"fiSAMCSN", "fiOutletCode", "fiToken" };
+				"fiOutletCode", "fiToken" };
 
 			string appID = "";
 			string groupProductCode = "";
@@ -354,6 +354,8 @@ namespace ShopsHandler
 			decimal tmpNilaiMasukLog = 0;
 			PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct = null;
 			for (int i = 0; i < productList.Count; i++) {
+				// TODO : didieu kuduna aya pengecekan kode produk  jeung group kode produk nu valid
+
 				JsonLibs.MyJsonLib aProduct = (JsonLibs.MyJsonLib)productList [i];
 				prdCode = ((string)aProduct ["fiProductCode"]).Trim ();
 				quantity = ((int)aProduct ["fiQuantity"]);
@@ -389,6 +391,10 @@ namespace ShopsHandler
 			DateTime trxTime = skrg;
 			DateTime trxRecTime = skrg;
 
+			// TODO : cek existensi groupProductCode dulu, biar gak gagal insert
+			// salah satu validasinya itu dan producto code itu anaknya bukan????
+
+
 			if (!localDB.insertCompleteTransactionLog (TransactionRef_id, groupProductCode, providerProductGroup.ProviderProductCode,
 				    userId.Substring (commonSettings.getString ("UserIdHeader").Length), "SHOP TRX",
 				totalNilaiMasukLog.ToString (), traceNumber.ToString (), trxTime.ToString ("yyyy-MM-dd HH:mm:ss"),
@@ -411,7 +417,7 @@ namespace ShopsHandler
 			jsonConv.Add ("fiTransactionId", TransactionRef_id);
 			jsonConv.Add ("fiTrxNumber", trxNumber);
 
-			return HTTPRestDataConstruct.constructHTTPRestResponse(200, "200", "Success", jsonConv.JSONConstruct ());
+			return HTTPRestDataConstruct.constructHTTPRestResponse(200, "00", "Success", jsonConv.JSONConstruct ());
 		}
 
 	}
