@@ -382,19 +382,19 @@ namespace PPOBClientHandler
             try
             {
                 sslStream = result.AsyncState as SslStream;
-				LogWriter.show (this, "End kan TLS authenticate"); 
-				//Console.WriteLine("End kan authenticate");
-                sslStream.EndAuthenticateAsServer(result);
+//				LogWriter.show (this, "End kan TLS authenticate"); 
+//				//Console.WriteLine("End kan authenticate");
+//                sslStream.EndAuthenticateAsServer(result);
             }
             catch (Exception ex)
             {
                 //Console.WriteLine("CUEKkeun Errorna " + ex.Message);
 				LogWriter.show (this, "CUEKkeun Errorna " + ex.Message);
+				disconnect();
             }
 
             try
             {
-                //Console.WriteLine("Beres authenticate TLS");
 				LogWriter.show (this, "Beres authenticate TLS");
                 //this.connectionCallback(this, new SecureConnectionResults(sslStream));
 
@@ -404,6 +404,10 @@ namespace PPOBClientHandler
                 sslStream.BeginRead(state.buffer, 0, state.buffer.Length,
                         new AsyncCallback(ReadCallbackSSL), state);
 
+				// coba ieu di pindah ka dieu, ngarah teu leungit data pertama na
+				LogWriter.show (this, "End kan TLS authenticate"); 
+				//Console.WriteLine("End kan authenticate");
+				sslStream.EndAuthenticateAsServer(result);
             }
             catch (Exception ex)
             {
@@ -496,7 +500,7 @@ namespace PPOBClientHandler
                 sslStream = state.workSslStream;
                 if (sslStream == null) return;
 
-                Console.WriteLine("Reading data from the server.");
+				LogWriter.show(this, "Reading data from the server.");
                 byteCount = sslStream.EndRead(ar);
             }
             catch(Exception ex)

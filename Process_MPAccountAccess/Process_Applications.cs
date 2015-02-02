@@ -745,10 +745,25 @@ namespace Process_MPAccountAccess
 
         public string Process(int reqPathCode, HTTPRestConstructor.HttpRestRequest clientData)
         {
-            if (reqPathCode == commonSettings.getInt("CommandApplicationLogin"))
-            {
-                return Login(clientData);
-            }
+			if (reqPathCode == commonSettings.getInt("CommandApplicationLoginInit"))
+			{
+				using (LoginV2 loginV2 = new LoginV2(clientData, commonSettings))
+				{
+					return loginV2.InitialLogin();
+				}
+			}
+			if (reqPathCode == commonSettings.getInt("CommandApplicationLoginH2H"))
+			{
+				using (LoginV2 loginV2 = new LoginV2(clientData, commonSettings))
+				{
+					return loginV2.DoLogin();
+				}
+			}
+
+			if (reqPathCode == commonSettings.getInt("CommandApplicationLogin"))
+			{
+				return Login(clientData);
+			}
             else if (reqPathCode == commonSettings.getInt("CommandApplicationHeartBeat"))
             {
                 return HeartBeat(clientData);

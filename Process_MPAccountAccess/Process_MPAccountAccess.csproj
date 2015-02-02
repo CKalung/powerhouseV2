@@ -46,6 +46,7 @@
     <Compile Include="Process_Account.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Process_Applications.cs" />
+    <Compile Include="LoginV2.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\JsonLibs\JsonLibs.csproj">

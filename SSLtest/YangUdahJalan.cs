@@ -77,8 +77,28 @@ namespace SSLtest
     {
     }
 
+	// State object for receiving data from remote device.
+	public class SslStateObject
+	{
+		public SslStream workSslStream = null;                // Stream socket.
+		public const int BufferSize = 4096;             // Size of receive buffer.
+		public byte[] buffer = new byte[BufferSize];    // Receive buffer.
+		//public StringBuilder sb = new StringBuilder();  // Received data string.
+	}
+
 	class SslMainTest
     {
+
+		const int TIMEOUT_07 = 7;
+		const int TIMEOUT_10 = 10;
+		const int TIMEOUT_15 = 15;
+		const int TIMEOUT_60 = 60;
+
+		//static int bytesRead = 0;
+		static string srecBuff = "";
+		const int MAXRecBuff = 100 * 1024;  // max 100Kb
+		//        byte[] dataBuffer = new byte[2048];
+		static int dataLength = 0;
 
 #if (USE_FILE_BASED_CERTIFICATE)
     static X509Certificate2 certFile = null;
@@ -134,30 +154,150 @@ namespace SSLtest
               "Waiting for client on port 8088... (use Ctrl+C to stop)");
             TcpClient tcpClient = listener.AcceptTcpClient();
             ProcessClient(tcpClient);
+			Console.ReadLine ();
         }
 
-        public static void ProcessClient(TcpClient client)
+		private static void disconnect(){
+			try{
+				sslstr.Close();
+			} catch{
+			}
+			try{
+				clienttr.Close();
+			} catch{
+			}
+		}
+
+		private static void readyReceiveRetriggerSSL(SslStateObject state, int recTO)
+		{
+			if (state.workSslStream != null)
+			{
+				try
+				{
+					//state.sb.Clear();
+
+					// Begin receiving the data from the remote device.
+					state.workSslStream.BeginRead(state.buffer, 0, state.buffer.Length,
+						new AsyncCallback(ReadCallbackSSL), state);
+					//ctrTO = recTO;
+				}
+				catch	// (Exception e)
+				{
+					//Console.WriteLine(e.StackTrace);
+					Console.WriteLine ("Socket already disconnected.");
+					disconnect();   // pastikan dan siapkan class untuk re-use
+				}
+			}
+		}
+
+		static void ReadCallbackSSL(IAsyncResult ar)
+		{
+			// Read the  message sent by the server. 
+			//ctrTO = TIMEOUT_60;      // reset disconnect TIMEOUT
+//			ctrTO = TIMEOUT_07;        // reset disconnect TIMEOUT
+			SslStateObject state = null;
+			SslStream sslStream = null;
+			int byteCount = -1;
+			try
+			{
+				state = (SslStateObject)ar.AsyncState;
+				//sslStream = state.workSslStream;
+				sslStream = sslstr;
+				if (sslStream == null) return;
+
+//				Console.WriteLine ("Reading data from the server.");
+				byteCount = sslStream.EndRead(ar);
+				Console.WriteLine (byteCount.ToString () + " bytes read.");
+			}
+			catch(Exception ex)
+			{
+				Console.WriteLine ("SSL Disconnected : " + ex.Message);
+				disconnect();
+				return;
+			}
+
+			try
+			{
+				if (byteCount > 0)
+				{
+					// There might be more data, so store the data received so far.
+					//state.sb.Append(Encoding.GetEncoding(1252).GetString(state.buffer, 0, bytesRead));
+					byte[] data2 = new byte[byteCount];
+					Array.Copy(state.buffer, 0, data2, 0, byteCount);
+					//                        Console.WriteLine(state.sb.ToString();
+					DataReceivedSSL(state.workSslStream, data2);
+				}
+				else
+				{
+					// disconnected by client
+					//state.sb.Clear();
+					//Console.WriteLine ("Session ID : " + SessID + ", Disconnected by remote client");
+					disconnect();
+					return;
+				}
+				Thread.Sleep(10);
+				readyReceiveRetriggerSSL(state, TIMEOUT_07);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine ("Client has disconnected " + e.StackTrace);
+				disconnect();
+			}
+
+		}
+
+		private static void DataReceivedSSL(SslStream clientStream, byte[] data)
+		{
+			srecBuff += Encoding.GetEncoding(1252).GetString(data);
+			dataLength += data.Length;
+
+			Console.WriteLine ("Terima data: " + srecBuff);
+
+			srecBuff = "";
+			dataLength = 0;
+			disconnect();
+		}
+
+		static SslStream sslstr = null;
+		static TcpClient clienttr = null;
+
+		public static void ProcessClient(TcpClient client)
         {
 			Console.WriteLine ("Koneksi masuk...");
             SslStream ssls = new SslStream(client.GetStream(), false);
+
+			sslstr = ssls;
+			clienttr = client;
+
             try
             {
+				SslStateObject state = new SslStateObject();
+				state.workSslStream = ssls;
+
+//				ssls.BeginRead(state.buffer, 0, state.buffer.Length,
+//					new AsyncCallback(ReadCallbackSSL), state);
+//
                 ssls.AuthenticateAsServer(certFile, false,
-					SslProtocols.Tls12, true);
+					SslProtocols.Default, true);
+
+				ssls.BeginRead(state.buffer, 0, state.buffer.Length,
+					new AsyncCallback(ReadCallbackSSL), state);
+
 				Console.WriteLine ("Otentikasi beres...");
-                ssls.ReadTimeout = 500000;
-                ssls.WriteTimeout = 500000;
-                StartReaderSenderThreads(ssls);
+//                ssls.ReadTimeout = 500000;
+ //               ssls.WriteTimeout = 500000;
+//                StartReaderSenderThreads(ssls);
             }
             catch (AuthenticationException ex)
             {
                 System.Console.WriteLine(ex.Message);
                 System.Console.WriteLine(ex.InnerException.Message);
+				disconnect ();
             }
             finally
             {
-                ssls.Close();
-                client.Close();
+//                ssls.Close();
+//                client.Close();
             }
         }
 

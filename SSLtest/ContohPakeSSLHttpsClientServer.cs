@@ -11,7 +11,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 
 
-namespace PPOBClientHandler
+namespace SSLtest
 {
     class ContohPakeSSLHttpsClientServer
     //class Program
@@ -34,15 +34,24 @@ namespace PPOBClientHandler
                 Console.WriteLine("Loading Server Cert From: " + certPath);
                 X509Certificate serverCert = X509Certificate.CreateFromCertFile(certPath);
 
-                server = new SecureTcpServer(port, serverCert,
+				string cfile = "server.pfx";
+				//string certFilePath = @"C:\Projects\536\Samples\SSLSample\" + cfile;
+				string certFilePath = @"/home/kusumah/Projects/PowerHouse/PPOB-Gate/SSLtest/bin/Debug/SSLkeys/" + cfile;
+				//string certFilePath = @"/etc/ssl/certs/" + cfile;
+				if (!File.Exists(certFilePath))
+					certFilePath = cfile;
+				X509Certificate2 certFile = new X509Certificate2(certFilePath, "d4mpt");
+
+				//server = new SecureTcpServer(port, serverCert,
+				server = new SecureTcpServer(port, certFile,
                     new SecureConnectionResultsCallback(OnServerConnectionAvailable));
 
                 server.StartListening();
 
-                client = new SecureTcpClient(new SecureConnectionResultsCallback(OnClientConnectionAvailable),
-                    certValidationCallback);
-
-                client.StartConnecting("localhost", new IPEndPoint(IPAddress.Loopback, port));
+//                client = new SecureTcpClient(new SecureConnectionResultsCallback(OnClientConnectionAvailable),
+//                    certValidationCallback);
+//
+//                client.StartConnecting("localhost", new IPEndPoint(IPAddress.Loopback, port));
             }
             catch (Exception ex)
             {
@@ -56,9 +65,10 @@ namespace PPOBClientHandler
 
             if (server != null)
                 server.Dispose();
-            if (client != null)
-                client.Dispose();
+//            if (client != null)
+//                client.Dispose();
 
+			Console.WriteLine("BERES...");
         }
 
         static void OnServerConnectionAvailable(object sender, SecureConnectionResults args)

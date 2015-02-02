@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Collections;
 
 namespace StaticCommonLibrary
@@ -40,6 +41,7 @@ namespace StaticCommonLibrary
             public string UserPhone="";
             public string UserId="";
 			public string RandomChallenge="";
+			public string SessionKey="";
             DateTime lastLoginTime;
             //public string UserName="";
             public string Host = "";
@@ -118,7 +120,7 @@ namespace StaticCommonLibrary
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static string generateToken(int jumlahChar)
+		public static string generateToken(int jumlahChar, bool isHexString = false)
         {
             Random random = new Random();
             random.Next(0, jumlahChar);
@@ -130,15 +132,19 @@ namespace StaticCommonLibrary
                 //rd = random.Next(0, 9);
                 //hasil += (char)(rd + 0x30);
 
-                // Semua HEX
-                //rd = random.Next(0, 15);
-                //if (rd < 10) hasil += (char)(rd + 0x30);
-                //else hasil += (char)(rd + 0x37);
-
-                // Semua numerik dan char
-                rd = random.Next(0, 35);
-                if (rd < 10) hasil += (char)(rd + 0x30);
-                else hasil += (char)(rd + 0x37);
+				if (isHexString) {
+					// Semua HEX
+					rd = random.Next(0, 15);
+					if (rd < 10) hasil += (char)(rd + 0x30);
+					else hasil += (char)(rd + 0x37);
+				} else {
+					// Semua numerik dan char
+					rd = random.Next (0, 35);
+					if (rd < 10)
+						hasil += (char)(rd + 0x30);
+					else
+						hasil += (char)(rd + 0x37);
+				}
             }
             return hasil;
         }
@@ -155,6 +161,105 @@ namespace StaticCommonLibrary
                 sessionMinutesTimeOut = value;
             }
         }
+
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		public static string GetSHA256Hash(string input)
+		{
+			SHA256 mySHA256 = SHA256Managed.Create();
+			byte[] hashValue = mySHA256.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+			// Create a new Stringbuilder to collect the bytes 
+			// and create a string.
+			StringBuilder sBuilder = new StringBuilder();
+
+			// Loop through each byte of the hashed data  
+			// and format each one as a hexadecimal string. 
+			for (int i = 0; i < hashValue.Length; i++)
+			{
+				sBuilder.Append(hashValue[i].ToString("x2"));
+			}
+
+			// Return the hexadecimal string. 
+			return sBuilder.ToString();
+		}
+
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		public static string GetMd5Hash(string input)
+		{
+			MD5 md5 = System.Security.Cryptography.MD5.Create();
+			// Convert the input string to a byte array and compute the hash. 
+			byte[] data = md5.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+			// Create a new Stringbuilder to collect the bytes 
+			// and create a string.
+			StringBuilder sBuilder = new StringBuilder();
+
+			// Loop through each byte of the hashed data  
+			// and format each one as a hexadecimal string. 
+			for (int i = 0; i < data.Length; i++)
+			{
+				sBuilder.Append(data[i].ToString("x2"));
+			}
+
+			// Return the hexadecimal string. 
+			return sBuilder.ToString();
+		}
+
+		// Verify a hash against a string. 
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		public static bool VerifyMd5Hash(string input, string hash)
+		{
+			// Hash the input. 
+			string hashOfInput = GetMd5Hash(input);
+
+			// Create a StringComparer an compare the hashes.
+			StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+
+			if (0 == comparer.Compare(hashOfInput, hash))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		// Verify a hash against a string. 
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		public static bool VerifySha256Hash(string input, string hash)
+		{
+			// Hash the input. 
+			string hashOfInput = GetSHA256Hash(input);
+
+			// Create a StringComparer an compare the hashes.
+			StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+
+			if (0 == comparer.Compare(hashOfInput, hash))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		public static bool StringCompare(string str1, string str2)
+		{
+			// Create a StringComparer an compare the hashes.
+			StringComparer comparer = StringComparer.OrdinalIgnoreCase;
+
+			if (0 == comparer.Compare(str1, str2))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static string AddSessionItem(string userPhone, string UserId, string HostName)
@@ -204,7 +309,7 @@ namespace StaticCommonLibrary
 					aSession = new SessionStruct();
 					aSession.UserId = UserId;
 				}
-				aSession.RandomChallenge = generateToken (64);
+				aSession.RandomChallenge = generateToken (64, true).ToUpper ();
 				if (!SessionList.ContainsKey(userPhone))
 				{
 					SessionList.Add(userPhone, aSession);
@@ -360,6 +465,23 @@ namespace StaticCommonLibrary
 			else return false;
 		}
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
+		public static string getStoredRandomChallenge(string userPhone)
+		{
+			RefreshSessions();
+			if (SessionList.ContainsKey(userPhone))
+			{
+				try
+				{
+					return ((SessionStruct)SessionList[userPhone]).RandomChallenge.ToLower ();
+				}
+				catch
+				{
+					return "";
+				}
+			}
+			else return "";
+		}
     }
 
     //public static class CommonLibrary

@@ -170,7 +170,6 @@ namespace SSLtest
                     this.onAuthenticateAsServer,
                     sslStream);
 
-
             }
             catch (Exception ex)
             {

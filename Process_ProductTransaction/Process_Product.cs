@@ -1442,13 +1442,13 @@ namespace Process_ProductTransaction
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field type or format", "");
             }
 
+			ReformatPhoneNumber(ref userPhone);
+
 			string token = "";
 			string httprepl = "";
 			if (!cek_TokenSecurity (userPhone, jsonConv, ref token, ref httprepl)) {
 				return httprepl;
 			}
-
-            ReformatPhoneNumber(ref userPhone);
 
             string userId = cUserIDHeader + userPhone;
 
