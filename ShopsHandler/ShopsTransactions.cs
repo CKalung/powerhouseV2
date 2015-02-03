@@ -203,6 +203,24 @@ namespace ShopsHandler
 			return "";
 		}
 
+		private string getShopProductPrice(string productCode, out decimal harga){
+			harga = 0;
+			try
+			{
+				if(!localDB.getN2ShopProductPrice(productCode, out harga)) 
+				{
+					return HTTPRestDataConstruct.constructHTTPRestResponse(400, "463", "No product price found", "");
+				}
+			}
+			catch(Exception ex)
+			{
+				LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Error on get product price : " + ex.getCompleteErrMsg());
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "463", "Failed on get product price", "");
+			}
+
+			return "";
+		}
+
 		private bool getBaseAndFeeAmountFromProduct(string productCode, int quantity, string appId,	//string providerCode, 
 			ref decimal adminFee, int TotalAmount = 0)
 		{
@@ -234,20 +252,21 @@ namespace ShopsHandler
 			return "";
 		}
 
-		private void getBonggol(PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct, int quantity,
-			decimal adminFee, ref decimal bonggol, ref decimal nilaiMasukLog){
+//		private void getBonggol(PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct, int quantity,
+		private void getBonggol(decimal TotalHarga, int quantity,
+			decimal adminFee, bool fIncludeFee, ref decimal bonggol, ref decimal nilaiMasukLog){
 			LogWriter.showDEBUG (this,"Asup Product Purchase");
-			if (providerProduct.fIncludeFee)
+			if (fIncludeFee)
 			{
 				LogWriter.showDEBUG (this,"Asup Product Toko Include fee");
-				bonggol = providerProduct.CurrentPrice * quantity;
+				bonggol = TotalHarga * quantity;
 				nilaiMasukLog = bonggol - adminFee;
 			}
 			else
 			{
 				LogWriter.showDEBUG (this,"Asup Product Toko Exclude fee");
-				bonggol = (providerProduct.CurrentPrice * quantity) + adminFee;
-				nilaiMasukLog = providerProduct.CurrentPrice * quantity;
+				bonggol = (TotalHarga * quantity) + adminFee;
+				nilaiMasukLog = TotalHarga * quantity;
 			}
 		}
 
@@ -352,6 +371,8 @@ namespace ShopsHandler
 			decimal bongol = 0;
 			decimal totalNilaiMasukLog = 0;
 			decimal tmpNilaiMasukLog = 0;
+			decimal hargaItem = 0;
+
 			PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct = null;
 			for (int i = 0; i < productList.Count; i++) {
 				// TODO : didieu kuduna aya pengecekan kode produk  jeung group kode produk nu valid
@@ -359,19 +380,42 @@ namespace ShopsHandler
 				JsonLibs.MyJsonLib aProduct = (JsonLibs.MyJsonLib)productList [i];
 				prdCode = ((string)aProduct ["fiProductCode"]).Trim ();
 				quantity = ((int)aProduct ["fiQuantity"]);
-				rslt = getProviderInfo (prdCode, out providerProduct);
+				//rslt = getProviderInfo (prdCode, out providerProduct);
+				rslt = getShopProductPrice (prdCode, out hargaItem);
 				if (rslt != "")
 					return rslt;
-				totalHarga += providerProduct.CurrentPrice * quantity;
-				rslt = getAdminFee (prdCode, quantity, appID, providerProduct.CurrentPrice, ref admFee);
-				if (rslt != "")
-					return rslt;
+//				Console.WriteLine ("Harga "  + prdCode + " = "+ hargaItem.ToString ());
+				totalHarga += hargaItem * quantity;
+//				Console.WriteLine ("TotalHarga " + totalHarga.ToString ());
+//				rslt = getAdminFee (prdCode, quantity, appID, providerProduct.CurrentPrice, ref admFee);
+//				if (rslt != "")
+//					return rslt;
 
-				getBonggol (providerProduct, quantity, admFee, ref bongol, ref tmpNilaiMasukLog);
-				totalBonggol += bongol;
-				totalNilaiMasukLog += tmpNilaiMasukLog;
-				totalAdmin += admFee;
+//				getBonggol (providerProduct, quantity, admFee, ref bongol, ref tmpNilaiMasukLog);
+//				totalBonggol += bongol;
+//				totalNilaiMasukLog += tmpNilaiMasukLog;
+//				totalAdmin += admFee;
+
 			}
+
+			rslt = getAdminFee (groupProductCode, 1, appID, totalHarga, ref admFee);
+			if (rslt != "")
+				return rslt;
+
+			//getBonggol (providerProduct, quantity, admFee, ref bongol, ref tmpNilaiMasukLog);
+			getBonggol (totalHarga, 1, admFee, providerProductGroup.fIncludeFee, ref bongol, ref tmpNilaiMasukLog);
+			totalBonggol += bongol;
+			totalNilaiMasukLog += tmpNilaiMasukLog;
+			totalAdmin += admFee;
+
+			LogWriter.showDEBUG (this, "TOKO: GroupProductCode = " + groupProductCode + "\r\n" +
+				"Total harga = " + totalHarga.ToString () + "\r\n" +
+				"     AdminFee = " + admFee.ToString () + "\r\n" +
+				"     totalBonggol = " + totalBonggol.ToString () + "\r\n" +
+				"     totalNilaiMasukLog = " + totalNilaiMasukLog.ToString () + "\r\n" +
+				"     totalAdmin = " + totalAdmin.ToString ()
+				);
+
 
 			string userId = cUserIDHeader + userPhone;
 			long TransactionRef_id = localDB.getTransactionReffIdSequence (out xError);
@@ -379,7 +423,7 @@ namespace ShopsHandler
 			string qvaInvoiceNumber = "";
 
 			// ===== AMBIL PEMBAYARAN DARI CUSTOMER
-			rslt = transferPaymentFromCustomer (userId, providerProduct, totalHarga,
+			rslt = transferPaymentFromCustomer (userId, providerProductGroup, totalHarga,
 				TransactionRef_id, ref qvaInvoiceNumber, ref qvaReversalRequired);
 
 			if (rslt != "")
@@ -392,7 +436,7 @@ namespace ShopsHandler
 			DateTime trxRecTime = skrg;
 
 			// TODO : cek existensi groupProductCode dulu, biar gak gagal insert
-			// salah satu validasinya itu dan producto code itu anaknya bukan????
+			// salah satu validasinya itu dan product code itu anaknya bukan????
 
 
 			if (!localDB.insertCompleteTransactionLog (TransactionRef_id, groupProductCode, providerProductGroup.ProviderProductCode,
@@ -405,7 +449,7 @@ namespace ShopsHandler
 				clientData.Body,
 				    trxRecTime.ToString ("yyyy-MM-dd HH:mm:ss"),
 				    true, 
-				"", trxNumber, false, providerProduct.fIncludeFee, SamCSN, OutletCode,
+				"", trxNumber, false, providerProductGroup.fIncludeFee, SamCSN, OutletCode,
 				    out xError)) {
 				LogWriter.showDEBUG (this, "Gagal Insert Log....!! CEK LOG DI FILE");
 			}

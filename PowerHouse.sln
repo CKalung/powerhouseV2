@@ -135,6 +135,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GCM_Sender", "..\..\Google-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndroidPushNotifications", "..\..\Google-Cloud-Messaging\GCM-Push\AndroidPushNotifications\AndroidPushNotifications\AndroidPushNotifications.csproj", "{E19F9653-AC24-4DBA-868F-632841589343}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhXml", "PhXml\PhXml.csproj", "{D9D49A66-3575-48B0-AAD3-B59868E5B898}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -902,6 +904,20 @@ Global
 		{D6F0E58A-916D-471C-9933-341F1B4BF871}.Release|x86.Build.0 = Release|Any CPU
 		{D6F0E58A-916D-471C-9933-341F1B4BF871}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{D6F0E58A-916D-471C-9933-341F1B4BF871}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{D9D49A66-3575-48B0-AAD3-B59868E5B898}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9D49A66-3575-48B0-AAD3-B59868E5B898}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9D49A66-3575-48B0-AAD3-B59868E5B898}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D9D49A66-3575-48B0-AAD3-B59868E5B898}.Debug|x64.Build.0 = Debug|Any CPU
+		{D9D49A66-3575-48B0-AAD3-B59868E5B898}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D9D49A66-3575-48B0-AAD3-B59868E5B898}.Debug|x86.Build.0 = Debug|Any CPU
+		{D9D49A66-3575-48B0-AAD3-B59868E5B898}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9D49A66-3575-48B0-AAD3-B59868E5B898}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9D49A66-3575-48B0-AAD3-B59868E5B898}.Release|x64.ActiveCfg = Release|Any CPU
+		{D9D49A66-3575-48B0-AAD3-B59868E5B898}.Release|x64.Build.0 = Release|Any CPU
+		{D9D49A66-3575-48B0-AAD3-B59868E5B898}.Release|x86.ActiveCfg = Release|Any CPU
+		{D9D49A66-3575-48B0-AAD3-B59868E5B898}.Release|x86.Build.0 = Release|Any CPU
+		{D9D49A66-3575-48B0-AAD3-B59868E5B898}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9D49A66-3575-48B0-AAD3-B59868E5B898}.Test|Any CPU.Build.0 = Debug|Any CPU
 		{DDAF414A-177E-415E-B0C4-4F4FEF1D14BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DDAF414A-177E-415E-B0C4-4F4FEF1D14BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDAF414A-177E-415E-B0C4-4F4FEF1D14BC}.Debug|x64.ActiveCfg = Debug|Any CPU

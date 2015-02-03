@@ -1440,6 +1440,7 @@ namespace PPOBDatabase
 			string failedReason, string trxNumber, bool canReversal, bool include_fee, string SamCSN, string OutletCode, 
             out Exception ExError)
         {
+			LogWriter.showDEBUG (this,"ASUP NORMAL");
 			//strJson = "SmartCardLog: "+fiPurchaseLog; jika dari smartcard
 			string sql = "INSERT INTO " +
 			                      "transaction(id,product_code,provider_product_code,distributor_phone,reff_number," +
@@ -1942,6 +1943,23 @@ namespace PPOBDatabase
             }
             return (i > 0);
         }
+
+		public bool getN2ShopProductPrice(string shopProductCode, out decimal price){
+			string sql = "SELECT price FROM customer_product WHERE code = '"+shopProductCode+"'; ";
+
+			price = 0;
+			Exception ExError = null;
+			ExError = null;
+			int i = localDB.ExecQuerySql(sql, tbl_mpProduct, out ExError);
+			if (ExError != null)
+			{
+				LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Failed on query: \r\n" + sql +
+					"\r\nResult: " + ExError.Message + ", at line: " + ExError.LineNumber().ToString());
+				return false;
+			}
+			if(!decimal.TryParse(localDB.GetDataItem(tbl_mpProduct, 0, "price").ToString (),out price)) return false;
+			return (i > 0);
+		}
 
         public bool isCashTrxRequestExists(string requesttime, string customerphone, string agentphone,
             int amount, string token, CashTrxType ttype)
