@@ -929,7 +929,7 @@ namespace PPOBDatabase
             return true;
         }
 
-		public bool getPercentAdminFee(string productCode, int quantity, string providerCode, 
+		public bool getPercentAdminFee(string productCode, string providerCode, 
 			ref decimal percentFee, out Exception ExError)
 		{
 			// quantity hanya dihitung jika bukan persentase
@@ -1059,7 +1059,8 @@ namespace PPOBDatabase
 			if (bFeeType)
 			{
 				// percentage
-				decimal percent = decimal.Parse(sFeePercent);
+				//decimal percent = decimal.Parse(sFeePercent);
+				decimal percent = (decimal)(localDB.GetDataItem(tbl_mpAccount, 0, "percent_value"));
 				AdminFee = Math.Floor((percent * baseAmount)/100);
 				//AdminFee = decimal.ToInt32(Math.Floor(iFeePercent * baseAmount));
 			}

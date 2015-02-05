@@ -209,7 +209,7 @@ namespace IconoxTrxHandlerV2
 				//					}
 				// ProviderCode diganti 000 khusus untuk ambil data topup
 				if (!localDB.getPercentAdminFee (commonSettings.getString ("IconoxTopUpClientProductCode"),
-					1,"000", ref topUpPercentFee, out exrr)) {
+					"000", ref topUpPercentFee, out exrr)) {
 					LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Error get TopUp fee percent data");
 					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Error get TopUp fee percent data", "");
 				}
@@ -468,15 +468,6 @@ namespace IconoxTrxHandlerV2
 					"TopUp: Invalid card Balance, BLOCK CARD", "");
 			}
 
-			// update balance di db dengan yg terupdate
-			if (lastModified < trxDateTime) {		// harusnya selalu masuk sini, kan online real time
-				// Update Last card balance in DB dengan yang terupdate
-				if (!localDB.updateCardBalanceInDb (cardNumber, cardBalance, trxDateTime)) {
-					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "416", 
-						"Failed to update usercard balance", "");
-				}
-			}
-
 			jsonConv.Clear ();
 			// jika fiCertificate = "" maka topup tanpa sign dgn sam krn pake nfc
 			if(certificate != "")
@@ -610,6 +601,15 @@ namespace IconoxTrxHandlerV2
 			if (strTemp != "") {
 				return strTemp;
 			}
+
+			// update balance di db dengan yg terupdate
+			//if (lastModified < trxDateTime) {		// harusnya selalu masuk sini, kan online real time
+				// Update Last card balance in DB dengan yang terupdate
+				if (!localDB.updateCardBalanceInDb (cardNumber, cardBalance, trxDateTime)) {
+					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "416", 
+						"Failed to update usercard balance", "");
+				}
+			//}
 
 			// insert log transaksi
 			if (!localDB.insertCompleteTransactionLog (TransactionRef_id, productCode, 

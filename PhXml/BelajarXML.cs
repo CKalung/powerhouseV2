@@ -8,11 +8,10 @@ using System.Collections.Generic;
 
 namespace PhXml
 {
-	public class MyXmlNode
+	internal class BelajarXML
 	{
-		public MyXmlNode ()
+		public BelajarXML ()
 		{
-
 		}
 
 		public void test(){
@@ -27,11 +26,11 @@ namespace PhXml
 				"</MyFile>";
 //			XmlDocument xml = new XmlDocument();
 //			xml.LoadXml (isiXml);
-			XDocument xml = XDocument.Parse (isiXml);
-			XmlReader reader = xml.CreateReader ();
-			XmlWriter writer = xml.CreateWriter ();
-
-			var companyIds = xml.Descendants("Company").Select(e => (int)e);
+//			XDocument xml = XDocument.Parse (isiXml);
+//			XmlReader reader = xml.CreateReader ();
+//			XmlWriter writer = xml.CreateWriter ();
+//
+//			var companyIds = xml.Descendants("Company").Select(e => (int)e);
 
 
 			XElement xel = XElement.Parse (isiXml);
@@ -40,30 +39,32 @@ namespace PhXml
 			Console.WriteLine ("asup " + xel.Elements ().Count ());
 
 			//xel.Descendants (XName.Get ("MyFile")).Elements("Company");
-			Console.WriteLine ("Name root " + xel.Name);
+			Console.WriteLine ("XElement Name root " + xel.Name);
 			foreach (XElement xel2 in xel.Elements ()) {
-				Console.WriteLine ("Name l1 " + xel2.Name);
+				Console.WriteLine ("XElement Name l1 " + xel2.Name);
+				Console.WriteLine ("XElement value " + xel2.Value);
 				Console.WriteLine ("asup1 " + xel2.Elements ().Count ());
+				//xel2.Attribute(
 				foreach (XElement xel1 in xel2.Elements ()) {
 					Console.WriteLine ("asup2 " + xel1.Elements ().Count ());
 					if (xel2.Value != null) {
-						Console.WriteLine ("Name l2 " + xel1.Name);
-						Console.WriteLine ("Descendants " + xel1.Value);
+						Console.WriteLine ("XElement Name l2 " + xel1.Name);
+						Console.WriteLine ("XElement value " + xel1.Value);
 					}
 				}
 			}
 
 			//xel.Descendants (XName.Get ("MyFile")).Elements("Company");
-			Console.WriteLine ("Name root " + xel.Name);
+			Console.WriteLine ("XElement Name root " + xel.Name);
 			foreach (XElement xel2 in xel.Elements ()) {
 				Console.WriteLine ("Name l1 " + xel2.Name);
 				Console.WriteLine ("asup1 " + xel2.Elements ().Count ());
 				foreach (XElement xel1 in xel2.Elements ()) {
 					Console.WriteLine ("asup2 " + xel1.Elements ().Count ());
 					if (xel2.Value != null) {
-						Console.WriteLine ("Name l2 " + xel1.Name);
+						Console.WriteLine ("XElement Name l2 " + xel1.Name);
 						xel1.SetValue ("abcd");
-						Console.WriteLine ("Descendants " + xel1.Value);
+						Console.WriteLine ("XElement Value " + xel1.Value);
 					}
 				}
 			}
@@ -74,8 +75,8 @@ namespace PhXml
 				foreach (XElement xel1 in xel2.Elements ()) {
 					Console.WriteLine ("asup2 " + xel1.Elements ().Count ());
 					if (xel2.Value != null) {
-						Console.WriteLine ("Name " + xel1.Name);
-						Console.WriteLine ("Descendants " + xel1.Value);
+						Console.WriteLine ("XElement Name " + xel1.Name);
+						Console.WriteLine ("XElement Value " + xel1.Value);
 					}
 				}
 			}
@@ -131,6 +132,23 @@ namespace PhXml
 
 			return result.ToString();
 		}
+
+
+		XElement RootXml=null;
+
+		public XElement ParseXml(string XmlString){
+			try{
+			RootXml = XElement.Parse (XmlString);
+			}catch{ 
+				RootXml = null;
+			}
+			return RootXml;
+		}
+
+		public void AddElement(XElement Parent, string Name, XElement childElement) {
+			Parent.Add (childElement);
+		}
+
 	}
 }
 

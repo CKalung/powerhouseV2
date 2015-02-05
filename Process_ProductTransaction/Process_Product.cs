@@ -454,7 +454,7 @@ namespace Process_ProductTransaction
 					//					}
 					// ProviderCode diganti 000 khusus untuk ambil data topup
 					if (!localDB.getPercentAdminFee (commonSettings.getString ("IconoxTopUpClientProductCode"),
-						Quantity, "000", ref topUpPercentFee, out xError)) {
+						"000", ref topUpPercentFee, out xError)) {
 						LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Error get TopUp fee percent data");
 						return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Error get TopUp fee percent data", "");
 					}

@@ -431,10 +431,13 @@ namespace Process_ProductTransaction
 				}
 			}
 
+			// Urusan Transfer QVA
+
+
+
 			long TransactionRef_id = localDB.getTransactionReffIdSequence(out xError);
 			string trxNumber = localDB.getProductTrxNumber(out xError);
 
-			string providerProductCode = "PPRD11111";
 			int traceNumber = localDB.getNextProductTraceNumber();
 			//long reffNum = localDB.getNextProductReferenceNumber();
 			int adminFee = 0;
@@ -447,10 +450,10 @@ namespace Process_ProductTransaction
 			// dimana bisa terjadi pengulangan pengiriman data transaksi yang sama dari client
 
 			//ASUPKEUN ka table transaction dan ucard_transaction
-			if (!localDB.insertCompleteTransactionLog (TransactionRef_id, productCode, providerProductCode,
+			if (!localDB.insertCompleteTransactionLog (TransactionRef_id, productCode, providerProduct.ProviderProductCode,
 				userPhone, cardNumber,	// userCardResponse,
 				hargaTransaksi.ToString (), traceNumber.ToString (), fiTrxDateTime.ToString ("yyyy-MM-dd HH:mm:ss"),
-				adminFee.ToString (), providerProductCode, providerProduct.CogsPriceId,
+				adminFee.ToString (), providerProduct.ProviderProductCode, providerProduct.CogsPriceId,
 				0, 0, "", skrg.ToString ("yyyy-MM-dd HH:mm:ss"), "", skrg.ToString ("yyyy-MM-dd HH:mm:ss"),
 				strJson,
 				fiTrxDateTime.ToString ("yyyy-MM-dd HH:mm:ss"),

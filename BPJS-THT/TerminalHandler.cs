@@ -271,6 +271,91 @@ namespace BPJS_THT
 			}
 		}
 
+		decimal topUpPercentFee = 0;
+		public int trxAmount=0;
+		private string hitungFeeTrxKartu(PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct, 
+			int topupAmount, ref int vaAmount, ref int topUpFee){
+			Exception exrr = null;
+			try {
+				//					if (!localDB.getPercentAdminFee (commonSettings.getString ("IconoxTopUpClientProductCode"),
+				//						    providerProduct.ProviderCode, ref topUpPercentFee, out xError)) {
+				//						LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Error get TopUp fee percent data");
+				//						return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Error get TopUp fee percent data", "");
+				//					}
+				// ProviderCode diganti 000 khusus untuk ambil data topup
+				if (!localDB.getPercentAdminFee (commonSettings.getString ("IconoxTopUpClientProductCode"),
+					"000", ref topUpPercentFee, out exrr)) {
+					LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Error get TopUp fee percent data");
+					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Error get TopUp fee percent data", "");
+				}
+				// NOTE : Disini nanti dana diambil dari Account Iconox TITIPAN atau bukan tergantung dengan kartu atau bukannya
+
+				if (providerProduct.ProductType == PPOBDatabase.PPOBdbLibs.ProductTypeEnum.PRODUCT){
+					trxAmount = providerProduct.CurrentPrice;
+				}
+
+				LogWriter.showDEBUG (this, "productAmount = "+trxAmount.ToString ());
+
+				// potong 1 % untuk transaksi virtual accountnya
+				topUpFee = ((int)Math.Ceiling (topupAmount * (topUpPercentFee / 100)));
+				vaAmount = topupAmount - topUpFee; // 99% nya
+				//topupAmount = vaAmount;
+
+				if (providerProduct.ProductType == PPOBDatabase.PPOBdbLibs.ProductTypeEnum.PRODUCT){
+					providerProduct.CurrentPrice = topupAmount;
+				}
+
+				LogWriter.showDEBUG (this, "productAmountDenganKartu = "+vaAmount.ToString ());
+
+				//			Console.WriteLine ("DEBUG -- topUpPercentFee= "+topUpPercentFee);
+				//			Console.WriteLine ("DEBUG -- cardProductAmount= "+cardProductAmount);
+				return "";
+			} catch (Exception ex) {
+				LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Error get topup fee data : " + ex.getCompleteErrMsg ());
+				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Error get topup fee data", "");
+			}
+		}
+
+		private string bayarDariPetugasKePenampung(string userId, 
+			PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct,
+			int amount, long TransactionRef_id, 
+			ref string qvaInvoiceNumber, ref bool qvaReversalDone, 
+			ref string errCode, ref string errMessage
+		){
+
+			int PpobType = 2;	// topup
+			bool qvaReversalRequired=false;
+			qvaReversalDone = qvaReversalRequired;
+
+			using (TransferReguler.CollectTransfer TransferReg =
+				new TransferReguler.CollectTransfer(commonSettings))
+			{
+				try
+				{
+					// ===== AMBIL PEMBAYARAN DARI CUSTOMER
+					LogWriter.show(this, "Get payment from Customer");
+					if (!TransferReg.PayFromCustomer(userId, 
+						providerProduct.TransactionCodeSufix, PpobType, amount,
+						TransactionRef_id, PPOBDatabase.PPOBdbLibs.eTransactionType.PPOB, 
+						"Get payment from customer", ref qvaInvoiceNumber, ref qvaReversalRequired, 
+						ref errCode, ref errMessage))
+					{
+						if(qvaReversalRequired)
+							TransferReg.Reversal(TransactionRef_id,qvaInvoiceNumber, ref errCode, ref errMessage);
+						qvaReversalDone = qvaReversalRequired;
+						LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Transfer failed : [" + errCode + "]" + errMessage);
+						return HTTPRestDataConstruct.constructHTTPRestResponse(400, errCode, errMessage, "");
+					}
+					return "";
+				}
+				catch (Exception ex)
+				{
+					LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Transfer failed : " + ex.getCompleteErrMsg());
+					return HTTPRestDataConstruct.constructHTTPRestResponse(400, "495", "Failed to do payment", "");
+				}
+			}
+		}
+
 		public string PaymentOnline(){
 			string[] fields = { "fiApplicationId", "fiUser", "fiToken", 
 				"fiPurchaseChallenge", "fiTrxDateTime", "fiCardBalance", "fiAmount", 
@@ -286,6 +371,9 @@ namespace BPJS_THT
 			int totalAmount = 0;
 
 			Exception xError=null;
+
+			string productCode = "PRD00101";
+
 
 			if (!jsonConv.JSONParse(clientData.Body))
 			{
@@ -386,9 +474,6 @@ namespace BPJS_THT
 				return HttpReply;
 			}
 
-			long TransactionRef_id = localDB.getTransactionReffIdSequence(out xError);
-			string productCode = "PRD00107";
-
 			PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct;
 			//Console.WriteLine("ProductCode = " + productCode);
 			try
@@ -412,18 +497,94 @@ namespace BPJS_THT
 			DateTime skrg = DateTime.Now;
 			string trxNumber = localDB.getProductTrxNumber(out xError);
 
+			// Ambil pembayaran dari penitipan ke penampungan
+			// ProviderCode diganti 000 khusus untuk ambil data topup
+			if (!localDB.getPercentAdminFee (commonSettings.getString ("IconoxTopUpClientProductCode"),
+				"000", ref topUpPercentFee, out xError)) {
+				LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Error get TopUp fee percent data");
+				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Error get TopUp fee percent data", "");
+			}
+
+
+			int productAmount = totalAmount;
+
+			LogWriter.showDEBUG (this, "productAmount = "+productAmount.ToString ());
+
+			int productAmountDenganKartu = productAmount - ((int)Math.Ceiling (productAmount * (topUpPercentFee / 100))); // 99% nya
+			productAmount = productAmountDenganKartu;
+
+			decimal adminFee = 0;
+			int nilaiYangMasukLog = 0;
+
+			try {
+				//LogWriter.showDEBUG (this, " productAmount: " + productAmount);
+				//if (!getBaseAndFeeAmountFromProduct (productCode, providerProduct.ProviderCode,
+				if (!localDB.getAdminFeeAndCustomerFee(productCode, 1, appID, totalAmount,
+					ref adminFee, out xError)){
+					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Fee data not found", "");
+				}
+				//  cardProductAmount = 100.000, adminFee=4000, ke nu masuk db productAmount: 99.000, adminFee 4000
+			} catch (Exception ex) {
+				LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Error get fee data : " + ex.getCompleteErrMsg ());
+				//Console.WriteLine(ex.StackTrace);
+				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Error get fee data", "");
+			}
+
+			// Product, Include fee
+			nilaiYangMasukLog = productAmount - decimal.ToInt32 (adminFee);		// disini adminfee udah 4000, dari 4%
+
+			//productAmount = prdAmount.ToString();
+			int nilaiTransaksiKeProvider = productAmount;
+			long TransactionRef_id = localDB.getTransactionReffIdSequence(out xError);
+			string qvaInvoiceNumber = "";
+			bool qvaReversalRequired = false;
+
+			LogWriter.showDEBUG (this, " ============ DEBUG ========= \r\n" +
+				"nilaiYangMasukLog = " + nilaiYangMasukLog.ToString () + "\r\n" + 
+				"productAmount = " + productAmount.ToString () + "\r\n" +
+				"adminFee = " + adminFee.ToString () + "\r\n" +
+				"totalAmount = " + totalAmount.ToString () + "\r\n" +
+				"productAmountDenganKartu = " + productAmountDenganKartu.ToString () + "\r\n" +
+				"totalAmount = " + totalAmount.ToString () + "\r\n" +
+				"topUpPercentFee = " + topUpPercentFee.ToString () + "\r\n" +
+				" ============ DEBUG ========= \r\n"
+			);
+
+			string errCode = "";
+			string errMessage = "";
+			using (TransferReguler.CollectTransfer TransferReg =
+				       new TransferReguler.CollectTransfer (commonSettings)) {
+				try {
+					if (productAmount > 0) {		// kalo pembayaran gratis, gak usah transfer
+						if (!TransferReg.PayFromCustomerEwallet (
+							 providerProduct.TransactionCodeSufix, 1, productAmount,
+							 TransactionRef_id, PPOBDatabase.PPOBdbLibs.eTransactionType.PPOB, 
+							 "Get payment from customer Ewallet", ref qvaInvoiceNumber, ref qvaReversalRequired, 
+							 ref errCode, ref errMessage)) {
+							if (qvaReversalRequired)
+								TransferReg.Reversal (TransactionRef_id, qvaInvoiceNumber, ref errCode, ref errMessage);
+							LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Transfer failed : [" + errCode + "]" + errMessage);
+							return HTTPRestDataConstruct.constructHTTPRestResponse (400, errCode, errMessage, "");
+						}
+					}
+				} catch (Exception ex) {
+					LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Transfer failed : " + ex.getCompleteErrMsg ());
+					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Failed to do payment", "");
+				}
+			}
+
 			// insert log transaksi
 			if (!localDB.insertCompleteTransactionLog (TransactionRef_id, productCode, providerProduct.ProviderProductCode,
 				    userId.Substring (commonSettings.getString ("UserIdHeader").Length), cardNumber,
-				    totalAmount.ToString (), traceNumber.ToString (), trxDateTime.ToString ("yyyy-MM-dd HH:mm:ss"),
-				    "0", providerProduct.ProviderCode, providerProduct.CogsPriceId,
+				    nilaiYangMasukLog.ToString (), traceNumber.ToString (), trxDateTime.ToString ("yyyy-MM-dd HH:mm:ss"),
+				    adminFee.ToString (), providerProduct.ProviderCode, providerProduct.CogsPriceId,
 				    0, 0, "", skrg.ToString ("yyyy-MM-dd HH:mm:ss"), "", skrg.ToString ("yyyy-MM-dd HH:mm:ss"),
 				    strJson,
 				    trxDateTime.ToString ("yyyy-MM-dd HH:mm:ss"),
 				    IconoxSvrResp,
 				    skrg.ToString ("yyyy-MM-dd HH:mm:ss"),
 				    true, 
-				failedReason, trxNumber, false, providerProduct.fIncludeFee, "", "",
+				    failedReason, trxNumber, false, providerProduct.fIncludeFee, "", "",
 				    out xError)) {
 				return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Failed to save transaction log", "");
 			}
@@ -462,7 +623,8 @@ namespace BPJS_THT
 			string certificate = "";
 			string cardChallenge = "";
 
-			string productCodeTopUpOnline = "PRD00108";
+			//string productCodeTopUpOnline = "PRD00108";
+			string productCodeTopUpOnline = commonSettings.getString ("IconoxTopUpClientProductCode");
 
 			Exception xError=null;
 
@@ -560,8 +722,12 @@ namespace BPJS_THT
 					"TopUp: Invalid TopUp amount", "");
 			}
 
-			int idbBalance = decimal.ToInt32 (decimal.Truncate (dbBalance));
-			if (idbBalance < cardBalance) {
+			//int idbBalance = decimal.ToInt32 (decimal.Truncate (dbBalance));
+			//int idbBalance = decimal.ToInt32 (decimal.Truncate (dbBalance));
+			//if (idbBalance < cardBalance) {
+			LogWriter.showDEBUG (this,"\r\nDB Balance = " + dbBalance.ToString () + "\r\n"
+				+ "     Card Balance = "+cardBalance.ToString ());
+			if (dbBalance < cardBalance) {
 				// Update Last card status in DB dengan status blocked
 				localDB.updateCardBlocked (cardNumber);
 
@@ -571,13 +737,13 @@ namespace BPJS_THT
 			}
 
 			// update balance di db dengan yg terupdate
-			if (lastModified < trxDateTime) {		// harusnya selalu masuk sini, kan online real time
+			//if (lastModified < trxDateTime) {		// harusnya selalu masuk sini, kan online real time
 				// Update Last card balance in DB dengan yang terupdate
 				if (!localDB.updateCardBalanceInDb (cardNumber, cardBalance, trxDateTime)) {
 					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "416", 
 						"Failed to update usercard balance", "");
 				}
-			}
+			//}
 
 			jsonConv.Clear ();
 			// jika fiCertificate = "" maka topup tanpa sign dgn sam krn pake nfc
@@ -629,13 +795,6 @@ namespace BPJS_THT
 					"Iconox server: no SAM response", "");
 			}
 
-			// Update Last card balance in DB dengan total topup dan balance sebelumnya
-			int totalBalance = amount + cardBalance;
-			if(!localDB.updateCardBalanceInDb(cardNumber, totalBalance, trxDateTime)){
-				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "416", 
-					"Failed to update usercard balance", "");
-			}
-
 			string strRecJson = IconoxSvrResp;
 			//trxRecTime = DateTime.Now;
 
@@ -662,15 +821,47 @@ namespace BPJS_THT
 			// FIXME JANG DEMO konek langsung bae ka Power-T, harusnya dilakukan settlement perwaktu tertentu
 			// tembak ka power-T
 
+			int nilaiYangMasukLog = 0;//	providerProduct.CurrentPrice;
 			DateTime skrg = DateTime.Now;
+			int topUpFee = 0;
+
+			// ieu mah hitungan jang purchase						100        99           1
+			string strTemp = hitungFeeTrxKartu (providerProduct, amount, ref nilaiYangMasukLog, ref topUpFee);
+			if (strTemp != "") {
+				LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Error get topup fee data product code: " + productCodeTopUpOnline);
+				return strTemp;
+			}
+
+			string qvaInvoiceNumber = "";
+			bool qvaReversalDone = false;
+			string errCode = "00"; string errMessage = "";
+
+			// amountFinal adalah nilai yang harus di transferkan dari petugas topup ke rekening penampungan
+			strTemp = bayarDariPetugasKePenampung(userId, providerProduct,
+				amount, TransactionRef_id, 
+				ref qvaInvoiceNumber, ref qvaReversalDone, 
+				ref errCode, ref errMessage);
+			if (strTemp != "") {
+				return strTemp;
+			}
+
+
+			// Update Last card balance in DB dengan total topup dan balance sebelumnya
+			int totalBalance = amount + cardBalance;
+			if(!localDB.updateCardBalanceInDb(cardNumber, totalBalance, trxDateTime)){
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "416", 
+					"Failed to update usercard balance", "");
+			}
+
 
 			// insert log transaksi
 			if (!localDB.insertCompleteTransactionLog (TransactionRef_id, productCodeTopUpOnline, 
 				providerProduct.ProviderProductCode,
 				userId.Substring (commonSettings.getString ("UserIdHeader").Length), cardNumber,
-				amount.ToString (), traceNumber.ToString (), trxDateTime.ToString ("yyyy-MM-dd HH:mm:ss"),
-				"0", providerProduct.ProviderCode, providerProduct.CogsPriceId,
-				0, 0, "", skrg.ToString ("yyyy-MM-dd HH:mm:ss"), "", skrg.ToString ("yyyy-MM-dd HH:mm:ss"),
+				nilaiYangMasukLog.ToString (), traceNumber.ToString (), trxDateTime.ToString ("yyyy-MM-dd HH:mm:ss"),
+				topUpFee.ToString (), providerProduct.ProviderCode, providerProduct.CogsPriceId,
+				cardBalance, totalBalance, "", skrg.ToString ("yyyy-MM-dd HH:mm:ss"), "", 
+				skrg.ToString ("yyyy-MM-dd HH:mm:ss"),
 				strJson,
 				trxDateTime.ToString ("yyyy-MM-dd HH:mm:ss"),
 				IconoxSvrResp,

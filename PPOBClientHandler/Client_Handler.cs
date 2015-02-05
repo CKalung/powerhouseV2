@@ -20,7 +20,7 @@ namespace PPOBClientHandler
     public class SslStateObject
     {
         public SslStream workSslStream = null;                // Stream socket.
-        public const int BufferSize = 4096;             // Size of receive buffer.
+        public const int BufferSize = 16384;             // Size of receive buffer.
         public byte[] buffer = new byte[BufferSize];    // Receive buffer.
         //public StringBuilder sb = new StringBuilder();  // Received data string.
     }

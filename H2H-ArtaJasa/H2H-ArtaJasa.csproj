@@ -3,11 +3,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D9D49A66-3575-48B0-AAD3-B59868E5B898}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>PhXml</RootNamespace>
-    <AssemblyName>PhXml</AssemblyName>
-    <ReleaseVersion>2.1</ReleaseVersion>
+    <ProjectGuid>{9BF88CF7-FB35-497E-BCB5-C1FAF6210EE9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>H2HArtaJasa</RootNamespace>
+    <AssemblyName>H2H-ArtaJasa</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -35,9 +34,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="BelajarXML.cs" />
-    <Compile Include="XmlSimple.cs" />
+    <Compile Include="Protocol\XmlProtocol.cs" />
+    <Compile Include="Contract\BillerPayment.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Protocol\" />
+    <Folder Include="BusinessRule\" />
+    <Folder Include="Contract\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PhXml\PhXml.csproj">
+      <Project>{D9D49A66-3575-48B0-AAD3-B59868E5B898}</Project>
+      <Name>PhXml</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

@@ -408,7 +408,7 @@ namespace NitrogenClientHandler
 			try {
 				// ProviderCode diganti 000 khusus untuk ambil data topup
 				if (!localDB.getPercentAdminFee (commonSettings.getString ("IconoxTopUpClientProductCode"),
-					1,"000", ref topUpPercentFee, out exer)) {
+					"000", ref topUpPercentFee, out exer)) {
 					LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Error get TopUp fee percent data");
 					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Error get TopUp fee percent data", "");
 				}
