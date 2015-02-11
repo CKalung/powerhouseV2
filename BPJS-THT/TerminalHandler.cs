@@ -723,7 +723,6 @@ namespace BPJS_THT
 			}
 
 			//int idbBalance = decimal.ToInt32 (decimal.Truncate (dbBalance));
-			//int idbBalance = decimal.ToInt32 (decimal.Truncate (dbBalance));
 			//if (idbBalance < cardBalance) {
 			LogWriter.showDEBUG (this,"\r\nDB Balance = " + dbBalance.ToString () + "\r\n"
 				+ "     Card Balance = "+cardBalance.ToString ());
@@ -795,7 +794,6 @@ namespace BPJS_THT
 					"Iconox server: no SAM response", "");
 			}
 
-			string strRecJson = IconoxSvrResp;
 			//trxRecTime = DateTime.Now;
 
 			int traceNumber = localDB.getNextProductTraceNumber();
@@ -845,7 +843,6 @@ namespace BPJS_THT
 				return strTemp;
 			}
 
-
 			// Update Last card balance in DB dengan total topup dan balance sebelumnya
 			int totalBalance = amount + cardBalance;
 			if(!localDB.updateCardBalanceInDb(cardNumber, totalBalance, trxDateTime)){
@@ -885,7 +882,6 @@ namespace BPJS_THT
 			jsonConv.Add("fiPrivateData", respSam);
 			jsonConv.Add("fiResponseCode", respCode);
 			jsonConv.Add("fiTransactionId", "Icx" + traceNumber.ToString().PadLeft(6, '0'));
-			//jsonConv.Add("fiToken", fiToken);
 			jsonConv.Add("fiTrxNumber", trxNumber);
 			jsonConv.Add("fiReversalAllowed", false);
 			return HTTPRestDataConstruct.constructHTTPRestResponse(200, "00", "Success", jsonConv.JSONConstruct());

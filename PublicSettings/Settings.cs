@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace PublicSettings
 {
@@ -33,6 +34,7 @@ namespace PublicSettings
             //}
         }
 
+		[MethodImpl(MethodImplOptions.Synchronized)]
         public bool ReloadSettings()
         {
             try

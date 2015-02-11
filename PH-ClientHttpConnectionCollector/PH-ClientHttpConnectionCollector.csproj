@@ -3,12 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9BF88CF7-FB35-497E-BCB5-C1FAF6210EE9}</ProjectGuid>
+    <ProjectGuid>{D79D1FA2-1E30-4F68-A9F9-B043FEEFE279}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>H2HArtaJasa</RootNamespace>
-    <AssemblyName>H2H-ArtaJasa</AssemblyName>
+    <RootNamespace>PHClientHttpConnectionCollector</RootNamespace>
+    <AssemblyName>PH-ClientHttpConnectionCollector</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ReleaseVersion>2.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,24 +29,20 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Protocol\XmlProtocol.cs" />
-    <Compile Include="Contract\BillerPayment.cs" />
+    <Compile Include="PhHttpConnectionCollector.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Protocol\" />
-    <Folder Include="BusinessRule\" />
-    <Folder Include="Contract\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\PhXml\PhXml.csproj">
-      <Project>{D9D49A66-3575-48B0-AAD3-B59868E5B898}</Project>
-      <Name>PhXml</Name>
+    <ProjectReference Include="..\PH-ConnectionCollectorInterface\PH-ConnectionCollectorInterface.csproj">
+      <Project>{4A9C5188-88E2-4A96-9702-08357983E883}</Project>
+      <Name>PH-ConnectionCollectorInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PH-ClientHttpHandler\PH-ClientHttpHandler.csproj">
+      <Project>{82360D7A-D76A-44EF-A8C4-102915C0AD23}</Project>
+      <Name>PH-ClientHttpHandler</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

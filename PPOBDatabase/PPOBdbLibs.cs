@@ -50,6 +50,19 @@ namespace PPOBDatabase
 
 
 
+	/// <summary>
+	/// Db card status.
+	/// </summary>
+	public enum dbCardStatus
+	{
+		Undistributed = 0,
+		Disactived = 1,
+		Actived = 2,
+		Blocked = 3,
+		Unregistered = 4,
+		dbFailed = 5
+	}
+
     public class PPOBdbLibs:IDisposable
     {
         #region IDisposable Members
@@ -2939,8 +2952,8 @@ namespace PPOBDatabase
 			// BERESIN DISINI
 //			status:
 //			0 : Candidate Card
-//			1 : Disactivate
-//			2 : Active
+//			1 : Disactivated
+//			2 : Actived
 //			3 : Blocked
 
 			cardBalance = 0;
@@ -2984,6 +2997,38 @@ namespace PPOBDatabase
 				return false;
 			}
 
+		}
+
+		/// <summary>
+		/// Gets the card status.
+		/// </summary>
+		/// <returns>The card status.</returns>
+		/// <param name="CardNumber">Card number.</param>
+		public dbCardStatus getCardStatus(string CardNumber){
+			Exception ExError = null;
+
+			// BERESIN DISINI
+			//			status:
+			//			0 : Undistributed
+			//			1 : Disactive
+			//			2 : Actived
+			//			3 : Blocked
+
+			string sql = "SELECT status FROM ucard_information WHERE card_number = '"
+				+ CardNumber.Trim() + "'";
+			int i=0;
+			if (!querympPr (sql,ref i, out ExError))
+				return dbCardStatus.dbFailed;
+			if (ExError != null) {
+				return dbCardStatus.dbFailed;
+			}
+			if (i <= 0) {
+				return dbCardStatus.Unregistered;
+			}
+			short status = short.Parse(localDB.GetDataItem (tbl_mpProduct, 0, "status").ToString());
+			if ((status > (int)dbCardStatus.Unregistered) || (status < (int)dbCardStatus.Undistributed))
+				return dbCardStatus.Unregistered;
+			return (dbCardStatus)status;
 		}
 
 		/// <summary>

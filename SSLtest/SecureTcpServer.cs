@@ -178,7 +178,7 @@ namespace SSLtest
                     sslStream.Dispose();
                     sslStream = null;
                 }
-                this.connectionCallback(this, new SecureConnectionResults(ex));
+                this.connectionCallback(this, new SecureConnectionResults(client, ex));
             }
         }
 

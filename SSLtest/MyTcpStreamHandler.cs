@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
 namespace SSLtest
 {
-	public class ConnectionStreamHandler : IDisposable
+	public class MyTcpStreamHandler : IDisposable
 	{
 		#region Disposable
 		private bool disposed;
@@ -28,7 +29,7 @@ namespace SSLtest
 				this.disposed = true;
 			}
 		}
-		~ConnectionStreamHandler()
+		~MyTcpStreamHandler()
 		{
 			this.Dispose(false);
 		}
@@ -37,18 +38,33 @@ namespace SSLtest
 		private void disposeAll()
 		{
 			// disini dispose semua yang bisa di dispose
-			if(ConnectionState.stream != null) ConnectionState.stream.Close ();
+			Disconnect (ConnectionState);
 			if(ConnectionState.sb != null) ConnectionState.sb.Clear ();
 		}
 
-		public void Disconnect(){
+		public void Disconnect(ConnectionStateObject State){
 //			writer.Close();
 //			reader.Close();
-			if(ConnectionState.stream != null) ConnectionState.stream.Close ();
+
+			if (State.client != null) {
+				try{
+					//Console.WriteLine ("TcpClient CLose");
+					State.client.Close ();
+				} catch {
+				}
+				//Console.WriteLine ("TcpClient null");
+				State.client = null;
+			}
+			if (State.stream != null) {
+				//Console.WriteLine ("Stream Close");
+				State.stream.Close ();
+				//Console.WriteLine ("Stream Dispose");
+				State.stream.Dispose ();
+			}
 		}
 
 		public delegate void onDisconnectedEventArgs();
-		public delegate void onReceived(Stream ClientStream, string Data);
+		public delegate void onReceived(ConnectionStateObject dataRec);
 
 		public event onDisconnectedEventArgs onDisconnected;
 		public event onReceived onDataReceived;
@@ -57,6 +73,7 @@ namespace SSLtest
 
 		public class ConnectionStateObject
 		{
+			public TcpClient client = null;                // Stream socket.
 			public Stream stream = null;                // Stream socket.
 			public const int BufferSize = 16384;             // Size of receive buffer.
 			public byte[] buffer = new byte[BufferSize];    // Receive buffer.
@@ -64,11 +81,14 @@ namespace SSLtest
 			public StringBuilder sb = new StringBuilder();  // Received data string.
 		}
 
-		public void Start (Stream stream)
+		public void Start (TcpClient client, Stream stream)
 		{
 			ConnectionState = new ConnectionStateObject ();
 			ConnectionState.buffer = new byte[16384];
+			ConnectionState.client = client;
 			ConnectionState.stream = stream;
+
+			//NetworkStream strm = new NetworkStream (socket);
 
 			try
 			{
@@ -122,7 +142,7 @@ namespace SSLtest
 					//state.sb.Append(Encoding.GetEncoding(1252).GetString(state.buffer, 0, bytesRead));
 					byte[] data = new byte[bytesRead];
 					Array.Copy(state.buffer, 0, data, 0, bytesRead);
-					state.DataLength = bytesRead;
+					state.DataLength += bytesRead;
 					state.sb.Append(Encoding.GetEncoding(1252).GetString(state.buffer, 0, bytesRead));
 					//                        Console.WriteLine(state.sb.ToString();
 					DataReceived(state);
@@ -162,7 +182,8 @@ namespace SSLtest
 		void DataReceived(ConnectionStateObject state){
 			// There might be more data, so store the data received so far.
 			if (onDataReceived != null)
-				onDataReceived (state.stream, state.sb.ToString());
+				onDataReceived (state);
+//				onDataReceived (state.stream, state.sb.ToString());
 //			Console.WriteLine("Data Terima: \r\n" + state.sb.ToString());
 //
 //			state.stream.Write(Encoding.UTF8.GetBytes("Sukses cuy!"), 0, 11);
@@ -176,7 +197,20 @@ namespace SSLtest
 					//ConnectionState.stream.Write (Encoding.UTF8.GetBytes (data), 0, data.Length);
 					ConnectionState.stream.Write (Encoding.GetEncoding(1252).GetBytes (data), 0, data.Length);
 					ConnectionState.stream.Flush ();
-	//				ConnectionState.stream.Close ();
+					//				ConnectionState.stream.Close ();
+					return true;
+				}
+			}catch{
+			}
+			return false;
+		}
+
+		public bool SendResponse(ConnectionStateObject State, string data){
+			try{
+				if (State.stream != null) {
+					State.stream.Write (Encoding.GetEncoding(1252).GetBytes (data), 0, data.Length);
+					State.stream.Flush ();
+					//				ConnectionState.stream.Close ();
 					return true;
 				}
 			}catch{

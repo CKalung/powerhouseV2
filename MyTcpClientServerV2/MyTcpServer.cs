@@ -10,7 +10,7 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Authentication;
 
-namespace SSLtest
+namespace MyTcpClientServerV2
 {
 	public class MyTcpServer : IDisposable {
 		#region Disposable
@@ -246,14 +246,14 @@ namespace SSLtest
 						sslStream.Dispose ();
 						sslStream = null;
 					}
-					this.secureConnectionCallback (this, new SecureConnectionResults (client, ex));
+					this.secureConnectionCallback (this, new SecureConnectionResults (ex));
 				} else {
 					// jika non SSL
 					if (stream != null) {
 						stream.Dispose ();
 						stream = null;
 					}
-					this.nonSecureConnectionCallback (this, new NonSecureConnectionResults (client, ex));
+					this.nonSecureConnectionCallback (this, new NonSecureConnectionResults (ex));
 				}
 			}
 		}
@@ -262,7 +262,6 @@ namespace SSLtest
 		{
 			SecureConnectionResults scr = null;
 			SslStream sslStream = null;
-			TcpClient cLient = null;
 			try
 			{
 				//sslStream = result.AsyncState as SslStream;
@@ -270,7 +269,7 @@ namespace SSLtest
 				sslStream = scr.SecureStream;
 				sslStream.EndAuthenticateAsServer(result);
 
-				//this.secureConnectionCallback(this, new SecureConnectionResults(tclient, sslStream));
+				//this.secureConnectionCallback(this, new SecureConnectionResults(scr.Client, sslStream));
 				this.secureConnectionCallback(this, scr);
 			}
 			catch (Exception ex)
@@ -280,9 +279,8 @@ namespace SSLtest
 					sslStream.Dispose();
 					sslStream = null;
 				}
-
-				//this.secureConnectionCallback(this, new SecureConnectionResults(tclient, ex));
-				this.secureConnectionCallback(this, scr);
+				this.secureConnectionCallback(this, new SecureConnectionResults(ex));
+				//this.secureConnectionCallback(this, ex);
 			}
 		}
 

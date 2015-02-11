@@ -12,7 +12,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 
 
-namespace SSLtest
+namespace MyTcpClientServerV2
 {
 	class MyHttpTest
 	//class Program
@@ -126,7 +126,7 @@ namespace SSLtest
 			}
 
 			dataHandler = new MyTcpStreamHandler ();
-			dataHandler.Start (args.Client, stream);
+			dataHandler.Start (stream, args.Client);
 			dataHandler.onDataReceived += new MyTcpStreamHandler.onReceived (DataReceived);
 
 		}
@@ -147,7 +147,7 @@ namespace SSLtest
 			}
 
 			dataHandler = new MyTcpStreamHandler ();
-			dataHandler.Start (args.Client, stream);
+			dataHandler.Start (stream, args.Client);
 			dataHandler.onDataReceived += new MyTcpStreamHandler.onReceived (DataReceived);
 
 		}

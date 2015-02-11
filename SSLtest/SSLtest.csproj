@@ -45,20 +45,21 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SecureConnectionResults.cs" />
-    <Compile Include="SecureTcpClient.cs" />
-    <Compile Include="SecureTcpServer.cs" />
     <Compile Include="RestHandler.cs" />
     <Compile Include="RestService.cs" />
     <Compile Include="Cryptograph.cs" />
     <Compile Include="YangUdahJalan.cs" />
     <Compile Include="MyHttpTest.cs" />
-    <Compile Include="ContohPakeSSLHttpsClientServer.cs" />
-    <Compile Include="ConnectionStreamHandler.cs" />
     <Compile Include="MyTcpServer.cs" />
+    <Compile Include="MyTcpConnectionResults.cs" />
+    <Compile Include="MyTcpClient.cs" />
+    <Compile Include="MyTcpStreamHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="SecureTcpClient.cs" />
+    <None Include="SecureTcpServer.cs" />
+    <None Include="ContohPakeSSLHttpsClientServer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

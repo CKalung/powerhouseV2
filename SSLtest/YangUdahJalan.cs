@@ -311,6 +311,7 @@ namespace SSLtest
               X509Chain chain,
               SslPolicyErrors sslPolicyErrors)
         {
+			Console.WriteLine ("==== ASUP VALIDATION Certificate");
             if (sslPolicyErrors == SslPolicyErrors.None)
                 return true;
 

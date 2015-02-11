@@ -182,8 +182,8 @@ namespace SSLtest
 
         static void Main2c(string[] args)
         {
-            SecureTcpServer server = null;
-            SecureTcpClient client = null;
+            MyTcpServer server = null;
+            MyTcpClient client = null;
 
             try
             {
@@ -203,14 +203,14 @@ namespace SSLtest
 				//X509Certificate2 serverCert = X509Certificate2.;
                 Console.WriteLine("Sertifikat sudah loaded");
 
-                server = new SecureTcpServer(port, serverCert,
+                server = new MyTcpServer(port, serverCert,
                     new SecureConnectionResultsCallback(OnServerConnectionAvailable));
 
                 server.StartListening();
 
                 Console.WriteLine("Server siap");
 
-                client = new SecureTcpClient(new SecureConnectionResultsCallback(OnClientConnectionAvailable),
+                client = new MyTcpClient(new SecureConnectionResultsCallback(OnClientConnectionAvailable),
                     certValidationCallback);
 
                 client.StartConnecting("localhost", new IPEndPoint(IPAddress.Loopback, port));

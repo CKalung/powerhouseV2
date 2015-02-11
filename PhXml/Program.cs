@@ -53,6 +53,7 @@ namespace PhXml
 
 			Console.WriteLine (xml.GetFirstChild ("Companies").getChildValue ("Company"));
 
+			xml.Dispose ();
 		}
 	}
 }

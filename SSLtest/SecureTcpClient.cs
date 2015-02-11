@@ -126,7 +126,7 @@ namespace SSLtest
                     sslStream = null;
                 }
 
-                this.connectionCallback(this, new SecureConnectionResults(ex));
+                this.connectionCallback(this, new SecureConnectionResults(client, ex));
             }
         }
 
@@ -138,7 +138,7 @@ namespace SSLtest
                 sslStream = result.AsyncState as SslStream;
                 sslStream.EndAuthenticateAsClient(result);
 
-                this.connectionCallback(this, new SecureConnectionResults(sslStream));
+				this.connectionCallback(this, new SecureConnectionResults(client, sslStream));
             }
             catch (Exception ex)
             {
@@ -148,7 +148,7 @@ namespace SSLtest
                     sslStream = null;
                 }
 
-                this.connectionCallback(this, new SecureConnectionResults(ex));
+				this.connectionCallback(this, new SecureConnectionResults(client, ex));
             }
         }
 

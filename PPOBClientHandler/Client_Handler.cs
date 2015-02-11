@@ -180,8 +180,8 @@ namespace PPOBClientHandler
                 this.serverCert = serverCert;
                 this.checkCertifcateRevocation = false;
                 this.clientCertificateRequired = false;
-                //this.sslProtocols = SslProtocols.Default;
-                this.sslProtocols = SslProtocols.Tls12;
+                this.sslProtocols = SslProtocols.Default;
+                //this.sslProtocols = SslProtocols.Tls12;
 
 				LogWriter.showDEBUG(this,"Panggil setSoketSSL ");
                 setSocketForSSL(sock);
@@ -398,16 +398,17 @@ namespace PPOBClientHandler
 				LogWriter.show (this, "Beres authenticate TLS");
                 //this.connectionCallback(this, new SecureConnectionResults(sslStream));
 
-                SslStateObject state = new SslStateObject();
+				// coba ieu di pindah ka dieu, ngarah teu leungit data pertama na
+				LogWriter.show (this, "End kan TLS authenticate"); 
+				//Console.WriteLine("End kan authenticate");
+				sslStream.EndAuthenticateAsServer(result);
+
+				SslStateObject state = new SslStateObject();
                 state.workSslStream = sslStream;
 
                 sslStream.BeginRead(state.buffer, 0, state.buffer.Length,
                         new AsyncCallback(ReadCallbackSSL), state);
 
-				// coba ieu di pindah ka dieu, ngarah teu leungit data pertama na
-				LogWriter.show (this, "End kan TLS authenticate"); 
-				//Console.WriteLine("End kan authenticate");
-				sslStream.EndAuthenticateAsServer(result);
             }
             catch (Exception ex)
             {
