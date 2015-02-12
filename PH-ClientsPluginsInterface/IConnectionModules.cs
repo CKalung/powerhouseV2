@@ -9,7 +9,12 @@ namespace PHClientsPluginsInterface
 		void Start(string pluginPath);
 		void Stop();
 		string Name { get; }
-		IConnectionCollector ConnectionCollectorModule { set; }
+//		void SetConnectionCollectorModule(IConnectionCollector ConnectionCollector);
+		//IConnectionCollector ConnectionCollectorModule { set; }
+
+//		void StartListening (int Port);
+//		void StartListening (int Port, string certFilePath);
+//		void StopListening ();
 
 		//string SayHelloTo(string personName);
 	}

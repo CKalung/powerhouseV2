@@ -3,10 +3,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D79D1FA2-1E30-4F68-A9F9-B043FEEFE279}</ProjectGuid>
+    <ProjectGuid>{23262D13-1EC0-4E1B-9E9A-4DE81A8BADC5}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>PHClientHttpConnectionCollector</RootNamespace>
-    <AssemblyName>PH-ClientHttpConnectionCollector</AssemblyName>
+    <RootNamespace>PHTcpServerModule</RootNamespace>
+    <AssemblyName>PH-TcpServerModule</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -32,13 +32,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PhHttpConnectionCollector.cs" />
+    <Compile Include="TcpServerModule.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\PH-ClientHttpHandler\PH-ClientHttpHandler.csproj">
-      <Project>{82360D7A-D76A-44EF-A8C4-102915C0AD23}</Project>
-      <Name>PH-ClientHttpHandler</Name>
+    <ProjectReference Include="..\MyTcpClientServerV2\MyTcpClientServerV2.csproj">
+      <Project>{86A73E88-365B-4312-8827-862F335D8600}</Project>
+      <Name>MyTcpClientServerV2</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

@@ -1,21 +1,18 @@
-﻿using System;
-using System.IO;
-using System.Net.Security;
-using System.ComponentModel.Composition;
-using System.Security.Cryptography.X509Certificates;
+﻿
 
-using MyTcpClientServerV2;
+using System;
+using System.IO;
 
 using PHClientsPluginsInterface;
 using PHConnectionCollectorInterface;
 
 using PHClientHttpConnectionCollector;
+using PHTcpServerPluginTemplate;
 
 namespace PHHttpServerPluginModule
 {
-	[Export(typeof(IConnectionModules))]
-	//public class HttpServerModule : TcpServerModuleTemplate
-	public class HttpServerModule : BaseConnectionPlugins
+	//[Export(typeof(IConnectionModules))]
+	public class HttpServerPluginModule : TcpServerPluginTemplate
 	{
 		#region Disposable
 		private bool disposed;
@@ -38,7 +35,7 @@ namespace PHHttpServerPluginModule
 				this.disposed = true;
 			}
 		}
-		~HttpServerModule()
+		~HttpServerPluginModule()
 		{
 			this.Dispose(false);
 		}
@@ -49,9 +46,6 @@ namespace PHHttpServerPluginModule
 			// disini dispose semua yang bisa di dispose
 		}
 
-		MyTcpServer server = null;
-		X509Certificate2 certificateFile = null;
-
 		IConnectionCollector connectionCollector = null;
 
 		const string namaModule = "HttpServer Module";
@@ -60,12 +54,13 @@ namespace PHHttpServerPluginModule
 		int port = 0;
 
 
-		public HttpServerModule ()
+		public HttpServerPluginModule ()
 			: base(namaModule)
 		{
 			Console.WriteLine ("Modul dibuat > {0}", namaModule);
 			//base.ConnectionCollectorModule = new PhHttpConnectionCollector ();
 			//base.SetConnectionCollectorModule (new PhHttpConnectionCollector ());
+			SetConnectionCollectorModule (new PhHttpConnectionCollector ());
 			connectionCollector = new PhHttpConnectionCollector ();
 			Console.WriteLine ("kolektor COnnector di buat");
 		}
@@ -83,7 +78,7 @@ namespace PHHttpServerPluginModule
 		public override void Start(string pluginPath ){ 
 			Console.WriteLine ("Start plugin http");
 			LoadConfig ();
-			StartListening (port, certFilePath);
+			base.StartListening (port, certFilePath);
 		}
 
 		public override void Stop(){

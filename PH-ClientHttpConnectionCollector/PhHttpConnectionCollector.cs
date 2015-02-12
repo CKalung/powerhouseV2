@@ -5,12 +5,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-using PHConnectionCollectorInterface;
+//using PHConnectionCollectorInterface;
 using PHClientHttpHandler;
 
 namespace PHClientHttpConnectionCollector
 {
-	public class PhHttpConnectionCollector : IConnectionCollector {
+	//public class PhHttpConnectionCollector : IConnectionCollector {
+	public class PhHttpConnectionCollector : IDisposable {
 		#region Disposable
 		private bool disposed = false;
 		public void Dispose()

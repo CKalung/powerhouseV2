@@ -55,10 +55,8 @@ namespace PublicSettings
 
         public PPOBDatabase.PPOBdbLibs localDb
         {
-            set
-            {
-                locDb = value;
-            }
+			set { locDb = value; }
+			get { return locDb; }
         }
 
         public bool isKeyExist(string key)

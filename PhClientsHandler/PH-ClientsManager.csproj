@@ -50,32 +50,17 @@
       <Project>{9E43FB83-C8A8-42CA-AB48-6165A409A755}</Project>
       <Name>PublicSettings</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PPOBDatabase\PPOBDatabase.csproj">
-      <Project>{D0AD1740-3D52-404F-8EE0-B290D8DA3310}</Project>
-      <Name>PPOBDatabase</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CrossIniFile\CrossIniFile.csproj">
-      <Project>{87ABF3FF-7EB2-4F03-BC61-7CD23E46E55A}</Project>
-      <Name>CrossIniFile</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MyTcpClientServerV2\MyTcpClientServerV2.csproj">
-      <Project>{86A73E88-365B-4312-8827-862F335D8600}</Project>
-      <Name>MyTcpClientServerV2</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PhHost2Host\Mark42\Mark42.csproj">
       <Project>{7A005538-4ACE-4202-974B-79EC42BCEC82}</Project>
       <Name>Mark42</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PPOBHttpRestData\PPOBHttpRestData.csproj">
-      <Project>{99F52472-227A-4244-BE51-7309C5DECDB6}</Project>
-      <Name>PPOBHttpRestData</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PPOBManager\PPOBManager.csproj">
-      <Project>{4404A1AE-D5BD-4CF8-A54D-723E9A830E54}</Project>
-      <Name>PPOBManager</Name>
+    <ProjectReference Include="..\PH-ClientsPluginsInterface\PH-ClientsPluginsInterface.csproj">
+      <Project>{83857157-3062-4189-9888-65F9007D6BD3}</Project>
+      <Name>PH-ClientsPluginsInterface</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="PhClientsManager.cs" />
+    <None Include="TesLoader.cs" />
   </ItemGroup>
 </Project>

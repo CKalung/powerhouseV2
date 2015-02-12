@@ -169,11 +169,11 @@ namespace MyTcpClientServerV2
 				listenerV4.BeginAcceptTcpClient(onAcceptConnection, listenerV4);
 			}
 
-			if (listenerV6 != null)
-			{
-				listenerV6.Start();
-				listenerV6.BeginAcceptTcpClient(onAcceptConnection, listenerV6);
-			}
+//			if (listenerV6 != null)
+//			{
+//				listenerV6.Start();
+//				listenerV6.BeginAcceptTcpClient(onAcceptConnection, listenerV6);
+//			}
 
 			started = true;
 		}

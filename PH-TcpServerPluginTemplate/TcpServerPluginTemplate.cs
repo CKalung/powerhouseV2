@@ -11,7 +11,8 @@ using PHConnectionCollectorInterface;
 namespace PHTcpServerPluginTemplate
 {
 	[Export(typeof(IConnectionModules))]
-	public class TcpServerModuleTemplate : BaseConnectionPlugins
+	public class TcpServerPluginTemplate : BaseConnectionPlugins
+		//: base("Plugin1")
 	{
 		#region Disposable
 		private bool disposed;
@@ -34,7 +35,7 @@ namespace PHTcpServerPluginTemplate
 				this.disposed = true;
 			}
 		}
-		~TcpServerModuleTemplate()
+		~TcpServerPluginTemplate()
 		{
 			this.Dispose(false);
 		}
@@ -50,27 +51,33 @@ namespace PHTcpServerPluginTemplate
 
 		IConnectionCollector connectionCollector = null;
 
-		public TcpServerModuleTemplate (string name)
+		public TcpServerPluginTemplate (string name)
 			: base(name)
 		{
 			Console.WriteLine("ctor_{0}", Name);
-		
+			Console.WriteLine ("Template TcpServer created dari modul {0}", Name);
 		}
 
-		public IConnectionCollector ConnectionCollectorModule {
-			set { connectionCollector = value; }
+//		public IConnectionCollector ConnectionCollectorModule {
+//			set { connectionCollector = value; }
+//		}
+
+		public override void SetConnectionCollectorModule(IConnectionCollector ConnectionCollector) {
+			connectionCollector = ConnectionCollector; 
 		}
 
 		public override void Start(string pluginPath ){ 
+			Console.WriteLine ("Start di panggil di " + this.ToString ());
 		}
 
 		public override void Stop(){
+			Console.WriteLine ("Stop di panggil di " + this.ToString ());
 		}
 
-		public void StartListening(int Port){ 
+		public override void StartListening(int Port){ 
 			StartListening (Port,"");
 		}
-		public void StartListening(int Port, string certFilePath){ 
+		public override void StartListening(int Port, string certFilePath){ 
 			//IConnectionCollector ConnectionCollectorModule){
 
 			//commonSettings = commonConfigs;
@@ -118,7 +125,7 @@ namespace PHTcpServerPluginTemplate
 
 
 		}
-		public void StopListening(){
+		public override void StopListening(){
 			if (server != null)
 				server.Dispose();
 			Console.WriteLine("Plugin stoped");

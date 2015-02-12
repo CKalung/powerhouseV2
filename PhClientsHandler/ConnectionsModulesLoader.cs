@@ -3,10 +3,11 @@ using System.IO;
 using System.Collections.Generic;
 
 using Mark42;
+using PHClientsPluginsInterface;
 
-namespace PhClientsHandler
+namespace PhClientsManager
 {
-	public class ConnectionsManager : IDisposable
+	public class ConnectionsModulesLoader : IDisposable
 	{
 		#region Disposable
 		private bool disposed;
@@ -29,7 +30,7 @@ namespace PhClientsHandler
 				this.disposed = true;
 			}
 		}
-		~ConnectionsManager()
+		~ConnectionsModulesLoader()
 		{
 			this.Dispose(false);
 		}
@@ -47,21 +48,29 @@ namespace PhClientsHandler
 
 		string pluginsFolderPath = "";
 
-		PublicSettings.Settings CommonConfigs = new PublicSettings.Settings();
+		//PublicSettings.Settings CommonConfigs = new PublicSettings.Settings();
 
-		public ConnectionsManager ()
-		{
-			pluginsFolderPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "ConnectionPlugins");
+		public ConnectionsModulesLoader (string AppPath, bool consoleMode){
 
-			pluginService = new PluginService<IConnectionModules>(pluginsFolderPath, "*.dll", true);
+			Console.WriteLine ("BIKIN Loader");
+
+			//pluginsFolderPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "ClientConnectionPlugins");
+			pluginsFolderPath = Path.Combine(AppPath, "ClientConnectionPlugins");
+			if (!System.IO.Directory.Exists (pluginsFolderPath)) {
+				System.IO.Directory.CreateDirectory (pluginsFolderPath);
+			}
+
+			//pluginService = new PluginService<IConnectionModules>(pluginsFolderPath, "*.dll", true);
+			pluginService = new PluginService<IConnectionModules>(pluginsFolderPath, "ConnectionServerPlugin*.dll", false);
 			pluginService.PluginsAdded += pluginService_PluginAdded;
 			pluginService.PluginsChanged += pluginService_PluginChanged;
 			pluginService.PluginsRemoved += pluginService_PluginRemoved;
 
-			loadConfig ();
+			//loadConfig ();
 		}
 
 		public void Start(){
+			Console.WriteLine ("START Loader");
 			pluginService.Start();
 		}
 		public void Stop(){
@@ -103,6 +112,8 @@ namespace PhClientsHandler
 		private void pluginService_PluginAdded(PluginService<IConnectionModules> sender, 
 			List<IConnectionModules> plugins)
 		{
+			Console.WriteLine("Asup PluginAdded.");
+
 			foreach (var plugin in plugins)
 			{
 				Console.WriteLine("PluginAdded: {0}.", plugin.Name);
@@ -117,33 +128,33 @@ namespace PhClientsHandler
 
 		#endregion
 
-		public bool loadConfig()
-		{
-			//			string name = System.Configuration.con .ConfigurationManager. .AppSettings["OperatorName"];
-			//			Console.WriteLine("Welcome " + name);
-			//			string level = System.Configuration.ConfigurationManager.AppSettings["LoggerLevel"];
-			//
-			//			Console.WriteLine("Logger level: " + level);
-
-			//            appPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-			using (CrossIniFile.INIFile a = new CrossIniFile.INIFile (pluginsFolderPath + "/config.ini")) {
-				CommonConfigs.DbHost = a.GetValue("PostgreDB", "Host", "127.0.0.1");
-				CommonConfigs.DbUser = a.GetValue("PostgreDB", "Username", "postgres");
-				CommonConfigs.DbPort = a.GetValue("PostgreDB", "Port", 5432);
-				CommonConfigs.DbPassw = a.GetValue("PostgreDB", "Password", "");
-				CommonConfigs.DbName = a.GetValue("PostgreDB", "DBName", "");
-
-				CommonConfigs.localDb = new PPOBDatabase.PPOBdbLibs(CommonConfigs.DbHost, CommonConfigs.DbPort,
-					CommonConfigs.DbName, CommonConfigs.DbUser, CommonConfigs.DbPassw);
-				CommonConfigs.ReloadSettings();
-				if (CommonConfigs.SettingCollection == null) return false;
-
-				if (!System.IO.Directory.Exists(CommonConfigs.getString("LogPath"))) 
-					System.IO.Directory.CreateDirectory(CommonConfigs.getString("LogPath"));
-				LOG_Handler.LogWriter.setPath(CommonConfigs.getString("LogPath"));
-				return true;
-			}
-		}
+//		public bool loadConfig()
+//		{
+//			//			string name = System.Configuration.con .ConfigurationManager. .AppSettings["OperatorName"];
+//			//			Console.WriteLine("Welcome " + name);
+//			//			string level = System.Configuration.ConfigurationManager.AppSettings["LoggerLevel"];
+//			//
+//			//			Console.WriteLine("Logger level: " + level);
+//
+//			//            appPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+//			using (CrossIniFile.INIFile a = new CrossIniFile.INIFile (pluginsFolderPath + "/config.ini")) {
+//				CommonConfigs.DbHost = a.GetValue("PostgreDB", "Host", "127.0.0.1");
+//				CommonConfigs.DbUser = a.GetValue("PostgreDB", "Username", "postgres");
+//				CommonConfigs.DbPort = a.GetValue("PostgreDB", "Port", 5432);
+//				CommonConfigs.DbPassw = a.GetValue("PostgreDB", "Password", "");
+//				CommonConfigs.DbName = a.GetValue("PostgreDB", "DBName", "");
+//
+//				CommonConfigs.localDb = new PPOBDatabase.PPOBdbLibs(CommonConfigs.DbHost, CommonConfigs.DbPort,
+//					CommonConfigs.DbName, CommonConfigs.DbUser, CommonConfigs.DbPassw);
+//				CommonConfigs.ReloadSettings();
+//				if (CommonConfigs.SettingCollection == null) return false;
+//
+//				if (!System.IO.Directory.Exists(CommonConfigs.getString("LogPath"))) 
+//					System.IO.Directory.CreateDirectory(CommonConfigs.getString("LogPath"));
+//				LOG_Handler.LogWriter.setPath(CommonConfigs.getString("LogPath"));
+//				return true;
+//			}
+//		}
 
 	}
 }

@@ -29,17 +29,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HttpServerPluginModule.cs" />
+    <Compile Include="tes2Plugin.cs" />
+    <Compile Include="HttpServerPlugin.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\PH-TcpServerPluginTemplate\PH-TcpServerPluginTemplate.csproj">
-      <Project>{9F847E85-74C6-464F-840B-E4A02F31B6D3}</Project>
-      <Name>PH-TcpServerPluginTemplate</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PH-ClientHttpConnectionCollector\PH-ClientHttpConnectionCollector.csproj">
       <Project>{D79D1FA2-1E30-4F68-A9F9-B043FEEFE279}</Project>
       <Name>PH-ClientHttpConnectionCollector</Name>
@@ -48,13 +47,25 @@
       <Project>{87ABF3FF-7EB2-4F03-BC61-7CD23E46E55A}</Project>
       <Name>CrossIniFile</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PH-ConnectionCollectorInterface\PH-ConnectionCollectorInterface.csproj">
+      <Project>{4A9C5188-88E2-4A96-9702-08357983E883}</Project>
+      <Name>PH-ConnectionCollectorInterface</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PH-ClientsPluginsInterface\PH-ClientsPluginsInterface.csproj">
       <Project>{83857157-3062-4189-9888-65F9007D6BD3}</Project>
       <Name>PH-ClientsPluginsInterface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PH-ConnectionCollectorInterface\PH-ConnectionCollectorInterface.csproj">
-      <Project>{4A9C5188-88E2-4A96-9702-08357983E883}</Project>
-      <Name>PH-ConnectionCollectorInterface</Name>
+    <ProjectReference Include="tesPlugin\tesPlugin.csproj">
+      <Project>{78967318-62E7-4207-A1B0-2B6F20D85265}</Project>
+      <Name>tesPlugin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MyTcpClientServerV2\MyTcpClientServerV2.csproj">
+      <Project>{86A73E88-365B-4312-8827-862F335D8600}</Project>
+      <Name>MyTcpClientServerV2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PH-TcpServerPluginTemplate\PH-TcpServerPluginTemplate.csproj">
+      <Project>{9F847E85-74C6-464F-840B-E4A02F31B6D3}</Project>
+      <Name>PH-TcpServerPluginTemplate</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

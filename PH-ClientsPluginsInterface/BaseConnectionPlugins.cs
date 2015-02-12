@@ -13,12 +13,16 @@ namespace PHClientsPluginsInterface
 
 		public string Name { get; private set; }
 
-		public IConnectionCollector ConnectionCollectorModule { set; private get; }
+		//public IConnectionCollector ConnectionCollectorModule { set; private get; }
 
 		//public abstract string SayHelloTo(string personName);
-
+//		public abstract void SetConnectionCollectorModule(IConnectionCollector ConnectionCollector);
 		public abstract void Start(string pluginPath);
 		public abstract void Stop();
+
+//		public abstract void StartListening (int Port);
+//		public abstract void StartListening (int Port, string certFilePath);
+//		public abstract void StopListening ();
 
 		public virtual void Dispose()
 		{

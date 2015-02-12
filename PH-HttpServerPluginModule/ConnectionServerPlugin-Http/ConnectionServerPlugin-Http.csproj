@@ -3,10 +3,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D79D1FA2-1E30-4F68-A9F9-B043FEEFE279}</ProjectGuid>
+    <ProjectGuid>{568ECCFA-D6B7-4053-987F-9A81A288E9F6}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>PHClientHttpConnectionCollector</RootNamespace>
-    <AssemblyName>PH-ClientHttpConnectionCollector</AssemblyName>
+    <RootNamespace>ConnectionServerPluginHttp</RootNamespace>
+    <AssemblyName>ConnectionServerPlugin-Http</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -29,16 +29,29 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PhHttpConnectionCollector.cs" />
+    <Compile Include="HttpServerPlugin.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\PH-ClientHttpHandler\PH-ClientHttpHandler.csproj">
-      <Project>{82360D7A-D76A-44EF-A8C4-102915C0AD23}</Project>
-      <Name>PH-ClientHttpHandler</Name>
+    <ProjectReference Include="..\..\PH-ClientsPluginsInterface\PH-ClientsPluginsInterface.csproj">
+      <Project>{83857157-3062-4189-9888-65F9007D6BD3}</Project>
+      <Name>PH-ClientsPluginsInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PH-TcpServerModule\PH-TcpServerModule.csproj">
+      <Project>{23262D13-1EC0-4E1B-9E9A-4DE81A8BADC5}</Project>
+      <Name>PH-TcpServerModule</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PH-ClientHttpConnectionCollector\PH-ClientHttpConnectionCollector.csproj">
+      <Project>{D79D1FA2-1E30-4F68-A9F9-B043FEEFE279}</Project>
+      <Name>PH-ClientHttpConnectionCollector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CrossIniFile\CrossIniFile.csproj">
+      <Project>{87ABF3FF-7EB2-4F03-BC61-7CD23E46E55A}</Project>
+      <Name>CrossIniFile</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

@@ -1,25 +1,20 @@
-﻿using System;
+﻿
+
+using System;
 using System.IO;
 using System.Net.Security;
-using System.ComponentModel.Composition;
 using System.Security.Cryptography.X509Certificates;
 
 using MyTcpClientServerV2;
 
-using PHClientsPluginsInterface;
-using PHConnectionCollectorInterface;
-
-using PHClientHttpConnectionCollector;
-
-namespace PHHttpServerPluginModule
+namespace PHTcpServerModule
 {
-	[Export(typeof(IConnectionModules))]
-	//public class HttpServerModule : TcpServerModuleTemplate
-	public class HttpServerModule : BaseConnectionPlugins
+
+	public class TcpServerModule : IDisposable
 	{
 		#region Disposable
 		private bool disposed;
-		public override void Dispose()
+		public void Dispose()
 		{
 			if (!this.disposed)
 			{
@@ -38,7 +33,7 @@ namespace PHHttpServerPluginModule
 				this.disposed = true;
 			}
 		}
-		~HttpServerModule()
+		~TcpServerModule()
 		{
 			this.Dispose(false);
 		}
@@ -52,63 +47,22 @@ namespace PHHttpServerPluginModule
 		MyTcpServer server = null;
 		X509Certificate2 certificateFile = null;
 
-		IConnectionCollector connectionCollector = null;
-
-		const string namaModule = "HttpServer Module";
-
-		string certFilePath = "";
-		int port = 0;
+		public delegate void onNewConnectionEvent(Stream stream, System.Net.Sockets.TcpClient client);
+		public event onNewConnectionEvent onNewConnection;
 
 
-		public HttpServerModule ()
-			: base(namaModule)
+		public TcpServerModule ()
 		{
-			Console.WriteLine ("Modul dibuat > {0}", namaModule);
-			//base.ConnectionCollectorModule = new PhHttpConnectionCollector ();
-			//base.SetConnectionCollectorModule (new PhHttpConnectionCollector ());
-			connectionCollector = new PhHttpConnectionCollector ();
-			Console.WriteLine ("kolektor COnnector di buat");
-		}
-
-		private void LoadConfig(){
-			using (CrossIniFile.INIFile a = new CrossIniFile.INIFile ("./httpconfig.ini")) {
-				port = a.GetValue("HttpServerModule", "Port", 81);
-				Console.WriteLine ("Port = " + port.ToString ());
-				certFilePath = a.GetValue ("HttpServerModule", "CertificateFilePath", "");
-				Console.WriteLine ("Certificate = " + certFilePath);
-				//"./SslKeys/server.pfx");
-			}
-		}
-
-		public override void Start(string pluginPath ){ 
-			Console.WriteLine ("Start plugin http");
-			LoadConfig ();
-			StartListening (port, certFilePath);
-		}
-
-		public override void Stop(){
-			StopListening ();
 		}
 
 		public void StartListening(int Port){ 
 			StartListening (Port,"");
 		}
 		public void StartListening(int Port, string certFilePath){ 
-			//IConnectionCollector ConnectionCollectorModule){
-
-			//commonSettings = commonConfigs;
-			//ConnectionCollector = ConnectionCollectorModule;
-
 			int port = Port;
 			try
 			{
-				Console.WriteLine (Name + " plugin starting...");
-
 				//            appPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-
-				Console.WriteLine ("Executing path = " + System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location));
-				Console.WriteLine ("Calling Path = " + System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly ().Location));
-				Console.WriteLine ("Entry path = " + System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly ().Location));
 
 				if(certFilePath != "" ){
 					if (!File.Exists(certFilePath)){
@@ -164,8 +118,8 @@ namespace PHHttpServerPluginModule
 				return;
 			}
 
-			if (connectionCollector != null)
-				connectionCollector.NewConnection (stream, args.Client);
+			if (onNewConnection != null)
+				onNewConnection (stream, args.Client);
 			else {
 				if (args.Client != null)
 					args.Client.Close ();
@@ -195,8 +149,8 @@ namespace PHHttpServerPluginModule
 				return;
 			}
 
-			if(connectionCollector!=null)
-				connectionCollector.NewConnection (stream, args.Client);
+			if (onNewConnection != null)
+				onNewConnection (stream, args.Client);
 			else {
 				if (args.Client != null)
 					args.Client.Close ();
@@ -210,6 +164,37 @@ namespace PHHttpServerPluginModule
 			//			dataHandler.onDataReceived += new MyTcpStreamHandler.onReceived (DataReceived);
 
 		}
+
+		//		private void DataReceived(MyTcpStreamHandler.ConnectionStateObject State){
+		//			Console.WriteLine ("Terima data = " + State.sb.ToString ());
+		//			string balesan = "[" + DateTime.Now.ToString ("yy-MM-dd HH:mm:ss") + "] " + "Data di terima rojerrrr";
+		//			Console.WriteLine ("Bales dengan = " + balesan);
+		//			dataHandler.SendResponse (State, balesan);
+		//			Console.WriteLine ("Siap diskonek");
+		//
+		//			if (State.client != null) {
+		//				try{
+		//					Console.WriteLine ("TcpClient CLose");
+		//					State.client.Close ();
+		//				} catch {
+		//				}
+		//				Console.WriteLine ("TcpClient null");
+		//				State.client = null;
+		//			}
+		//
+		//			if (State.stream != null) {
+		//				Console.WriteLine ("Stream Close");
+		//				State.stream.Close ();
+		//				Console.WriteLine ("Stream Dispose");
+		//				State.stream.Dispose ();
+		//			}
+		//
+		//			dataHandler.Disconnect (State);
+		//			Console.WriteLine ("Udah diskonek");
+		//			dataHandler.Dispose ();
+		//			Console.WriteLine ("Udah dispose");
+		//
+		//		}
 
 		bool IgnoreCertificateErrorsCallback(object sender,
 			X509Certificate certificate,
@@ -235,7 +220,6 @@ namespace PHHttpServerPluginModule
 			//returning true tells the SslStream object you don't care about any errors.
 			return true;
 		}
-
 
 	}
 }

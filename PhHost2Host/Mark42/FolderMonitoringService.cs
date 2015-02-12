@@ -31,8 +31,10 @@ namespace Mark42
         {
             _log = log;
             _directoryAbsolutePath = Helper.GetAbsolutePath(folderToMonitor);
-            _searchPattern = patternToMonitor.ToLower();
+			_searchPattern = patternToMonitor;	//.ToLower();
             _recursive = recursive;
+
+			Console.WriteLine ("CARI " + _searchPattern + ", Recursive " + _recursive.ToString ());
 
             _folderHashes = new Dictionary<string, string>();
 

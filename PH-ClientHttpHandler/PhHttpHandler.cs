@@ -46,6 +46,8 @@ namespace PHClientHttpHandler
 		{
 			// disini dispose semua yang bisa di dispose
 			dataHandler.Dispose ();
+			if(CommonConfigs.localDb != null)
+				CommonConfigs.localDb.Dispose ();
 		}
 
 
@@ -77,6 +79,9 @@ namespace PHClientHttpHandler
 			dataLength = 0;
 			HTTPRestDataConstruct = new HTTPRestConstructor();
 			PPOBProcessor = new ControlCenter();
+			CommonConfigs = new PublicSettings.Settings ();
+
+
 			LoadConfig (".");
 		}
 

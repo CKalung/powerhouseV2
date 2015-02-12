@@ -37,6 +37,12 @@ namespace Mark42
 
         #region Public methods
 
+		string _searchPattern = "*.dll";
+
+		public string SearchPattern{
+			set{ _searchPattern = value; }
+		}
+
         public List<TResult> Load<TResult>()
             where TResult : class
         {
@@ -146,8 +152,14 @@ namespace Mark42
                 }
                 else
                 {
-                    DirectoryCatalog catalog = new DirectoryCatalog(FolderPath);
+					Console.WriteLine ("GEBUG 3");
+					//DirectoryCatalog catalog = new DirectoryCatalog(FolderPath, _searchPattern);
+					DirectoryCatalog catalog = new DirectoryCatalog(FolderPath);
+//					foreach(string fil in catalog.LoadedFiles){
+//						Console.WriteLine ("GEBUG 3 " + fil);
+//					}
                     _container = new CompositionContainer(catalog);
+					Console.WriteLine ("GEBUG 3 " + _container.Providers.Count);
                     if (arg1 != null) _container.ComposeExportedValue<TArg1>(arg1);
                     if (arg2 != null) _container.ComposeExportedValue<TArg2>(arg2);
                     if (arg3 != null) _container.ComposeExportedValue<TArg3>(arg3);
@@ -164,21 +176,26 @@ namespace Mark42
                     if (arg14 != null) _container.ComposeExportedValue<TArg14>(arg14);
                     if (arg15 != null) _container.ComposeExportedValue<TArg15>(arg15);
                     if (arg16 != null) _container.ComposeExportedValue<TArg16>(arg16);
+					Console.WriteLine ("GEBUG 4");
                     instances = _container.GetExportedValues<TResult>().ToList();
+					Console.WriteLine ("GEBUG 5");
                 }
 
                 return instances;
             }
             catch (ImportCardinalityMismatchException)//when no contract implementation
             {
+				Console.WriteLine ("GEBUG 6");
                 return instances;
             }
-            catch (ReflectionTypeLoadException)//when wrong contract implementation
+            catch (ReflectionTypeLoadException ex)//when wrong contract implementation
             {
+				Console.WriteLine ("GEBUG 7 " + ex.Message);
                 return instances;
             }
             catch (FileNotFoundException)//
             {
+				Console.WriteLine ("GEBUG 8");
                 return instances;
             }
             catch (Exception ex)

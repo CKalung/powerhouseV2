@@ -32,9 +32,11 @@ namespace Mark42
         {
         }
 
+		string _searchPattern = "*.dll";
         public PluginService(ILogger log, string pluginsFolder, string searchPattern, bool recursive)
             : base(log, "PluginServiceThread", 100)
         {
+			_searchPattern = searchPattern;
             _folderMonitoringService = new FolderMonitoringService(_log, pluginsFolder, searchPattern, recursive);
             _folderMonitoringService.FolderCreated += FolderCreated;
             _folderMonitoringService.FolderChanged += FolderChanged;
@@ -81,7 +83,8 @@ namespace Mark42
         /// <returns></returns>
         protected virtual List<TPlugin> LoadPlugins(MefLoader mefLoader)
         {
-            return mefLoader.Load<TPlugin>();
+			mefLoader.SearchPattern = _searchPattern;
+			return mefLoader.Load<TPlugin>();
         }
 
         #endregion
@@ -101,15 +104,21 @@ namespace Mark42
             {
                 _log.Debug("PluginService: folder '{0}' created.", folderPath);
                 var mefLoader = SeparateAppDomain.CreateInstance<MefLoader>(folderPath, folderPath);
+				_log.Debug("PluginService: DEBUG 1  '{0}' ", mefLoader.ToString ());
                 var plugins = LoadPlugins(mefLoader);
+				_log.Debug("PluginService: DEBUG 2  '{0}' ", folderPath);
                 if (plugins.Count == 0)
                 {
                     SeparateAppDomain.Delete(folderPath);
+					_log.Debug("PluginService: DEBUG 3  '{0}' ", folderPath);
                     return;
                 }
 
+				_log.Debug("PluginService: DEBUG 4 ", folderPath);
                 _plugins.Add(folderPath, plugins);
+				_log.Debug("PluginService: DEBUG 5 ", folderPath);
                 PluginsAdded(this, plugins);
+				_log.Debug("PluginService: DEBUG 6 ", folderPath);
             }
         }
 

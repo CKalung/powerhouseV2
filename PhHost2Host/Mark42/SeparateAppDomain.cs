@@ -33,12 +33,13 @@ namespace Mark42
                 return (TInstance)_domains[folderPath].Item2;
             }
 
-
             string executableFolderPath = folderPath;
             string executableFolderName = Path.GetFileName(executableFolderPath);
             string id = string.Format("{0}_{1}", executableFolderName, ++_counter);
             string shadowCopyFolderName = string.Format("{0}_ShadowCopy", id);
             string shadowCopyFolderPath = CreateShadowCopyFolder(shadowCopyFolderName);
+
+			Console.WriteLine (" FolderPath = " + executableFolderName);
 
             var setup = new AppDomainSetup
             {
