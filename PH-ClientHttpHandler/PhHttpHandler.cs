@@ -71,8 +71,11 @@ namespace PHClientHttpHandler
 		PublicSettings.Settings CommonConfigs;
 		PPOBDatabase.PPOBdbLibs localDB;
 
-		public PhHttpHandler (int indexConnection)
+		string configFilePath = "";
+
+		public PhHttpHandler (int indexConnection, string ConfigFilePath)
 		{
+			configFilePath = ConfigFilePath;
 			//commonSettings = CommonConfigs;
 			indexConn = indexConnection;
 			srecBuff = "";
@@ -82,11 +85,11 @@ namespace PHClientHttpHandler
 			CommonConfigs = new PublicSettings.Settings ();
 
 
-			LoadConfig (".");
+			LoadConfig (configFilePath);
 		}
 
-		private void LoadConfig(string appPath){
-			using (CrossIniFile.INIFile a = new CrossIniFile.INIFile (appPath + "/config.ini")) {
+		private void LoadConfig(string configFile){
+			using (CrossIniFile.INIFile a = new CrossIniFile.INIFile (configFile)) {
 				CommonConfigs.DbHost = a.GetValue("PostgreDB", "Host", "127.0.0.1");
 				CommonConfigs.DbUser = a.GetValue("PostgreDB", "Username", "postgres");
 				CommonConfigs.DbPort = a.GetValue("PostgreDB", "Port", 5432);
@@ -102,6 +105,8 @@ namespace PHClientHttpHandler
 				if (!System.IO.Directory.Exists(CommonConfigs.getString("LogPath"))) 
 					System.IO.Directory.CreateDirectory(CommonConfigs.getString("LogPath"));
 				LOG_Handler.LogWriter.setPath(CommonConfigs.getString("LogPath"));
+
+				CommonLibrary.SessionMinutesTimeout = CommonConfigs.getInt("SessionMinutesTimeout");
 				return;
 			}
 

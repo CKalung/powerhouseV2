@@ -8,6 +8,7 @@
     <RootNamespace>PHClientHttpConnectionCollector</RootNamespace>
     <AssemblyName>PH-ClientHttpConnectionCollector</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ReleaseVersion>2.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,9 +37,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\PH-ClientHttpHandler\PH-ClientHttpHandler.csproj">
+    <ProjectReference Include="..\PH-ClientHttpHandler\PH-ClientHttpProtocolHandler.csproj">
       <Project>{82360D7A-D76A-44EF-A8C4-102915C0AD23}</Project>
-      <Name>PH-ClientHttpHandler</Name>
+      <Name>PH-ClientHttpProtocolHandler</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

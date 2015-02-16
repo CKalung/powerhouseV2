@@ -605,7 +605,7 @@ namespace BPJS_THT
 
 		public string TopUpOnline(){
 			string[] fields = { "fiApplicationId", "fiPhone", "fiToken", 
-				"fiAdditional", "fiAmount", "fiCustomerNumber"};
+				"fiAdditional", "fiAmount", "fiUserCardNumber"};
 
 			string[] addFields = { "fiBalance", "fiTrxDateTime", "fiSAMCSN",
 				"fiCertificate", "fiCardChallenge"};
@@ -644,7 +644,7 @@ namespace BPJS_THT
 				user = ((string)jsonConv["fiPhone"]).Trim ();
 				token = ((string)jsonConv["fiToken"]).Trim ();
 				amount = (int)jsonConv["fiAmount"];
-				cardNumber = ((string)jsonConv["fiCustomerNumber"]).Trim ();
+				cardNumber = ((string)jsonConv["fiUserCardNumber"]).Trim ();
 				additionalData = ((JsonLibs.MyJsonLib)jsonConv["fiAdditional"]);
 			}
 			catch

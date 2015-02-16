@@ -2890,12 +2890,12 @@ namespace Process_ProductTransaction
 					return IconoxTrx.DoTopUp();
 				}
 			}
-//			else if (reqPathCode == commonSettings.getInt("CommandProductIconoxEWalletActivation"))
-//			{
-//				using (IconoxTrxHandlerV2.IconoxTrxV2 IconoxTrx = new IconoxTrxHandlerV2.IconoxTrxV2(clientData, commonSettings)){
-//					return IconoxTrx.DoActivation();
-//				}
-//			}
+			else if (reqPathCode == commonSettings.getInt("CommandProductIconoxAuthentication"))
+			{
+				using (IconoxTrxHandlerV2.IconoxTrxV2 IconoxTrx = new IconoxTrxHandlerV2.IconoxTrxV2(clientData, commonSettings)){
+					return IconoxTrx.DoAuthentication();
+				}
+			}
 			else if (reqPathCode == commonSettings.getInt("CommandProductNitrogenSettlement"))
 			{
 				using (NitrogenClientHandler.SettlementTrx NitrogenTRx = 

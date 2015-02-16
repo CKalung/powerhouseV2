@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Clients_Manager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PH_Clients_ManagerV2.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CrossIniFile\CrossIniFile.csproj">
@@ -71,6 +72,14 @@
     <ProjectReference Include="..\StaticCommonLibrary\StaticCommonLibrary.csproj">
       <Project>{3C7F8F54-4FD7-4000-8401-EFE9D20E26D8}</Project>
       <Name>StaticCommonLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PH-HttpServerPluginModule\ConnectionServerPlugin-Http\ConnectionServerPlugin-Http.csproj">
+      <Project>{568ECCFA-D6B7-4053-987F-9A81A288E9F6}</Project>
+      <Name>ConnectionServerPlugin-Http</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PH-ClientsPluginsInterface\PH-ClientsPluginsInterface.csproj">
+      <Project>{83857157-3062-4189-9888-65F9007D6BD3}</Project>
+      <Name>PH-ClientsPluginsInterface</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

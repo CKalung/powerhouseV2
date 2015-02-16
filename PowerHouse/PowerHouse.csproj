@@ -9,7 +9,7 @@
     <AssemblyName>PowerHouse</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <ReleaseVersion>2.1</ReleaseVersion>
-    <StartupObject>PowerHouse.Program</StartupObject>
+    <StartupObject>PowerHouse.ProgramNonPlugins</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,6 +35,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProgramNonPlugins.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -45,6 +46,10 @@
     <ProjectReference Include="..\PhClientsHandler\PH-ClientsManager.csproj">
       <Project>{FE5C27FF-F19A-49E0-AFDF-573E04E7E25A}</Project>
       <Name>PH-ClientsManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PPOBClientManager\PPOBClientsManager.csproj">
+      <Project>{D5613802-CED8-47E5-BFBC-0D63305FBA95}</Project>
+      <Name>PPOBClientsManager</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

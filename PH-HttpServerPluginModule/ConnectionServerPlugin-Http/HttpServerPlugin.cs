@@ -50,18 +50,22 @@ namespace ConnectionServerPluginHttp
 		PhHttpConnectionCollector connectionCollector = null;
 
 		const string namaModule = "PH HttpServer Module";
+		const string ConfigFile = "HttpConfig.ini";
+
+		string ConfigFilePath = "";
 
 		string certFilePath = "";
+		string certPassword = "";
 		int port = 0;
 
 		public HttpServerPlugin ()
 			:base(namaModule) {
 			connectionCollector = new PhHttpConnectionCollector ();
 			server = new TcpServerModule ();
-			server.onNewConnection += HandleonNewConnection; 
+			server.onNewConnection += HandleOnNewConnection; 
 		}
 
-		void HandleonNewConnection (System.IO.Stream stream, System.Net.Sockets.TcpClient client)
+		void HandleOnNewConnection (System.IO.Stream stream, System.Net.Sockets.TcpClient client)
 		{
 			if (connectionCollector != null) {
 				connectionCollector.NewConnection (stream, client);
@@ -69,16 +73,19 @@ namespace ConnectionServerPluginHttp
 		}
 
 		private void LoadConfig(){
-			using (CrossIniFile.INIFile a = new CrossIniFile.INIFile ("httpconfig.ini")) {
+			using (CrossIniFile.INIFile a = 
+					new CrossIniFile.INIFile (ConfigFilePath)) {
 				port = a.GetValue("HttpServerModule", "Port", 443);
 				Console.WriteLine ("Port = " + port.ToString ());
 				certFilePath = a.GetValue ("HttpServerModule", "CertificateFilePath", "");
+				certPassword = a.GetValue ("HttpServerModule", "CertificatePassword", "");
 				Console.WriteLine ("Certificate = " + certFilePath);
 				//"./SslKeys/server.pfx");
 			}
 		}
 
-		public override void Start(string pluginPath ){ 
+		public override void Start(string applicationPath ){ 
+			ConfigFilePath = System.IO.Path.Combine (applicationPath, ConfigFile);
 			Console.WriteLine ("Start plugin http");
 			Console.WriteLine ("Paths : \r\n");
 			Console.WriteLine (
@@ -86,6 +93,9 @@ namespace ConnectionServerPluginHttp
 				System.Reflection.Assembly.GetExecutingAssembly().Location +"\r\n"
 				);
 			LoadConfig ();
+			server.ConfigFilePath = ConfigFilePath;
+			server.CertificatePassword = certPassword;
+			connectionCollector.ConfigFilePath = ConfigFilePath;
 			server.StartListening (port, certFilePath);
 		}
 

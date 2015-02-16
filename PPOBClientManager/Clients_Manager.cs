@@ -242,7 +242,8 @@ namespace PPOBClientsManager
                         continue;
                     }
                 }
-                catch(Exception exErr)
+				catch
+				//catch(Exception exErr)
                 {
                     // server stopped 
                     //break;

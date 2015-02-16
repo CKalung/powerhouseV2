@@ -140,6 +140,7 @@ namespace PPOBDatabase
             string DbName, string DbUser, string DbPassw)
         {
             localDB = new PPOBDatabase.PostGresDB();
+			//Console.WriteLine (DbHost + ":" + DbPort.ToString () + ":" + DbName + ":" + DbUser + ":"+ DbPassw);
             localDB.ConnectionString(DbHost, DbPort, DbName, DbUser, DbPassw);
             localDB.AddDataTable(tbl_mpAccount);
             localDB.AddDataTable(tbl_mpProduct);

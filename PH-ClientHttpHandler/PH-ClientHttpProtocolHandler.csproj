@@ -5,9 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{82360D7A-D76A-44EF-A8C4-102915C0AD23}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>PHClientHttpHandler</RootNamespace>
+    <RootNamespace>PHClientHttpProtocolHandler</RootNamespace>
     <AssemblyName>PH-ClientHttpHandler</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ReleaseVersion>2.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

@@ -47,21 +47,21 @@ namespace PhClientsManager
 		PluginService<IConnectionModules> pluginService=null;
 
 		string pluginsFolderPath = "";
+		string applicationPath="";
 
 		//PublicSettings.Settings CommonConfigs = new PublicSettings.Settings();
 
 		public ConnectionsModulesLoader (string AppPath, bool consoleMode){
 
-			Console.WriteLine ("BIKIN Loader");
-
+			applicationPath = AppPath;
 			//pluginsFolderPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "ClientConnectionPlugins");
 			pluginsFolderPath = Path.Combine(AppPath, "ClientConnectionPlugins");
 			if (!System.IO.Directory.Exists (pluginsFolderPath)) {
 				System.IO.Directory.CreateDirectory (pluginsFolderPath);
 			}
 
-			//pluginService = new PluginService<IConnectionModules>(pluginsFolderPath, "*.dll", true);
-			pluginService = new PluginService<IConnectionModules>(pluginsFolderPath, "ConnectionServerPlugin*.dll", false);
+			pluginService = new PluginService<IConnectionModules>(pluginsFolderPath, "*.*", true);
+			//pluginService = new PluginService<IConnectionModules>(pluginsFolderPath, "ConnectionServerPlugin*.dll", false);
 			pluginService.PluginsAdded += pluginService_PluginAdded;
 			pluginService.PluginsChanged += pluginService_PluginChanged;
 			pluginService.PluginsRemoved += pluginService_PluginRemoved;
@@ -102,7 +102,7 @@ namespace PhClientsManager
 			{
 				Console.WriteLine("~added: {0}.", plugin.Name);
 				try{
-					plugin.Start ("");
+					plugin.Start (applicationPath);
 				}catch (Exception ex) {
 					Console.WriteLine ("Failed to start plugin " + plugin.Name + "\r\n " + ex.Message);
 				}
@@ -119,7 +119,7 @@ namespace PhClientsManager
 				Console.WriteLine("PluginAdded: {0}.", plugin.Name);
 				//Console.WriteLine(plugin.SayHelloTo("Tony Stark"));
 				try{
-					plugin.Start ("");
+					plugin.Start (applicationPath);
 				}catch (Exception ex) {
 					Console.WriteLine ("Failed to start plugin " + plugin.Name + "\r\n " + ex.Message);
 				}

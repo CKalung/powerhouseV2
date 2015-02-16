@@ -8,6 +8,7 @@
     <RootNamespace>PHTcpServerPluginTemplate</RootNamespace>
     <AssemblyName>PH-TcpServerPluginTemplate</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ReleaseVersion>2.1</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

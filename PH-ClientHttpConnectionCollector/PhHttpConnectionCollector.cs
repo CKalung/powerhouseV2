@@ -48,6 +48,8 @@ namespace PHClientHttpConnectionCollector
 		string name="";
 		int indexConnection = 0;
 
+		string configFilePath = "";
+
 		//List<PhHttpHandler> ConnectionList = new List<PhHttpHandler>();
 
 		Hashtable ConnectionList = new Hashtable();
@@ -68,6 +70,11 @@ namespace PHClientHttpConnectionCollector
 		{
 		}
 
+		public string ConfigFilePath{
+			get { return configFilePath; }
+			set { configFilePath = value; }
+		}
+
 		// Untuk sekarang... UNLIMITED CONNECTION COUNT !!!
 		public void NewConnection(Stream stream, TcpClient client){
 			if (ConnectionList.ContainsKey (indexConnection)) {
@@ -79,7 +86,7 @@ namespace PHClientHttpConnectionCollector
 				}
 				return;
 			}
-			PhHttpHandler HttpHandler = new PhHttpHandler (indexConnection);
+			PhHttpHandler HttpHandler = new PhHttpHandler (indexConnection, configFilePath);
 			HttpHandler.onDisconnected += new PhHttpHandler.onDisconnectedEvent (onDisconnected);
 			ConnectionList.Add (indexConnection, HttpHandler);
 			((PhHttpHandler)(ConnectionList[indexConnection])).Start (stream, client);

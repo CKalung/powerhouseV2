@@ -46,6 +46,9 @@ namespace PHTcpServerModule
 
 		MyTcpServer server = null;
 		X509Certificate2 certificateFile = null;
+		string certificatePassword = "";
+
+		string configFilePath = "";
 
 		public delegate void onNewConnectionEvent(Stream stream, System.Net.Sockets.TcpClient client);
 		public event onNewConnectionEvent onNewConnection;
@@ -53,6 +56,16 @@ namespace PHTcpServerModule
 
 		public TcpServerModule ()
 		{
+		}
+
+		public string CertificatePassword{
+			set { certificatePassword = value; }
+			get { return certificatePassword; }
+		}
+
+		public string ConfigFilePath{
+			set { configFilePath = value; }
+			get { return configFilePath; }
 		}
 
 		public void StartListening(int Port){ 
@@ -73,7 +86,7 @@ namespace PHTcpServerModule
 					RemoteCertificateValidationCallback certValidationCallback = null;
 					certValidationCallback = new RemoteCertificateValidationCallback(IgnoreCertificateErrorsCallback);
 
-					certificateFile = new X509Certificate2(certFilePath, "d4mpt");
+					certificateFile = new X509Certificate2(certFilePath, certificatePassword);	// "d4mpt");
 
 					server = new MyTcpServer(port, certificateFile,
 						new SecureConnectionResultsCallback(OnServerSecureConnectionAvailable));
