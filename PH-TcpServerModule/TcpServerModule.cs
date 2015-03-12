@@ -48,13 +48,19 @@ namespace PHTcpServerModule
 		X509Certificate2 certificateFile = null;
 		string certificatePassword = "";
 
-		string configFilePath = "";
+		//string configFilePath = "";
 
 		public delegate void onNewConnectionEvent(Stream stream, System.Net.Sockets.TcpClient client);
+		//public delegate void onNewSecureConnectionEvent(SslStream stream, System.Net.Sockets.TcpClient client);
 		public event onNewConnectionEvent onNewConnection;
+		//public event onNewSecureConnectionEvent onNewSecureConnection;
 
 
 		public TcpServerModule ()
+		{
+		}
+
+		public TcpServerModule (string dummy)
 		{
 		}
 
@@ -63,10 +69,10 @@ namespace PHTcpServerModule
 			get { return certificatePassword; }
 		}
 
-		public string ConfigFilePath{
-			set { configFilePath = value; }
-			get { return configFilePath; }
-		}
+//		public string ConfigFilePath{
+//			set { configFilePath = value; }
+//			get { return configFilePath; }
+//		}
 
 		public void StartListening(int Port){ 
 			StartListening (Port,"");
@@ -77,6 +83,7 @@ namespace PHTcpServerModule
 			{
 				//            appPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
+				Console.WriteLine ("["+this.ToString ()+"] CertFile = " + certFilePath);
 				if(certFilePath != "" ){
 					if (!File.Exists(certFilePath)){
 						Console.WriteLine ("Certificate file not found " + certFilePath);
@@ -88,9 +95,15 @@ namespace PHTcpServerModule
 
 					certificateFile = new X509Certificate2(certFilePath, certificatePassword);	// "d4mpt");
 
+					Console.WriteLine ("["+this.ToString ()+"] STARTING SECURE SERVER");
 					server = new MyTcpServer(port, certificateFile,
 						new SecureConnectionResultsCallback(OnServerSecureConnectionAvailable));
 				} else{
+//					Console.WriteLine ("["+this.ToString ()+"] STARTING NONSECURE SERVER");
+//					server = new MyTcpServer(port, 
+//						new NonSecureConnectionResultsCallback(OnServerNonSecureConnectionAvailable));
+
+					Console.WriteLine ("["+this.ToString ()+"] STARTING NONSECURE SERVER");
 					server = new MyTcpServer(port, 
 						new NonSecureConnectionResultsCallback(OnServerNonSecureConnectionAvailable));
 				}
@@ -141,10 +154,6 @@ namespace PHTcpServerModule
 					stream.Dispose ();
 				}
 			}
-			//			dataHandler = new MyTcpStreamHandler ();
-			//			dataHandler.Start (stream, args.Client);
-			//			dataHandler.onDataReceived += new MyTcpStreamHandler.onReceived (DataReceived);
-			//
 		}
 
 		void OnServerSecureConnectionAvailable(object sender, SecureConnectionResults args)
@@ -155,7 +164,7 @@ namespace PHTcpServerModule
 				return;
 			}
 
-			Stream stream = args.SecureStream;
+			SslStream stream = args.SecureStream;
 			if (stream == null)
 			{
 				Console.WriteLine("CLient already disconnected");
@@ -172,42 +181,7 @@ namespace PHTcpServerModule
 					stream.Dispose ();
 				}
 			}
-			//			dataHandler = new MyTcpStreamHandler ();
-			//			dataHandler.Start (stream, args.Client);
-			//			dataHandler.onDataReceived += new MyTcpStreamHandler.onReceived (DataReceived);
-
 		}
-
-		//		private void DataReceived(MyTcpStreamHandler.ConnectionStateObject State){
-		//			Console.WriteLine ("Terima data = " + State.sb.ToString ());
-		//			string balesan = "[" + DateTime.Now.ToString ("yy-MM-dd HH:mm:ss") + "] " + "Data di terima rojerrrr";
-		//			Console.WriteLine ("Bales dengan = " + balesan);
-		//			dataHandler.SendResponse (State, balesan);
-		//			Console.WriteLine ("Siap diskonek");
-		//
-		//			if (State.client != null) {
-		//				try{
-		//					Console.WriteLine ("TcpClient CLose");
-		//					State.client.Close ();
-		//				} catch {
-		//				}
-		//				Console.WriteLine ("TcpClient null");
-		//				State.client = null;
-		//			}
-		//
-		//			if (State.stream != null) {
-		//				Console.WriteLine ("Stream Close");
-		//				State.stream.Close ();
-		//				Console.WriteLine ("Stream Dispose");
-		//				State.stream.Dispose ();
-		//			}
-		//
-		//			dataHandler.Disconnect (State);
-		//			Console.WriteLine ("Udah diskonek");
-		//			dataHandler.Dispose ();
-		//			Console.WriteLine ("Udah dispose");
-		//
-		//		}
 
 		bool IgnoreCertificateErrorsCallback(object sender,
 			X509Certificate certificate,

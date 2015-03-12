@@ -65,35 +65,64 @@ namespace PublicSettings
             return (SettingCollection.ContainsKey(key)) ;
         }
 
-        public int getInt(string key)
-        {
-            if (!isKeyExist(key)) return -1;
-            try
-            {
-                return int.Parse(((string)SettingCollection[key]).Trim());
-            }
-            catch { return -1; }
-        }
+		public int getInt(string key)
+		{
+			if (!isKeyExist(key)) return -1;
+			try
+			{
+				return int.Parse(((string)SettingCollection[key]).Trim());
+			}
+			catch { return -1; }
+		}
 
-        public string getString(string key)
-        {
-            if (!isKeyExist(key)) return "";
-            try
-            {
-                return ((string)SettingCollection[key]).Trim();
-            }
-            catch { return ""; }
-        }
+		public int getInt(string key, int vdefault)
+		{
+			if (!isKeyExist(key)) return vdefault;
+			try
+			{
+				return int.Parse(((string)SettingCollection[key]).Trim());
+			}
+			catch { return vdefault; }
+		}
 
-        public long getLong(string key)
-        {
-            if (!isKeyExist(key)) return -1;
-            try
-            {
-                return long.Parse(((string)SettingCollection[key]).Trim());
-            }
-            catch { return -1; }
-        }
+		public string getString(string key)
+		{
+			if (!isKeyExist(key)) return "";
+			try
+			{
+				return ((string)SettingCollection[key]).Trim();
+			}
+			catch { return ""; }
+		}
+
+		public string getString(string key, string vdefault)
+		{
+			if (!isKeyExist(key)) return vdefault;
+			try
+			{
+				return ((string)SettingCollection[key]).Trim();
+			}
+			catch { return vdefault; }
+		}
+
+		public long getLong(string key)
+		{
+			if (!isKeyExist(key)) return -1;
+			try
+			{
+				return long.Parse(((string)SettingCollection[key]).Trim());
+			}
+			catch { return -1; }
+		}
+		public long getLong(string key, long vdefault)
+		{
+			if (!isKeyExist(key)) return vdefault;
+			try
+			{
+				return long.Parse(((string)SettingCollection[key]).Trim());
+			}
+			catch { return vdefault; }
+		}
 
     }
 

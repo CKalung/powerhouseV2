@@ -2817,15 +2817,21 @@ namespace Process_ProductTransaction
 		public string Process(int reqPathCode, HTTPRestConstructor.HttpRestRequest clientData)
         {
 			clientDataSource = clientData;
+
             if (reqPathCode == commonSettings.getInt("CommandProductTransaction"))
             {
                 return ProductTransaction(clientData);
             }
-			if (reqPathCode == commonSettings.getInt("CommandProductNitrogenShopTransaction"))
-			{
+			if (reqPathCode == commonSettings.getInt ("CommandProductNitrogenShopTransaction")) {
 				// Toko khusus nitrogen saja
-				using (ShopsHandler.ShopsTransactions NitrogenShop = new ShopsHandler.ShopsTransactions(clientData, commonSettings)){
-					return NitrogenShop.NitrogenShopMakeOrder();
+				using (ShopsHandler.ShopsTransactions NitrogenShop = 
+					       new ShopsHandler.ShopsTransactions (clientData, commonSettings)) {
+					return NitrogenShop.NitrogenShopMakeOrder ();
+				}
+			} else if (reqPathCode == commonSettings.getInt ("CommandProductBarcodePayment")) {
+				// Barcode Payment
+				using (BarcodePayment BCodePayment = new BarcodePayment (clientData, commonSettings)) {
+					return BCodePayment.TransferByProduct (commonSettings.getString ("ProductCode-BarcodePayment"));
 				}
 			}
             else if (reqPathCode == commonSettings.getInt("CommandProductCitilinkGetAvailability"))
@@ -2881,7 +2887,14 @@ namespace Process_ProductTransaction
 			{
 				using (OnlineSmartCardTransaction OSC = new OnlineSmartCardTransaction(clientData, commonSettings)){
 					//return OSC.IconoxConfirmPayment();
-					return OSC.IconoxConfirmPaymentWithLog();
+					return OSC.IconoxConfirmPaymentWithLog(commonSettings.getString("IconoxMultipaymentProductCode"));
+				}
+			}
+			else if (reqPathCode == commonSettings.getInt("CommandProductIconoxEWalletRedeemConfirm"))
+			{
+				using (OnlineSmartCardTransaction OSC = new OnlineSmartCardTransaction(clientData, commonSettings)){
+					//return OSC.IconoxConfirmPayment();
+					return OSC.IconoxConfirmPaymentWithLog(commonSettings.getString("IconoxRedeemptiontProductCode"));
 				}
 			}
 			else if (reqPathCode == commonSettings.getInt("CommandProductIconoxEWalletTopUp"))
@@ -2896,6 +2909,24 @@ namespace Process_ProductTransaction
 					return IconoxTrx.DoAuthentication();
 				}
 			}
+			else if (reqPathCode == commonSettings.getInt("CommandProductIconoxPersoRequest"))
+			{
+				using (IconoxTrxHandlerV2.IconoxTrxV2 IconoxTrx = new IconoxTrxHandlerV2.IconoxTrxV2(clientData, commonSettings)){
+					return IconoxTrx.PersoRequest();
+				}
+			}
+			else if (reqPathCode == commonSettings.getInt("CommandProductIconoxEWalletSettlement"))
+			{
+				using (OfflineTransaction.Settlement IconoxSettlement = new OfflineTransaction.Settlement(clientData, commonSettings)){
+					return IconoxSettlement.Iconox_Settlement();
+				}
+			}
+//			else if (reqPathCode == 97979797)	// urgent demo bae
+//			{
+//				using (IconoxTrxHandlerV2.IconoxTrxV2 IconoxTrx = new IconoxTrxHandlerV2.IconoxTrxV2(clientData, commonSettings)){
+//					return IconoxTrx.PersoRequestDEMO();
+//				}
+//			}
 			else if (reqPathCode == commonSettings.getInt("CommandProductNitrogenSettlement"))
 			{
 				using (NitrogenClientHandler.SettlementTrx NitrogenTRx = 
@@ -2910,7 +2941,7 @@ namespace Process_ProductTransaction
 				}
 			}
 
-			// Untuk DEMO BPJS SAJA.....
+			// ============  Untuk DEMO BPJS SAJA.....
 			#region DEMO BPJS Saja.....................
 			else if (reqPathCode == commonSettings.getInt("CommandProductBPJS-THT-InquiryBalance"))
 			{
@@ -2920,8 +2951,16 @@ namespace Process_ProductTransaction
 			}
 			else if (reqPathCode == commonSettings.getInt("CommandProductBPJS-THT-PaymentOnline"))
 			{
+				// Multipayment DEMO
 				using (BPJS_THT.Terminal_Handler BpjsTht = new BPJS_THT.Terminal_Handler(clientData, commonSettings)){
-					return BpjsTht.PaymentOnline();
+					return BpjsTht.PaymentOnline("PRD00101");
+				}
+			}
+			else if (reqPathCode == commonSettings.getInt("CommandProductBPJS-THT-Redeem"))
+			{
+				// Multipayment DEMO
+				using (BPJS_THT.Terminal_Handler BpjsTht = new BPJS_THT.Terminal_Handler(clientData, commonSettings)){
+					return BpjsTht.PaymentOnline(commonSettings.getString("IconoxRedeemptiontProductCode"));
 				}
 			}
 			else if (reqPathCode == commonSettings.getInt("CommandProductBPJS-THT-TopUpOnline"))

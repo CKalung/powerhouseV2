@@ -65,5 +65,9 @@
       <Project>{336A61A3-C24B-42D0-B581-9ABF42E688F1}</Project>
       <Name>IconoxOnlineHandler</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TransferReguler\TransferReguler.csproj">
+      <Project>{E108589E-E44B-42F2-A29C-C013F440C9D1}</Project>
+      <Name>TransferReguler</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

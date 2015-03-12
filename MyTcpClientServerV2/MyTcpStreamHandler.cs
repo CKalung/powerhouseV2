@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
+using System.Net.Security;
 using System.Text;
 using System.Threading;
 
@@ -93,6 +94,12 @@ namespace MyTcpClientServerV2
 							stream.Dispose ();
 							//Console.WriteLine ("Stream Dispose");
 						}
+//						if (sslStream != null) {
+//							sslStream.Close ();
+//							//Console.WriteLine ("SslStream Close");
+//							sslStream.Dispose ();
+//							//Console.WriteLine ("SslStream Dispose");
+//						}
 					}
 					this.disposed = true;
 				}
@@ -103,8 +110,10 @@ namespace MyTcpClientServerV2
 			}
 			#endregion
 
+			//public bool isSecureConnection = false;
 			public TcpClient client = null;                // Stream socket.
 			public Stream stream = null;                // Stream socket.
+//			public SslStream sslStream = null;                // Secure Stream socket.
 			public const int BufferSize = 16384;             // Size of receive buffer.
 			public byte[] buffer = new byte[BufferSize];    // Receive buffer.
 			public int DataLength=0;
@@ -121,21 +130,47 @@ namespace MyTcpClientServerV2
 			ConnectionState.buffer = new byte[16384];
 			ConnectionState.client = client;
 			ConnectionState.stream = stream;
+			//ConnectionState.isSecureConnection = false;
 
 			//NetworkStream strm = new NetworkStream (socket);
 			try
 			{
 				stream.BeginRead(ConnectionState.buffer, 0, ConnectionState.buffer.Length,
 					new AsyncCallback(ReadCallback), ConnectionState);
+
 			}
 			catch(Exception ex)
 			{
 //				Console.WriteLine ("Client disconnected : " + ex.Message);
+
 				Disconnect (ConnectionState);
 				if (onDisconnected != null)
 					onDisconnected ();
 			}
 		}
+
+//		public void Start (SslStream stream, TcpClient client)
+//		{
+//			ConnectionState = new ConnectionStateObject ();
+//			ConnectionState.buffer = new byte[16384];
+//			ConnectionState.client = client;
+//			ConnectionState.sslStream = stream;
+//			ConnectionState.isSecureConnection = true;
+//
+//			//NetworkStream strm = new NetworkStream (socket);
+//			try
+//			{
+//				stream.BeginRead(ConnectionState.buffer, 0, ConnectionState.buffer.Length,
+//					new AsyncCallback(ReadCallback), ConnectionState);
+//			}
+//			catch(Exception ex)
+//			{
+//				//				Console.WriteLine ("Client disconnected : " + ex.Message);
+//				Disconnect (ConnectionState);
+//				if (onDisconnected != null)
+//					onDisconnected ();
+//			}
+//		}
 
 		public void Stop(){
 			Disconnect (ConnectionState);
@@ -148,15 +183,22 @@ namespace MyTcpClientServerV2
 			//			ctrTO = TIMEOUT_07;        // reset disconnect TIMEOUT
 			ConnectionStateObject state = null;
 			Stream stream = null;
+			SslStream sslStream = null;
 			int bytesRead = -1;
 			try
 			{
 				state = (ConnectionStateObject)ar.AsyncState;
 				if (state == null) return;
-				stream = state.stream;
-				if (stream == null) return;
+//				if(state.isSecureConnection){
+//					sslStream = state.sslStream;
+//					if (sslStream == null) return;
+//					bytesRead = sslStream.EndRead(ar);
+//				}else{
+					stream = state.stream;
+					if (stream == null) return;
+					bytesRead = stream.EndRead(ar);
+//				}
 
-				bytesRead = stream.EndRead(ar);
 				//Console.WriteLine (byteCount.ToString () + " bytes read.");
 			}
 			catch(Exception ex)
@@ -193,8 +235,12 @@ namespace MyTcpClientServerV2
 				}
 				//Thread.Sleep(10);
 
-				stream.BeginRead(state.buffer, 0, state.buffer.Length,
-					new AsyncCallback(ReadCallback), state);
+//				if(state.isSecureConnection)
+//					sslStream.BeginRead(state.buffer, 0, state.buffer.Length,
+//						new AsyncCallback(ReadCallback), state);
+//				else
+					stream.BeginRead(state.buffer, 0, state.buffer.Length,
+						new AsyncCallback(ReadCallback), state);
 			}
 			catch (Exception ex)
 			{
@@ -207,7 +253,7 @@ namespace MyTcpClientServerV2
 
 		}
 
-		StringBuilder sb = new StringBuilder();
+		//StringBuilder sb = new StringBuilder();
 
 		void DataReceived(ConnectionStateObject state){
 			// There might be more data, so store the data received so far.
@@ -217,11 +263,19 @@ namespace MyTcpClientServerV2
 
 		public bool SendResponse(string data){
 			try{
-				if (ConnectionState.stream != null) {
-					ConnectionState.stream.Write (Encoding.GetEncoding(1252).GetBytes (data), 0, data.Length);
-					ConnectionState.stream.Flush ();
-					return true;
-				}
+//				if(ConnectionState.isSecureConnection){
+//					if (ConnectionState.sslStream != null) {
+//						ConnectionState.sslStream.Write (Encoding.GetEncoding(1252).GetBytes (data), 0, data.Length);
+//						ConnectionState.sslStream.Flush ();
+//						return true;
+//					}
+//				}else{
+					if (ConnectionState.stream != null) {
+						ConnectionState.stream.Write (Encoding.GetEncoding(1252).GetBytes (data), 0, data.Length);
+						ConnectionState.stream.Flush ();
+						return true;
+					}
+//				}
 			}catch{
 			}
 			return false;
@@ -229,11 +283,19 @@ namespace MyTcpClientServerV2
 
 		public bool SendResponse(ConnectionStateObject State, string data){
 			try{
-				if (State.stream != null) {
-					State.stream.Write (Encoding.GetEncoding(1252).GetBytes (data), 0, data.Length);
-					State.stream.Flush ();
-					return true;
-				}
+//				if(State.isSecureConnection){
+//					if (State.sslStream != null) {
+//						State.sslStream.Write (Encoding.GetEncoding(1252).GetBytes (data), 0, data.Length);
+//						State.sslStream.Flush ();
+//						return true;
+//					}
+//				}else{
+					if (State.stream != null) {
+						State.stream.Write (Encoding.GetEncoding(1252).GetBytes (data), 0, data.Length);
+						State.stream.Flush ();
+						return true;
+					}
+//				}
 			}catch{
 			}
 			return false;

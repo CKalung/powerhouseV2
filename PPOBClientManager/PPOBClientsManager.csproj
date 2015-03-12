@@ -81,6 +81,14 @@
       <Project>{83857157-3062-4189-9888-65F9007D6BD3}</Project>
       <Name>PH-ClientsPluginsInterface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PH-HttpServerPluginModule\PH-PlainJsonServerPlugin\PH-PlainJsonServerPlugin.csproj">
+      <Project>{4ED0C80A-8622-403C-A9D6-BE102409DD03}</Project>
+      <Name>PH-PlainJsonServerPlugin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PowerHouseV3\ConnectionServerPlugin-HttpXmlArtajasa\ConnectionServerPlugin-HttpXmlArtajasa2.csproj">
+      <Project>{9B5C017D-4F37-43C7-9686-A5F3C87772EE}</Project>
+      <Name>ConnectionServerPlugin-HttpXmlArtajasa2</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

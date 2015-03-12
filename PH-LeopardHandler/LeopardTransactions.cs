@@ -532,10 +532,13 @@ namespace PH_LeopardHandler
 				fiAdminFee = 0;
 			}
 
+			if ((trxId == null) || (trxId == ""))
+				trxId = "\"\"";
+
 			jsonTemp.Clear ();
 			jsonTemp.Add("fiBillerBillReff", billReff);
 			jsonTemp.Add("fiBillerTrxId", trxId);
-			jsonTemp.Add("fiBillerTrxDate", trxId);
+			jsonTemp.Add("fiBillerTrxDate", sDate);
 			jsonTemp.Add("fiMessage", message);
 
 			jsonConv.Clear();
@@ -543,7 +546,6 @@ namespace PH_LeopardHandler
 			jsonConv.Add("fiPrivateData", jsonTemp);
 			jsonConv.Add("fiResponseCode", fiResponseCode);
 			jsonConv.Add("fiToken", securityToken);
-			jsonConv.Add("fiAdminFee", fiAdminFee);
 			jsonConv.Add("fiTrxNumber", trxNumber);
 			jsonConv.Add("fiAdminFee", fiAdminFee);
 			//jsonConv.Add ("fiServerAdditional", jsonTemp);

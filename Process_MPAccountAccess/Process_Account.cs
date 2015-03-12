@@ -8,6 +8,7 @@ using System.Collections;
 using TransferReguler;
 using LOG_Handler;
 using SMSHandler;
+using StaticCommonLibrary;
 
 namespace Process_MPAccountAccess
 {
@@ -838,6 +839,31 @@ namespace Process_MPAccountAccess
             return true;
         }
 
+		private bool cek_TokenSecurity(string userPhone, JsonLibs.MyJsonLib jsont, 
+			ref string token, ref string httpRepl)
+		{
+			token = "";
+			try
+			{
+				token = ((string)jsont["fiToken"]).Trim();
+			}
+			catch
+			{
+				httpRepl = HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "No session token or invalid token field", "");
+				return false;
+			}
+
+			// cek detek sessionnya
+			if (!CommonLibrary.isSessionExist(userPhone, token))
+			{
+				LOG_Handler.LogWriter.showDEBUG (this, "Cek Token Session: " + userPhone + 
+					", token: " + token);
+				httpRepl = HTTPRestDataConstruct.constructHTTPRestResponse(400, "504", "Invalid session", "");
+				return false;
+			}
+			return true;
+		}
+
         private string AccountActivation(HTTPRestConstructor.HttpRestRequest clientData)
         {
             if (clientData.Body.Length == 0)
@@ -851,15 +877,17 @@ namespace Process_MPAccountAccess
             // TAMPUNG data json dari Client
 			string fiApplicationID = "";
 			string fiUserPhone = "";
-            string fiPassword = "";
+            //string fiPassword = "";
+			string sessionToken = "";
             string fiNewMemberActCode = "";
             string fiNewMemberPhone = "";
             try
             {
 				fiApplicationID = ((string)jsonConv["fiApplicationId"]).Trim();
 				fiUserPhone = ((string)jsonConv["fiPhone"]).Trim().ToUpper();
-                fiPassword = ((string)jsonConv["fiPassword"]).Trim().ToLower();
-                fiNewMemberActCode = ((string)jsonConv["fiNewMemberActCode"]).Trim();
+				//fiPassword = ((string)jsonConv["fiPassword"]).Trim().ToLower();
+				sessionToken = ((string)jsonConv["fiToken"]).Trim();
+				fiNewMemberActCode = ((string)jsonConv["fiNewMemberActCode"]).Trim();
                 fiNewMemberPhone = ((string)jsonConv["fiNewMemberPhone"]).Trim();
             }
             catch
@@ -869,7 +897,7 @@ namespace Process_MPAccountAccess
             }
 			ReformatPhoneNumber (ref fiUserPhone);
 			ReformatPhoneNumber (ref fiNewMemberPhone);
-			if ((fiUserPhone.Length == 0) || (fiPassword.Length == 0) || (fiNewMemberPhone.Length == 0) || (fiNewMemberActCode.Length == 0))
+			if ((fiUserPhone.Length == 0) || (fiNewMemberPhone.Length == 0) || (fiNewMemberActCode.Length == 0))
             {
                 // field tidak ditemukan atau formatnya salah
 				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Invalid phone number", "");
@@ -880,19 +908,24 @@ namespace Process_MPAccountAccess
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "403", "Could not activate your self", "");
             }
 
-            // cek dengan database, apakah password sama?
-			if (!localDB.isUserPasswordEqual(fiUserPhone, fiPassword, out xError))
-            {
-                if (xError != null)
-                {
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
-                }
-                else
-                {
-                    // password error
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Login failed", "");
-                }
-            }
+			string httprepl = "";
+			if (!cek_TokenSecurity (fiUserPhone, jsonConv, ref sessionToken, ref httprepl)) {
+				return httprepl;
+			}
+
+//            // cek dengan database, apakah password sama?
+//			if (!localDB.isUserPasswordEqual(fiUserPhone, fiPassword, out xError))
+//            {
+//                if (xError != null)
+//                {
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
+//                }
+//                else
+//                {
+//                    // password error
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Login failed", "");
+//                }
+//            }
             // password ok
 
             string NewMemberQvaAccount = commonSettings.getString("UserIdHeader") + fiNewMemberPhone;

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4ED0C80A-8622-403C-A9D6-BE102409DD03}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>PHPlainJsonServerPlugin</RootNamespace>
+    <AssemblyName>PH-PlainJsonServerPlugin</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ReleaseVersion>2.1</ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PhPlainJsonServerPlugin.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\PH-ClientsPluginsInterface\PH-ClientsPluginsInterface.csproj">
+      <Project>{83857157-3062-4189-9888-65F9007D6BD3}</Project>
+      <Name>PH-ClientsPluginsInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LOG-Handler\LOG-Handler.csproj">
+      <Project>{A13870D0-7883-4309-9F17-0609E35762E5}</Project>
+      <Name>LOG-Handler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\MyTcpClientServerV2\MyTcpClientServerV2.csproj">
+      <Project>{86A73E88-365B-4312-8827-862F335D8600}</Project>
+      <Name>MyTcpClientServerV2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CrossIniFile\CrossIniFile.csproj">
+      <Project>{87ABF3FF-7EB2-4F03-BC61-7CD23E46E55A}</Project>
+      <Name>CrossIniFile</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PH-ClientHttpHandler\PH-ClientProtocolTranslatorInterface\PH-ClientProtocolTranslatorInterface.csproj">
+      <Project>{D58F3E35-6103-4248-AB4E-2D08606C85D3}</Project>
+      <Name>PH-ClientProtocolTranslatorInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PH-PlainJsonClientTranslator\PH-PlainJsonClientTranslator.csproj">
+      <Project>{6E61A20C-9420-4CD3-B5A9-9D473ECF4892}</Project>
+      <Name>PH-PlainJsonClientTranslator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PH-ClientHttpHandler\PH-CommonClientHandler\PH-CommonClientHandler.csproj">
+      <Project>{0FE042CA-39B9-4E78-ADE5-EF68D2591839}</Project>
+      <Name>PH-CommonClientHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PH-ClientHttpHandler\PH-ClientHandlerInterface\PH-ClientHandlerInterface.csproj">
+      <Project>{B2DCC6BF-B74D-4A09-882D-E2BB5EA70C24}</Project>
+      <Name>PH-ClientHandlerInterface</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

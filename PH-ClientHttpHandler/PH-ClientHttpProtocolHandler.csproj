@@ -30,10 +30,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PhHttpHandler.cs" />
+    <Compile Include="PhHttpClientHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -69,5 +71,18 @@
       <Project>{4404A1AE-D5BD-4CF8-A54D-723E9A830E54}</Project>
       <Name>PPOBManager</Name>
     </ProjectReference>
+    <ProjectReference Include="PH-ClientProtocolTranslatorInterface\PH-ClientProtocolTranslatorInterface.csproj">
+      <Project>{D58F3E35-6103-4248-AB4E-2D08606C85D3}</Project>
+      <Name>PH-ClientProtocolTranslatorInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="PH-ClientHandlerInterface\PH-ClientHandlerInterface.csproj">
+      <Project>{B2DCC6BF-B74D-4A09-882D-E2BB5EA70C24}</Project>
+      <Name>PH-ClientHandlerInterface</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PhClientHttpHandler.cs" />
+    <None Include="PhClientHandlerTemplate.cs" />
+    <None Include="PhClientHandlerTemplateAwal.cs" />
   </ItemGroup>
 </Project>

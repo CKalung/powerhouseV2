@@ -239,7 +239,6 @@ namespace Process_MPAccountAccess
 			if (version < minVersion) {
 				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "421", 
 					updateMsg, "");
-				//"SUDAH ADA APLIKASI VERSI TERBARU DI GOOGLE PLAY, MOHON PERBAHARUI\r\n(There is new version available in Google Play, please update it!)", "");
 			}
 
 			LogWriter.show (this, "Minimum Version = " + minVersion.ToString () + "\r\nAppVersion = " + version.ToString ());
@@ -405,6 +404,31 @@ namespace Process_MPAccountAccess
             return sBuilder.ToString();
         }
 
+		private bool cek_TokenSecurity(string userPhone, JsonLibs.MyJsonLib jsont, 
+			ref string token, ref string httpRepl)
+		{
+			token = "";
+			try
+			{
+				token = ((string)jsont["fiToken"]).Trim();
+			}
+			catch
+			{
+				httpRepl = HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "No session token or invalid token field", "");
+				return false;
+			}
+
+			// cek detek sessionnya
+			if (!CommonLibrary.isSessionExist(userPhone, token))
+			{
+				LOG_Handler.LogWriter.showDEBUG (this, "Cek Token Session: " + userPhone + 
+					", token: " + token);
+				httpRepl = HTTPRestDataConstruct.constructHTTPRestResponse(400, "504", "Invalid session", "");
+				return false;
+			}
+			return true;
+		}
+
         private string ChangeUserPassword(HTTPRestConstructor.HttpRestRequest clientData)
         {
             if (clientData.Body.Length == 0)
@@ -417,13 +441,13 @@ namespace Process_MPAccountAccess
             }
 
             string fiApplicationId;
-            string fiPhone;
-            string fiPassword;
+            string userPhone;
+            string sessionToken;
             string fiNewPassword;
 
             if (
                 (!jsonConv.ContainsKey("fiApplicationId")) || (!jsonConv.ContainsKey("fiPhone")) ||
-                (!jsonConv.ContainsKey("fiPassword")) || (!jsonConv.ContainsKey("fiNewPassword"))
+                (!jsonConv.ContainsKey("fiToken")) || (!jsonConv.ContainsKey("fiNewPassword"))
                 )
             {
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Mandatory field not found", "");
@@ -432,35 +456,41 @@ namespace Process_MPAccountAccess
             try
             {
                 fiApplicationId = ((string)jsonConv["fiApplicationId"]).Trim();
-                fiPhone = ((string)jsonConv["fiPhone"]).Trim();
-                fiPassword = ((string)jsonConv["fiPassword"]).Trim();
-                fiNewPassword = ((string)jsonConv["fiNewPassword"]).Trim();
+                userPhone = ((string)jsonConv["fiPhone"]).Trim();
+				//fiPassword = ((string)jsonConv["fiPassword"]).Trim();
+				sessionToken = ((string)jsonConv["fiToken"]).Trim();
+				fiNewPassword = ((string)jsonConv["fiNewPassword"]).Trim();
             }
             catch
             {
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Invalid field data", "");
             }
 
-            ReformatPhoneNumber(ref fiPhone);
+            ReformatPhoneNumber(ref userPhone);
 
-            if (fiPhone.Length == 0)
-            {
-                return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Invalid user phone number", "");
-            }
+//            if (userPhone.Length == 0)
+//            {
+//                return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Invalid user phone number", "");
+//            }
 
-            if ((fiPassword.Length == 0))
-            {
-                return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Invalid password", "");
-            }
+//            if ((fiPassword.Length == 0))
+//            {
+//                return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Invalid password", "");
+//            }
 
-            if (!localDB.isUserPasswordEqual(fiPhone, fiPassword, out xError))
-            {
-                if (xError != null)
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
-                else
-                    // password error
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
-            }
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref sessionToken, ref httprepl)) {
+				return httprepl;
+			}
+
+//            if (!localDB.isUserPasswordEqual(fiPhone, fiPassword, out xError))
+//            {
+//                if (xError != null)
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
+//                else
+//                    // password error
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
+//            }
             // password ok
 
             //localDB.changeUserPassword(fiUserPhone, fiNewPassword, out xError);
@@ -468,7 +498,7 @@ namespace Process_MPAccountAccess
             string fiStatus = "";
             // Cenah login
             Hashtable hasil;
-            hasil = localDB.getLoginInfoByUserPhone(fiPhone, out xError);
+            hasil = localDB.getLoginInfoByUserPhone(userPhone, out xError);
             if (xError != null)
             {
                 LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Database problem : " + xError.Message);
@@ -480,9 +510,9 @@ namespace Process_MPAccountAccess
             }
 
             // simpen di database kondisi heartbeat
-            localDB.addHeartBeatLog(fiPhone, clientData.ClientHost, out xError);
+            localDB.addHeartBeatLog(userPhone, clientData.ClientHost, out xError);
 
-            fiStatus = localDB.getUserStatus(fiPhone, out xError);
+            fiStatus = localDB.getUserStatus(userPhone, out xError);
             if (xError != null)
             {
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
@@ -492,7 +522,7 @@ namespace Process_MPAccountAccess
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "User not found", "");
             }
 
-            localDB.changeUserPassword(fiPhone, fiNewPassword, out xError);
+            localDB.changeUserPassword(userPhone, fiNewPassword, out xError);
             
             string firstName = "";
             string lastName = "";
@@ -509,11 +539,11 @@ namespace Process_MPAccountAccess
             //Console.WriteLine("DEBUG Name1 " + firstName);
             //Console.WriteLine("DEBUG Name2 " + lastName);
             jsonConv.Clear();
-            jsonConv.Add("fiPhone", "+" + fiPhone);
+            jsonConv.Add("fiPhone", "+" + userPhone);
             jsonConv.Add("fiStatus", fiStatus);
             jsonConv.Add("fiFirstName", firstName);
             jsonConv.Add("fiLastName", lastName);
-            jsonConv.Add("fiQioskuAccount", commonSettings.getString("UserIdHeader") + fiPhone);
+            jsonConv.Add("fiQioskuAccount", commonSettings.getString("UserIdHeader") + userPhone);
             return HTTPRestDataConstruct.constructHTTPRestResponse(200, "00", "Success", jsonConv.JSONConstruct());
         }
 
@@ -620,18 +650,19 @@ namespace Process_MPAccountAccess
 			string fiUserPhone = "";
 			
 			//string fiUserId = "";
-			string fiPassword = "";
+			//string fiPassword = "";
+			string sessionToken = "";
 			string fiRequestCode = "";
 
             if ((!jsonConv.ContainsKey("fiPhone")) || (!jsonConv.ContainsKey("fiRequestCode")) || 
-                (!jsonConv.ContainsKey("fiPassword")))
+                (!jsonConv.ContainsKey("fiToken")))
             {
                 // harus ada yg wajib
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Mandatory field not found", "");
             }
 
             if ((jsonConv["fiPhone"] == null) || (jsonConv["fiRequestCode"] == null) ||
-                (jsonConv["fiPassword"] == null))
+                (jsonConv["fiToken"] == null))
             {
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Null value not allowed", "");
             }
@@ -648,22 +679,31 @@ namespace Process_MPAccountAccess
             }
 			try {
 				fiRequestCode = ((string)jsonConv ["fiRequestCode"]).Trim ();
-				fiPassword = ((string)jsonConv ["fiPassword"]).Trim ();
+				sessionToken =  ((string)jsonConv ["fiToken"]).Trim ();
+				//fiPassword = ((string)jsonConv ["fiPassword"]).Trim ();
 			} catch {
 				// field tidak ditemukan atau formatnya salah
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Field not completed", "");
 			}
-			if ((fiPassword.Length == 0) || (fiRequestCode.Length == 0)) {
-                return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Field not completed", "");
+//			if ((fiPassword.Length == 0) || (fiRequestCode.Length == 0)) {
+//				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Field not completed", "");
+//			}
+			if (fiRequestCode.Length == 0) {
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Field not completed", "");
 			}
 
-            if (!localDB.isUserPasswordEqual (fiUserPhone, fiPassword, out xError)) {
-                if (xError != null)
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
-                else
-                    // password error
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Login failed", "");
+			string httprepl = "";
+			if (!cek_TokenSecurity (fiUserPhone, jsonConv, ref sessionToken, ref httprepl)) {
+				return httprepl;
 			}
+
+//            if (!localDB.isUserPasswordEqual (fiUserPhone, fiPassword, out xError)) {
+//                if (xError != null)
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
+//                else
+//                    // password error
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Login failed", "");
+//			}
 			// password ok
 
 			CommonLibrary.SessionResetTimeOut (fiUserPhone);

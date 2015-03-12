@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using System.Net.Security;
 using System.Threading;
 
 using LOG_Handler;
@@ -71,11 +72,11 @@ namespace PHClientHttpHandler
 		PublicSettings.Settings CommonConfigs;
 		PPOBDatabase.PPOBdbLibs localDB;
 
-		string configFilePath = "";
+		//string configFilePath = "";
 
 		public PhHttpHandler (int indexConnection, string ConfigFilePath)
 		{
-			configFilePath = ConfigFilePath;
+			//configFilePath = ConfigFilePath;
 			//commonSettings = CommonConfigs;
 			indexConn = indexConnection;
 			srecBuff = "";
@@ -85,7 +86,7 @@ namespace PHClientHttpHandler
 			CommonConfigs = new PublicSettings.Settings ();
 
 
-			LoadConfig (configFilePath);
+			LoadConfig (ConfigFilePath);
 		}
 
 		private void LoadConfig(string configFile){
@@ -102,17 +103,24 @@ namespace PHClientHttpHandler
 				CommonConfigs.ReloadSettings();
 				if (CommonConfigs.SettingCollection == null) return;
 
-				if (!System.IO.Directory.Exists(CommonConfigs.getString("LogPath"))) 
-					System.IO.Directory.CreateDirectory(CommonConfigs.getString("LogPath"));
-				LOG_Handler.LogWriter.setPath(CommonConfigs.getString("LogPath"));
+//				if (!System.IO.Directory.Exists(CommonConfigs.getString("LogPath"))) 
+//					System.IO.Directory.CreateDirectory(CommonConfigs.getString("LogPath"));
+//				LOG_Handler.LogWriter.setPath(CommonConfigs.getString("LogPath"));
 
 				CommonLibrary.SessionMinutesTimeout = CommonConfigs.getInt("SessionMinutesTimeout");
-				return;
 			}
 
 		}
 
+		/// <summary>
+		/// Start the specified stream and client. Secure or non secure compatible.
+		/// </summary>
+		/// <param name="stream">Stream or SslStream.</param>
+		/// <param name="client">TcpClient.</param>
 		public void Start(Stream stream, TcpClient client){
+//
+//			Console.WriteLine ("["+this.ToString () + "] START Http Handler");
+//
 			dataHandler.Start (stream, client);
 			dataHandler.onDataReceived += new MyTcpStreamHandler.onReceived (DataReceived);
 			dataHandler.onDisconnected += new MyTcpStreamHandler.onDisconnectedEventArgs (onConnectionDisconnected);
@@ -122,6 +130,20 @@ namespace PHClientHttpHandler
 			MyTimeOut = new Thread(new ThreadStart(ConnTimeOut));
 			MyTimeOut.Start();
 		}
+
+//		public void StartSecure(SslStream stream, TcpClient client){
+//
+//			Console.WriteLine ("["+this.ToString () + "] START : SECURE");
+//
+//			dataHandler.Start (stream, client);
+//			dataHandler.onDataReceived += new MyTcpStreamHandler.onReceived (DataReceived);
+//			dataHandler.onDisconnected += new MyTcpStreamHandler.onDisconnectedEventArgs (onConnectionDisconnected);
+//
+//			fExitThread = false;		// ditambah didieu
+//			ctrTO = TIMEOUT_15;		    // initial timeout 15 detik, untuk data pertama
+//			MyTimeOut = new Thread(new ThreadStart(ConnTimeOut));
+//			MyTimeOut.Start();
+//		}
 
 		bool eventOnce = false;
 		private void onConnectionDisconnected(){
@@ -182,9 +204,10 @@ namespace PHClientHttpHandler
 					{
 						// Timeout fired
 						fExitThread = true;
-						MyTcpStreamHandler.ConnectionStateObject state = 
-							dataHandler.CurrentConnectionState;
-						Disconnect (state);
+//						MyTcpStreamHandler.ConnectionStateObject state = 
+//							dataHandler.CurrentConnectionState;
+//						Disconnect (state);
+						Disconnect (dataHandler.CurrentConnectionState);
 						return;
 					}
 				}
@@ -210,6 +233,12 @@ namespace PHClientHttpHandler
 			//srecBuff += Encoding.GetEncoding(1252).GetString(data);
 			srecBuff += State.sb.ToString ();
 			dataLength += State.DataLength;
+
+//			Console.WriteLine ("=======================TERIMAAAA========================");
+//			Console.WriteLine ("State Secure : " + State.isSecureConnection.ToString ());
+//			Console.WriteLine ("Data diterima : " + State.sb.ToString ());
+//			Console.WriteLine ("Data srecBuff : " + srecBuff);
+//			Console.WriteLine ("========================AKHIRRR=========================");
 
 			HTTPRestDataConstruct.parseClientRequest(srecBuff,
 				(((IPEndPoint)State.client.Client.RemoteEndPoint).Address.ToString()), ref retCode);
@@ -265,6 +294,7 @@ namespace PHClientHttpHandler
 
 		private void ProcessDataReceived(MyTcpStreamHandler.ConnectionStateObject State)
 		{
+
 			//string resp = PPOBProcessor.messageProcessor(HTTPRestDataConstruct.HttpRestClientRequest, 
 			//    logPath,dbHost,dbPort, dbUser,dbPass,dbName,httpRestServicePath,httpRestServiceAccountPath,
 			//    httpRestServiceProductTransactionPath, httpRestServiceApplicationsPath, sandraHost,sandraPort);
@@ -289,7 +319,6 @@ namespace PHClientHttpHandler
 			// reply ke Client dengan acknowledge OOKK+13
 			//intSent = client.Send(Encoding.GetEncoding(1252).GetBytes("OOKK\r"));
 		}
-
 
 	}
 }

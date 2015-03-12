@@ -48,6 +48,7 @@
     <Compile Include="ProductQuery.cs" />
     <Compile Include="OnlineSmartCardTransaction.cs" />
     <Compile Include="NitrogenFreeTransaction.cs" />
+    <Compile Include="BarcodePayment.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CitilinkLib\CitilinkLib.csproj">
@@ -133,6 +134,10 @@
     <ProjectReference Include="..\ShopsHandler\ShopsHandler.csproj">
       <Project>{B7A36362-64B2-451F-8F49-05EB701C819A}</Project>
       <Name>ShopsHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OfflineTransaction\OfflineTransaction.csproj">
+      <Project>{CC9481B8-0714-4DFC-941F-5974F1BFC81C}</Project>
+      <Name>OfflineTransaction</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

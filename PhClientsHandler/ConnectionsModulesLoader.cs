@@ -102,7 +102,7 @@ namespace PhClientsManager
 			{
 				Console.WriteLine("~added: {0}.", plugin.Name);
 				try{
-					plugin.Start (applicationPath);
+					plugin.Start (applicationPath, System.IO.Path.Combine (applicationPath, "HttpConfig.ini"));
 				}catch (Exception ex) {
 					Console.WriteLine ("Failed to start plugin " + plugin.Name + "\r\n " + ex.Message);
 				}
@@ -119,7 +119,7 @@ namespace PhClientsManager
 				Console.WriteLine("PluginAdded: {0}.", plugin.Name);
 				//Console.WriteLine(plugin.SayHelloTo("Tony Stark"));
 				try{
-					plugin.Start (applicationPath);
+					plugin.Start (applicationPath, System.IO.Path.Combine (applicationPath, "HttpConfig.ini"));
 				}catch (Exception ex) {
 					Console.WriteLine ("Failed to start plugin " + plugin.Name + "\r\n " + ex.Message);
 				}

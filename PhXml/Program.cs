@@ -20,19 +20,44 @@ namespace PhXml
 				"</Companies> " + 
 				"</MyFile>";
 
+//			isiXml = "<?xml version=\"1.0\" ?>" +
+//				"<data>" + 
+//				"<type>reqinqpayment</type>" + 
+//				"<vaid>500123000000123456</vaid>" + 
+//				"<booking_datetime>2015-03-05 20:20:33</booking_datetime>" + 
+//				"<reference_number>01</reference_number>" + 
+//				"<username>partner</username>" + 
+//				"<signature>ljshdfkuiy92716465286458264587</signature>" + 
+//				"</data>";
+
 			XmlSimple xml = new XmlSimple ();
+			XmlSimple newxml = new XmlSimple ();
 
 			xml.Clear (true);
 			xml.XmlString = isiXml;
+			newxml.Clear (false);
+			newxml.XmlString = "<dummy/>";
+			newxml.AddNode ("HUNTU", "isi");
 		
+			Console.WriteLine (xml.Name);
 			Console.WriteLine (xml.ToString ());
 			Console.WriteLine ();
 
 			xml.Name = "Ruutt";
 			xml.AddNode ("Satu", 12);
 			xml.GetFirstChild ("Companies").AddNode ("Satu", "Kesemek");
+			XmlSimple xmllain = xml.GetFirstChild ("Companies");
+			xml.AddNode (newxml);
+			xmllain.AddNode (newxml);
 			Console.WriteLine (xml.ToString ());
 			Console.WriteLine ();
+
+			Console.WriteLine ("This Name = " + xml.Name);
+			//List<XmlSimple> childs1 = xml.GetChildsList (xml.Name);
+			XmlSimple[] childs1 = xml.GetChilds ();
+			foreach (XmlSimple child in childs1) {
+				Console.WriteLine (child.Name +" : "+ child.Value);
+			}
 
 			Console.WriteLine ("isHasChild = " + xml.isHasChild);
 

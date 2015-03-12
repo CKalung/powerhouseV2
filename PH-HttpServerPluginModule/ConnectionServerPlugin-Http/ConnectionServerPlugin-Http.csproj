@@ -35,6 +35,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HttpServerPlugin.cs" />
+    <Compile Include="HttpServerJsonPlugin.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -54,5 +55,36 @@
       <Project>{87ABF3FF-7EB2-4F03-BC61-7CD23E46E55A}</Project>
       <Name>CrossIniFile</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\MyTcpClientServerV2\MyTcpClientServerV2.csproj">
+      <Project>{86A73E88-365B-4312-8827-862F335D8600}</Project>
+      <Name>MyTcpClientServerV2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PH-ClientHttpHandler\PH-ClientHttpProtocolHandler.csproj">
+      <Project>{82360D7A-D76A-44EF-A8C4-102915C0AD23}</Project>
+      <Name>PH-ClientHttpProtocolHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\StaticCommonLibrary\StaticCommonLibrary.csproj">
+      <Project>{3C7F8F54-4FD7-4000-8401-EFE9D20E26D8}</Project>
+      <Name>StaticCommonLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LOG-Handler\LOG-Handler.csproj">
+      <Project>{A13870D0-7883-4309-9F17-0609E35762E5}</Project>
+      <Name>LOG-Handler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PH-ClientHttpHandler\PH-HttpRestJsonTranslator\PH-HttpRestJsonTranslator.csproj">
+      <Project>{7AC70355-0F4F-4F68-B50A-CB7A029BA5E3}</Project>
+      <Name>PH-HttpRestJsonTranslator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PH-ClientHttpHandler\PH-ClientProtocolTranslatorInterface\PH-ClientProtocolTranslatorInterface.csproj">
+      <Project>{D58F3E35-6103-4248-AB4E-2D08606C85D3}</Project>
+      <Name>PH-ClientProtocolTranslatorInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PH-ClientHttpHandler\PH-ClientHandlerInterface\PH-ClientHandlerInterface.csproj">
+      <Project>{B2DCC6BF-B74D-4A09-882D-E2BB5EA70C24}</Project>
+      <Name>PH-ClientHandlerInterface</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="HttpServerJsonPluginAwal.cs" />
   </ItemGroup>
 </Project>

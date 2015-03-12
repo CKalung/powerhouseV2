@@ -2,15 +2,16 @@
 // KISS ===>>> KEEP IT SIMPLE... STUPID
 
 using System;
-using PPOBHttpRestData;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+
 using LOG_Handler;
+using PPOBHttpRestData;
 using StaticCommonLibrary;
 using IconoxOnlineHandler;
 using PPOBDatabase;
 
-using System.Globalization;
 
 namespace IconoxTrxHandlerV2
 {
@@ -52,7 +53,6 @@ namespace IconoxTrxHandlerV2
 				localDB.Dispose ();
 			localDB = null;
 		}
-
 
 
 		HTTPRestConstructor HTTPRestDataConstruct;
@@ -750,11 +750,13 @@ namespace IconoxTrxHandlerV2
 
 			string userId = cUserIDHeader + userPhone;
 
-			// cek token disini
-			if (!cek_SecurityToken (userPhone, token)) {
-				LOG_Handler.LogWriter.showDEBUG (this, "Cek Token Session: " + userPhone + 
+			if (!jsonConv.isExists ("DEMO")) {
+				// cek token disini
+				if (!cek_SecurityToken (userPhone, token)) {
+					LOG_Handler.LogWriter.showDEBUG (this, "Cek Token Session: " + userPhone +
 					", token: " + token);
-				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "504", "Invalid session", "");
+					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "504", "Invalid session", "");
+				}
 			}
 
 			CommonLibrary.SessionResetTimeOut (userPhone);
@@ -807,13 +809,13 @@ namespace IconoxTrxHandlerV2
 
 			if (IconoxSvrResp.Length <= 0) {
 				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "413", 
-					"No data from Iconox Activation Server", "");
+					"No data from Iconox Authentication Server", "");
 			}
 
 			jsonConv.Clear();
 			if (!jsonConv.JSONParse (IconoxSvrResp)) {
 				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "407", 
-					"Invalid data format from Iconox Activation Server", "");
+					"Invalid data format from Iconox Authentication Server", "");
 			}
 
 			string respCode = "";
@@ -823,7 +825,7 @@ namespace IconoxTrxHandlerV2
 				(!jsonConv.ContainsKey("fiTagCode")))
 			{
 				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "416", 
-					"Mandatory field from Activation server not found", "");
+					"Mandatory field from Authentication server not found", "");
 			}
 			respCode = ((string)jsonConv["fiResponseCode"]).Trim();
 			if(respCode!="00"){
@@ -928,6 +930,590 @@ namespace IconoxTrxHandlerV2
 				//LogWriter.showDEBUG (this, "=========== GAGAL INSERT LOG ======");
 				// return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Failed to save transaction log", "");
 				// Dicatat di Log saja, untuk di insert di lain waktu, karena transaksi sudah terjadi
+			}
+
+			jsonConv.Clear();
+			//jsonConv.Add("fiToken", token);
+			jsonConv.Add("fiAuthCode", respSam);
+			jsonConv.Add("fiResponseCode", respCode);
+			jsonConv.Add("fiTransactionId", "Icx" + traceNumber.ToString().PadLeft(6, '0'));
+			jsonConv.Add("fiTrxNumber", trxNumber);
+			return HTTPRestDataConstruct.constructHTTPRestResponse(200, "00", "Success", jsonConv.JSONConstruct());
+
+		}
+
+		public string PersoRequest(){
+			string[] fields = { "fiApplicationId", "fiPhone", "fiToken", 
+				"fiUserCardNumber", "fiTrxDateTime", "fiCardChallenge",
+				"fiFileCode", "fiPersoData"};
+
+			string[] persoFields = { "fiAgentId", "fiPackageCode", "fiGroupNumber", "fiPersonalId", 
+				"fiPersonalIdType", "fiTitle", "fiFirstName", "fiMiddleName", "fiLastName", 
+				"fiGender", "fiBirthPlace", "fiBirthDate", "fiAddress", "fiIssueDate", 
+				"fiIssuePlace", "fiIssueCountry", "fiExpiryDate"};
+
+			string appID = "";
+			string userPhone = "";
+			string token = "";
+			string cardNumber = "";
+			string strxDateTime = "";
+			string cardChallenge = "";
+			string productCode = "";
+			string iconoxFileCode = "";
+			JsonLibs.MyJsonLib jPersoData = null;
+
+			productCode = commonSettings.getString ("IconoxPersoRequestProductCode");
+
+			Exception xError=null;
+
+			if (!jsonConv.JSONParse(clientData.Body))
+			{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "407", "Invalid data format", "");
+			}
+
+			if(!checkMandatoryFields(jsonConv,fields))
+			{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Mandatory fields not found", "");
+			}
+
+			try
+			{
+				appID = ((string)jsonConv["fiApplicationId"]).Trim();
+				userPhone = ((string)jsonConv["fiPhone"]).Trim ();
+				token = ((string)jsonConv["fiToken"]).Trim ();
+				cardNumber = ((string)jsonConv["fiUserCardNumber"]).Trim ();
+				cardChallenge = ((string)jsonConv["fiCardChallenge"]).Trim ();
+				strxDateTime = ((string)jsonConv["fiTrxDateTime"]).Trim ();
+				iconoxFileCode = ((string)jsonConv["fiFileCode"]).Trim ();
+				jPersoData = (JsonLibs.MyJsonLib)jsonConv["fiPersoData"];
+			}
+			catch
+			{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field type or format", "");
+			}
+
+			DateTime trxDateTime;
+			try{
+				trxDateTime = DateTime.ParseExact(strxDateTime, "yyMMddHHmmss", null);
+			} catch{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field date format", "");
+			}
+
+			string fiAgentId;
+			string fiPackageCode;
+			string fiGroupNumber;
+			string fiPersonalId;
+			string fiPersonalIdType;
+			string fiTitle;
+			string fiFirstName;
+			string fiMiddleName;
+			string fiLastName;
+			string fiGender;
+			string fiBirthPlace;
+			string sfiBirthDate;
+			string fiAddress;
+			string sfiIssueDate;
+			string fiIssuePlace;
+			string fiIssueCountry;
+			string sfiExpiryDate;
+
+			if(!checkMandatoryFields(jPersoData,persoFields))
+			{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Mandatory fields not found for perso", "");
+			}
+
+			try
+			{
+				fiAgentId = ((string)jPersoData["fiAgentId"]).Trim();
+				fiPackageCode = ((string)jPersoData["fiPackageCode"]).Trim ();
+				fiGroupNumber = ((string)jPersoData["fiGroupNumber"]).Trim ();
+				fiPersonalId = ((string)jPersoData["fiPersonalId"]).Trim ();
+				fiPersonalIdType = ((string)jPersoData["fiPersonalIdType"]).Trim ();
+				fiTitle = ((string)jPersoData["fiTitle"]).Trim ();
+				fiFirstName = ((string)jPersoData["fiFirstName"]).Trim ();
+				fiMiddleName = ((string)jPersoData["fiMiddleName"]).Trim ();
+				fiLastName = ((string)jPersoData["fiLastName"]).Trim ();
+				fiGender = ((string)jPersoData["fiGender"]).Trim ();
+				fiBirthPlace = ((string)jPersoData["fiBirthPlace"]).Trim ();
+				sfiBirthDate = ((string)jPersoData["fiBirthDate"]).Trim ();
+				fiAddress = ((string)jPersoData["fiAddress"]).Trim ();
+				sfiIssueDate = ((string)jPersoData["fiIssueDate"]).Trim ();
+				fiIssuePlace = ((string)jPersoData["fiIssuePlace"]).Trim ();
+				fiIssueCountry = ((string)jPersoData["fiIssueCountry"]).Trim ();
+				sfiExpiryDate = ((string)jPersoData["fiExpiryDate"]).Trim ();
+			}
+			catch
+			{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field type or format", "");
+			}
+
+			if (((fiFirstName.Length == 0)
+				&& (fiMiddleName.Length == 0)
+				&& (fiLastName.Length == 0))
+				|| (fiPersonalId.Length == 0)
+				|| (fiBirthPlace.Length == 0)
+				|| (fiAddress.Length == 0)
+				|| (fiIssuePlace.Length == 0)
+				|| (fiIssueCountry.Length == 0)) {
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "426", "Invalid data perso", "");
+			}
+
+			DateTime fiBirthDate;
+			DateTime fiIssueDate;
+			DateTime fiExpiryDate;
+			try{
+				fiBirthDate = DateTime.ParseExact(sfiBirthDate, "yyyyMMdd", null);
+				fiIssueDate = DateTime.ParseExact(sfiIssueDate, "yyMMdd", null);
+				fiExpiryDate = DateTime.ParseExact(sfiExpiryDate, "yyMMdd", null);
+			} catch{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "426", "Invalid data perso", "");
+			}
+
+			ReformatPhoneNumber (ref userPhone);
+
+			string userId = cUserIDHeader + userPhone;
+
+			// cek token disini
+			if (!cek_SecurityToken (userPhone, token)) {
+				LOG_Handler.LogWriter.showDEBUG (this, "Cek Token Session: " + userPhone + 
+					", token: " + token);
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "504", "Invalid session", "");
+			}
+
+			CommonLibrary.SessionResetTimeOut (userPhone);
+
+			// cek apakah kartu terdaftar di database
+			//Exception ExError = null;
+			string fReason = "";
+			decimal dbBalance = 0;
+			DateTime lastModified=DateTime.Now;
+			dbCardStatus cardStatus = localDB.getCardStatus (cardNumber);
+			switch (cardStatus) {
+			//			case dbCardStatus.Actived:
+			//				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "415", 
+			//					"Card Status: Already active");
+			//				break;
+			case dbCardStatus.Blocked:
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "415", 
+					"Card Status: Blocked","");
+			case dbCardStatus.Undistributed:
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "415", 
+					"Card Status: Hasn't been distributed","");
+			case dbCardStatus.dbFailed:
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "415", 
+					"Card Status: Failed to query","");
+			case dbCardStatus.Unregistered:
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "415", 
+					"Card Status: Unregistered","");
+			default:
+				//				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "415", 
+				//					"Card Status: Unknown","");
+				break;
+			}
+
+			jsonConv.Clear ();
+			jsonConv.Add ("fiTagCode","06");
+			jsonConv.Add ("fiAgentPhone",userPhone);
+			jsonConv.Add ("fiDateTime",strxDateTime);
+			jsonConv.Add ("fiCardNumber",cardNumber);
+			jsonConv.Add ("fiUserCardResponse",cardChallenge);
+			jsonConv.Add ("fiUserFileCode",iconoxFileCode);
+			jsonConv.Add ("fiKCRUDAD","10");
+
+			string strJson = jsonConv.JSONConstruct ();
+
+			string IconoxSvrResp = RequestToIconoxAuthenticationServer(strJson);
+
+			if (IconoxSvrResp.Length <= 0) {
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "413", 
+					"No data from Iconox Authentication Server", "");
+			}
+
+			jsonConv.Clear();
+			if (!jsonConv.JSONParse (IconoxSvrResp)) {
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "407", 
+					"Invalid data format from Iconox Authentication Server", "");
+			}
+
+			string respCode = "";
+			string respSam = "";
+			if ((!jsonConv.ContainsKey("fiResponseCode")) || 
+				(!jsonConv.ContainsKey("fiResponseMessage")) || 
+				(!jsonConv.ContainsKey("fiTagCode")))
+			{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "416", 
+					"Mandatory field from Authentication server not found", "");
+			}
+			respCode = ((string)jsonConv["fiResponseCode"]).Trim();
+			if(respCode!="00"){
+				respSam = "Iconox server message: " + ((string)jsonConv["fiResponseMessage"]).Trim ();
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "I"+respCode, 
+					respSam, "");
+			}
+
+			if (!jsonConv.ContainsKey("fiSAMResponse"))
+			{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "416", 
+					"Iconox server: no SAM response", "");
+			}
+			respSam = ((string)jsonConv["fiSAMResponse"]).Trim ();
+
+			// hitung data hash, untuk menentukan orang yang sama dengan kartu yang sama
+			// diambil dari nomor kartu, Personal Id dan birth date.
+			string dataHash = cardNumber + fiBirthDate.ToString ("yyMMdd") + fiPersonalId.ToUpper (); 
+			dataHash = CommonLibrary.GetMd5Hash (dataHash);
+
+			// cari di table jika data sudah ada, maka tidak dikenakan biaya
+			bool bayar = false;
+			if (!localDB.isPersoDataExist (dataHash, out xError)) {
+				if (xError != null) {
+					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Error read database", "");
+				}
+				bayar = true;
+			}
+
+			int traceNumber = 0;
+			string trxNumber = "";
+			long TransactionRef_id = 0;
+			DateTime skrg = DateTime.Now;
+
+			if (bayar) {
+				traceNumber = localDB.getNextProductTraceNumber ();
+				trxNumber = localDB.getProductTrxNumber (out xError);
+				TransactionRef_id = localDB.getTransactionReffIdSequence (out xError);
+
+				PPOBDatabase.PPOBdbLibs.ProviderProductInfo providerProduct;
+				try {
+					providerProduct = localDB.getProviderProductInfo (productCode, out xError);
+					if (xError != null) {
+						return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Provider product data not found", "");
+					}
+				} catch (Exception ex) {
+					LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Error get provider product data : " + ex.getCompleteErrMsg ());
+					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Failed on geting provider product data", "");
+				}
+
+				// DISINI KURANGI QVA petugas topup
+				//			int cardProductAmount = amount;	// 100% nya
+				//int productAmountDenganKartu=0;
+				int nilaiYangMasukLog = 0;//	providerProduct.CurrentPrice;
+
+				// hitung fee
+				//			int vaTopUp = 0;
+				//			int adminFee = 0;
+				//			int amountFinal = 0;
+				int adminFee = 0;
+
+				// ambil base admin fee
+				try {
+					//LogWriter.showDEBUG (this, " productAmount: " + productAmount);
+					if (!localDB.getAdminFeeAndCustomerFee (productCode, 1, appID, providerProduct.CurrentPrice,
+						    ref adminFee, out xError)) {
+						return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Fee data not found", "");
+					}
+
+				} catch (Exception ex) {
+					LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Error get fee data : " + ex.getCompleteErrMsg ());
+					//Console.WriteLine(ex.StackTrace);
+					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Error get fee data", "");
+				}
+				int amountFinal = providerProduct.CurrentPrice;
+
+				// hitung fee include/exclude
+				string strTemp = hitungFeeProductService (providerProduct, adminFee, ref amountFinal, ref nilaiYangMasukLog);
+				if (strTemp != "") {
+					LogWriter.write (this, LogWriter.logCodeEnum.ERROR, "Bad amount value");
+					return strTemp;
+				}
+
+				string qvaInvoiceNumber = "";
+				bool qvaReversalDone = false;
+				string errCode = "00";
+				string errMessage = "";
+
+				// amountFinal adalah nilai yang harus di transferkan dari petugas ke rekening penampungan
+				strTemp = bayarDariPetugasAutentikasiKePenampung (userId, providerProduct,
+					amountFinal, TransactionRef_id, 
+					ref qvaInvoiceNumber, ref qvaReversalDone, 
+					ref errCode, ref errMessage);
+				if (strTemp != "") {
+					return strTemp;
+				}
+
+				// insert log transaksi
+				if (!localDB.insertCompleteTransactionLog (TransactionRef_id, productCode, 
+					    providerProduct.ProviderProductCode,
+					    userId.Substring (commonSettings.getString ("UserIdHeader").Length), cardNumber,
+					    nilaiYangMasukLog.ToString (), traceNumber.ToString (), trxDateTime.ToString ("yyyy-MM-dd HH:mm:ss"),
+					    adminFee.ToString (), providerProduct.ProviderCode, providerProduct.CogsPriceId,
+					    0, 0, "", skrg.ToString ("yyyy-MM-dd HH:mm:ss"), "", 
+					    skrg.ToString ("yyyy-MM-dd HH:mm:ss"),
+					    strJson,
+					    trxDateTime.ToString ("yyyy-MM-dd HH:mm:ss"),
+					    IconoxSvrResp,
+					    skrg.ToString ("yyyy-MM-dd HH:mm:ss"),
+					    true, 
+					    "", trxNumber, false, providerProduct.fIncludeFee, "", "",
+					    out xError)) {
+					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Failed to save transaction log", "");
+					//LogWriter.showDEBUG (this, "=========== GAGAL INSERT LOG ======");
+					// return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Failed to save transaction log", "");
+					// Dicatat di Log saja, untuk di insert di lain waktu, karena transaksi sudah terjadi
+				}
+
+				// insert ucard_perso
+				if(!localDB.insertPersoData(cardNumber,fiAgentId,fiPackageCode,fiGroupNumber,fiPersonalId,
+					fiPersonalIdType,fiTitle,fiFirstName,fiMiddleName,fiLastName,fiGender,fiBirthPlace, 
+					fiBirthDate,fiAddress,fiIssueDate,fiExpiryDate,fiIssuePlace,fiIssueCountry,dataHash,
+					skrg,skrg, out xError)){
+					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Failed to save Perso Data", "");
+				}
+			} else {
+				// update ucard_perso
+				if(!localDB.updatePersoData(fiAgentId,fiPackageCode,fiGroupNumber,
+					fiPersonalIdType,fiTitle,fiFirstName,fiMiddleName,fiLastName,fiGender,fiBirthPlace, 
+					fiAddress,fiIssueDate,fiExpiryDate,fiIssuePlace,fiIssueCountry,dataHash,
+					skrg,skrg)){
+					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Failed to save Perso Data", "");
+				}
+			}
+
+			jsonConv.Clear();
+			//jsonConv.Add("fiToken", token);
+			jsonConv.Add("fiAuthCode", respSam);
+			jsonConv.Add("fiResponseCode", respCode);
+			jsonConv.Add("fiTransactionId", "Icx" + traceNumber.ToString().PadLeft(6, '0'));
+			jsonConv.Add("fiTrxNumber", trxNumber);
+			return HTTPRestDataConstruct.constructHTTPRestResponse(200, "00", "Success", jsonConv.JSONConstruct());
+
+		}
+
+		public string PersoRequestDEMO(){
+			string[] fields = { "fiApplicationId", "fiPhone", "fiToken", 
+				"fiUserCardNumber", "fiTrxDateTime", "fiCardChallenge",
+				"fiFileCode", "fiPersoData"};
+
+			string[] persoFields = { "fiAgentId", "fiPackageCode", "fiGroupNumber", "fiPersonalId", 
+				"fiPersonalIdType", "fiTitle", "fiFirstName", "fiMiddleName", "fiLastName", 
+				"fiGender", "fiBirthPlace", "fiBirthDate", "fiAddress", "fiIssueDate", 
+				"fiIssuePlace", "fiIssueCountry", "fiExpiryDate"};
+
+			string appID = "";
+			string userPhone = "";
+			string token = "";
+			string cardNumber = "";
+			string strxDateTime = "";
+			string cardChallenge = "";
+			string productCode = "";
+			string iconoxFileCode = "";
+			JsonLibs.MyJsonLib jPersoData = null;
+
+			productCode = commonSettings.getString ("IconoxPersoRequestProductCode");
+
+			Exception xError=null;
+
+			if (!jsonConv.JSONParse(clientData.Body))
+			{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "407", "Invalid data format", "");
+			}
+
+			if(!checkMandatoryFields(jsonConv,fields))
+			{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Mandatory fields not found", "");
+			}
+
+			try
+			{
+				appID = ((string)jsonConv["fiApplicationId"]).Trim();
+				userPhone = ((string)jsonConv["fiPhone"]).Trim ();
+				token = ((string)jsonConv["fiToken"]).Trim ();
+				cardNumber = ((string)jsonConv["fiUserCardNumber"]).Trim ();
+				cardChallenge = ((string)jsonConv["fiCardChallenge"]).Trim ();
+				strxDateTime = ((string)jsonConv["fiTrxDateTime"]).Trim ();
+				iconoxFileCode = ((string)jsonConv["fiFileCode"]).Trim ();
+				jPersoData = (JsonLibs.MyJsonLib)jsonConv["fiPersoData"];
+			}
+			catch(Exception ex)
+			{
+				LogWriter.showDEBUG (this, "Error baris ke: " + ex.getCompleteErrMsg ());
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field type or format", "");
+			}
+
+			DateTime trxDateTime;
+			try{
+				trxDateTime = DateTime.ParseExact(strxDateTime, "yyMMddHHmmss", null);
+			} catch{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field date format", "");
+			}
+
+			string fiAgentId;
+			string fiPackageCode;
+			string fiGroupNumber;
+			string fiPersonalId;
+			string fiPersonalIdType;
+			string fiTitle;
+			string fiFirstName;
+			string fiMiddleName;
+			string fiLastName;
+			string fiGender;
+			string fiBirthPlace;
+			string sfiBirthDate;
+			string fiAddress;
+			string sfiIssueDate;
+			string fiIssuePlace;
+			string fiIssueCountry;
+			string sfiExpiryDate;
+
+			if(!checkMandatoryFields(jPersoData,persoFields))
+			{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Mandatory fields not found for perso", "");
+			}
+
+			try
+			{
+				fiAgentId = ((string)jPersoData["fiAgentId"]).Trim();
+				fiPackageCode = ((string)jPersoData["fiPackageCode"]).Trim ();
+				fiGroupNumber = ((string)jPersoData["fiGroupNumber"]).Trim ();
+				fiPersonalId = ((string)jPersoData["fiPersonalId"]).Trim ();
+				fiPersonalIdType = ((string)jPersoData["fiPersonalIdType"]).Trim ();
+				fiTitle = ((string)jPersoData["fiTitle"]).Trim ();
+				fiFirstName = ((string)jPersoData["fiFirstName"]).Trim ();
+				fiMiddleName = ((string)jPersoData["fiMiddleName"]).Trim ();
+				fiLastName = ((string)jPersoData["fiLastName"]).Trim ();
+				fiGender = ((string)jPersoData["fiGender"]).Trim ();
+				fiBirthPlace = ((string)jPersoData["fiBirthPlace"]).Trim ();
+				sfiBirthDate = ((string)jPersoData["fiBirthDate"]).Trim ();
+				fiAddress = ((string)jPersoData["fiAddress"]).Trim ();
+				sfiIssueDate = ((string)jPersoData["fiIssueDate"]).Trim ();
+				fiIssuePlace = ((string)jPersoData["fiIssuePlace"]).Trim ();
+				fiIssueCountry = ((string)jPersoData["fiIssueCountry"]).Trim ();
+				sfiExpiryDate = ((string)jPersoData["fiExpiryDate"]).Trim ();
+			}
+			catch(Exception ex)
+			{
+				LogWriter.showDEBUG (this, "Error baris ke: " + ex.getCompleteErrMsg ());
+
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid field type or format", "");
+			}
+
+			if (((fiFirstName.Length == 0)
+				&& (fiMiddleName.Length == 0)
+				&& (fiLastName.Length == 0))
+				|| (fiPersonalId.Length == 0)
+				|| (fiBirthPlace.Length == 0)
+				|| (fiAddress.Length == 0)
+				|| (fiIssuePlace.Length == 0)
+				|| (fiIssueCountry.Length == 0)) {
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "426", "Invalid data perso", "");
+			}
+
+			DateTime fiBirthDate;
+			DateTime fiIssueDate;
+			DateTime fiExpiryDate;
+			try{
+				fiBirthDate = DateTime.ParseExact(sfiBirthDate, "yyyyMMdd", null);
+				fiIssueDate = DateTime.ParseExact(sfiIssueDate, "yyMMdd", null);
+				fiExpiryDate = DateTime.ParseExact(sfiExpiryDate, "yyMMdd", null);
+			} catch{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "426", "Invalid data perso", "");
+			}
+
+			ReformatPhoneNumber (ref userPhone);
+
+			string userId = cUserIDHeader + userPhone;
+
+//			// cek token disini
+//			if (!cek_SecurityToken (userPhone, token)) {
+//				LOG_Handler.LogWriter.showDEBUG (this, "Cek Token Session: " + userPhone + 
+//					", token: " + token);
+//				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "504", "Invalid session", "");
+//			}
+//
+			CommonLibrary.SessionResetTimeOut (userPhone);
+
+			// cek apakah kartu terdaftar di database
+			//Exception ExError = null;
+			string fReason = "";
+			decimal dbBalance = 0;
+			DateTime lastModified=DateTime.Now;
+			jsonConv.Clear ();
+			jsonConv.Add ("fiTagCode","06");
+			jsonConv.Add ("fiAgentPhone",userPhone);
+			jsonConv.Add ("fiDateTime",strxDateTime);
+			jsonConv.Add ("fiCardNumber",cardNumber);
+			jsonConv.Add ("fiUserCardResponse",cardChallenge);
+			jsonConv.Add ("fiUserFileCode",iconoxFileCode);
+			jsonConv.Add ("fiKCRUDAD","10");
+
+			string strJson = jsonConv.JSONConstruct ();
+
+			string IconoxSvrResp = RequestToIconoxAuthenticationServer(strJson);
+
+			if (IconoxSvrResp.Length <= 0) {
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "413", 
+					"No data from Iconox Authentication Server", "");
+			}
+
+			jsonConv.Clear();
+			if (!jsonConv.JSONParse (IconoxSvrResp)) {
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "407", 
+					"Invalid data format from Iconox Authentication Server", "");
+			}
+
+			string respCode = "";
+			string respSam = "";
+			if ((!jsonConv.ContainsKey("fiResponseCode")) || 
+				(!jsonConv.ContainsKey("fiResponseMessage")) || 
+				(!jsonConv.ContainsKey("fiTagCode")))
+			{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "416", 
+					"Mandatory field from Authentication server not found", "");
+			}
+			respCode = ((string)jsonConv["fiResponseCode"]).Trim();
+			if(respCode!="00"){
+				respSam = "Iconox server message: " + ((string)jsonConv["fiResponseMessage"]).Trim ();
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "I"+respCode, 
+					respSam, "");
+			}
+
+			if (!jsonConv.ContainsKey("fiSAMResponse"))
+			{
+				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "416", 
+					"Iconox server: no SAM response", "");
+			}
+			respSam = ((string)jsonConv["fiSAMResponse"]).Trim ();
+
+			// hitung data hash, untuk menentukan orang yang sama dengan kartu yang sama
+			// diambil dari nomor kartu, Personal Id dan birth date.
+			string dataHash = cardNumber + fiBirthDate.ToString ("yyMMdd") + fiPersonalId.ToUpper (); 
+			dataHash = CommonLibrary.GetMd5Hash (dataHash);
+
+			// cari di table jika data sudah ada, maka tidak dikenakan biaya
+			bool bayar = false;
+			if (!localDB.isPersoDataExist (dataHash, out xError)) {
+				if (xError != null) {
+					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Error read database", "");
+				}
+				bayar = true;
+			}
+
+			int traceNumber = 0;
+			string trxNumber = "";
+			long TransactionRef_id = 0;
+			DateTime skrg = DateTime.Now;
+
+			// update ucard_perso
+			if(!localDB.updatePersoData(fiAgentId,fiPackageCode,fiGroupNumber,
+				fiPersonalIdType,fiTitle,fiFirstName,fiMiddleName,fiLastName,fiGender,fiBirthPlace, 
+				fiAddress,fiIssueDate,fiExpiryDate,fiIssuePlace,fiIssueCountry,dataHash,
+				skrg,skrg)){
+				// insert ucard_perso
+				if(!localDB.insertPersoData(cardNumber,fiAgentId,fiPackageCode,fiGroupNumber,fiPersonalId,
+					fiPersonalIdType,fiTitle,fiFirstName,fiMiddleName,fiLastName,fiGender,fiBirthPlace, 
+					fiBirthDate,fiAddress,fiIssueDate,fiExpiryDate,fiIssuePlace,fiIssueCountry,dataHash,
+					skrg,skrg, out xError)){
+					return HTTPRestDataConstruct.constructHTTPRestResponse (400, "492", "Failed to save Perso Data", "");
+				}
 			}
 
 			jsonConv.Clear();

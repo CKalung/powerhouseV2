@@ -302,12 +302,13 @@ namespace PPOBManager
 
             string fiApplicationId;
             string fiPhone;
-            string fiPassword;
+            //string fiPassword;
+			string sessionToken;
             string fiNewPassword;
 
             if (
                 (!jsonConv.ContainsKey("fiApplicationId")) || (!jsonConv.ContainsKey("fiPhone")) ||
-                (!jsonConv.ContainsKey("fiPassword")) || (!jsonConv.ContainsKey("fiNewPassword"))
+                (!jsonConv.ContainsKey("fiToken")) || (!jsonConv.ContainsKey("fiNewPassword"))
                 )
             {
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Mandatory field not found", "");
@@ -317,8 +318,9 @@ namespace PPOBManager
             {
                 fiApplicationId = ((string)jsonConv["fiApplicationId"]).Trim();
                 fiPhone = ((string)jsonConv["fiPhone"]).Trim();
-                fiPassword = ((string)jsonConv["fiPassword"]).Trim();
-                fiNewPassword = ((string)jsonConv["fiNewPassword"]).Trim();
+				sessionToken = ((string)jsonConv["fiToken"]).Trim();
+				//fiPassword = ((string)jsonConv["fiPassword"]).Trim();
+				fiNewPassword = ((string)jsonConv["fiNewPassword"]).Trim();
             }
             catch
             {
@@ -332,19 +334,24 @@ namespace PPOBManager
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Invalid user phone number", "");
             }
 
-            if ((fiPassword.Length == 0))
-            {
-                return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Invalid password", "");
-            }
+//            if ((fiPassword.Length == 0))
+//            {
+//                return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Invalid password", "");
+//            }
 
-            if (!localDB.isUserPasswordEqual(fiPhone, fiPassword, out xError))
-            {
-                if (xError != null)
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
-                else
-                    // password error
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
-            }
+			string httprepl = "";
+			if (!cek_TokenSecurity (fiPhone, jsonConv, ref sessionToken, ref httprepl)) {
+				return httprepl;
+			}
+
+//            if (!localDB.isUserPasswordEqual(fiPhone, fiPassword, out xError))
+//            {
+//                if (xError != null)
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
+//                else
+//                    // password error
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
+//            }
             // password ok
 
             //localDB.changeUserPassword(fiUserPhone, fiNewPassword, out xError);
@@ -504,18 +511,20 @@ namespace PPOBManager
 			string fiUserPhone = "";
 			
 			//string fiUserId = "";
-			string fiPassword = "";
+			//string fiPassword = "";
+			string sessionToken = "";
 			string fiRequestCode = "";
 
             if ((!jsonConv.ContainsKey("fiPhone")) || (!jsonConv.ContainsKey("fiRequestCode")) || 
-                (!jsonConv.ContainsKey("fiPassword")))
+				(!jsonConv.ContainsKey("fiToken")))
+				//(!jsonConv.ContainsKey("fiPassword")))
             {
                 // harus ada yg wajib
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Mandatory field not found", "");
             }
 
-            if ((jsonConv["fiPhone"] == null) || (jsonConv["fiRequestCode"] == null) ||
-                (jsonConv["fiPassword"] == null))
+			if ((jsonConv["fiPhone"] == null) || (jsonConv["fiRequestCode"] == null))	// ||
+                //(jsonConv["fiPassword"] == null))
             {
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Null value not allowed", "");
             }
@@ -532,7 +541,8 @@ namespace PPOBManager
             }
 			try {
 				fiRequestCode = ((string)jsonConv ["fiRequestCode"]).Trim ();
-				fiPassword = ((string)jsonConv ["fiPassword"]).Trim ();
+				//fiPassword = ((string)jsonConv ["fiPassword"]).Trim ();
+				sessionToken = ((string)jsonConv ["fiToken"]).Trim ();
 			} catch {
 				// field tidak ditemukan atau formatnya salah
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Field not completed", "");
@@ -541,13 +551,18 @@ namespace PPOBManager
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Field not completed", "");
 			}
 
-            if (!localDB.isUserPasswordEqual (fiUserPhone, fiPassword, out xError)) {
-                if (xError != null)
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
-                else
-                    // password error
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Login failed", "");
+			string httprepl = "";
+			if (!cek_TokenSecurity (fiUserPhone, jsonConv, ref sessionToken, ref httprepl)) {
+				return httprepl;
 			}
+
+//            if (!localDB.isUserPasswordEqual (fiUserPhone, fiPassword, out xError)) {
+//                if (xError != null)
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
+//                else
+//                    // password error
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Login failed", "");
+//			}
 			// password ok
 
 			CommonLibrary.SessionResetTimeOut (fiUserPhone);

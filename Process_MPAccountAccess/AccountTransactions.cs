@@ -114,15 +114,6 @@ namespace Process_MPAccountAccess
 
         public string AccountTransfer(HTTPRestConstructor.HttpRestRequest clientData)
         {
-            //using (QvaTransactions QVA = new QvaTransactions(commonSettings.getString("SandraHost"), commonSettings.getInt("SandraPort"), localDB))
-            //{
-            //    return QVA.TransferBalance(clientData);
-            //}
-
-            //              /gateway/010130
-            //            {"sender" : <String, not null>, "amount" : <Double, not null>, 
-            //              "receiver" : <String, not null>, "channelId" : <String, not null>,     
-            //              "transactionCode" : <String, not null> } 
             if (clientData.Body.Length == 0)
             {
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "No data to process", "");
@@ -133,8 +124,8 @@ namespace Process_MPAccountAccess
             }
             // TAMPUNG data json dari Client
 
-			string passw = "";
-			string securityToken = "";
+			//string passw = "";
+			string sessionToken = "";
 			string userPhone = "";
             string targetPhone = "";
             int amount = 0;
@@ -142,8 +133,8 @@ namespace Process_MPAccountAccess
             try
             {
 				appID = ((string)jsonConv["fiApplicationId"]).Trim();
-				passw = ((string)jsonConv["fiPassword"]).Trim();
-				//securityToken = ((string)jsonConv["fiToken"]).Trim();
+				//passw = ((string)jsonConv["fiPassword"]).Trim();
+				sessionToken = ((string)jsonConv["fiToken"]).Trim();
 				amount = ((int)jsonConv["fiAmount"]);
                 targetPhone = ((string)jsonConv["fiTargetPhone"]).Trim();
                 userPhone = ((string)jsonConv["fiPhone"]).Trim().Replace("-", "");
@@ -161,22 +152,23 @@ namespace Process_MPAccountAccess
             ReformatPhoneNumber(ref userPhone);
             ReformatPhoneNumber(ref targetPhone);
 
-//			string httprepl = "";
-//			if (!cek_TokenSecurity (userPhone, jsonConv, ref securityToken, ref httprepl)) {
-//				return httprepl;
-//			}
-            if (!localDB.isUserPasswordEqual(userPhone, passw, out xError))
-            {
-                if (xError != null)
-                {
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
-                }
-                else
-                {
-                    // password error
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Login failed", "");
-                }
-            }
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref sessionToken, ref httprepl)) {
+				return httprepl;
+			}
+
+//            if (!localDB.isUserPasswordEqual(userPhone, passw, out xError))
+//            {
+//                if (xError != null)
+//                {
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
+//                }
+//                else
+//                {
+//                    // password error
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Login failed", "");
+//                }
+//            }
             // password ok
 
             if (!localDB.isPhoneExistAndActive(targetPhone, out xError))
@@ -739,12 +731,14 @@ namespace Process_MPAccountAccess
             }
 
             string userPhone = "";
-            string userPassword = "";
+            //string userPassword = "";
+			string sessionToken = "";
             int historyLimit = 1;
             try
             {
                 userPhone = ((string)jsonConv["fiPhone"]).Trim();
-                userPassword = ((string)jsonConv["fiPassword"]).Trim();
+                //userPassword = ((string)jsonConv["fiPassword"]).Trim();
+				sessionToken = ((string)jsonConv["fiToken"]).Trim();
                 historyLimit = (int)jsonConv["fiLimit"];
             }
             catch
@@ -760,19 +754,24 @@ namespace Process_MPAccountAccess
             //  Yang harus disiapkan
             string userId = commonSettings.getString("UserIdHeader") + userPhone;
 
-            // cek dengan database, apakah password sama?
-            if (!localDB.isUserPasswordEqual(userPhone, userPassword, out xError))
-            {
-                if (xError != null)
-                {
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
-                }
-                else
-                {
-                    // password error
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
-                }
-            }
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref sessionToken, ref httprepl)) {
+				return httprepl;
+			}
+
+//            // cek dengan database, apakah password sama?
+//            if (!localDB.isUserPasswordEqual(userPhone, userPassword, out xError))
+//            {
+//                if (xError != null)
+//                {
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
+//                }
+//                else
+//                {
+//                    // password error
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
+//                }
+//            }
             // password ok
 
 			using (SandraLibs sandra = new SandraLibs(commonSettings.getInt("QvaTimeOut"),
@@ -830,23 +829,30 @@ namespace Process_MPAccountAccess
             }
 
             string userPhone = "";
-            string userPassword = "";
+            //string userPassword = "";
+			string sessionToken = "";
             string invoiceId = "";
             try
             {
                 userPhone = ((string)jsonConv["fiPhone"]).Trim();
-                userPassword = ((string)jsonConv["fiPassword"]).Trim();
-                invoiceId = ((string)jsonConv["fiInvoiceId"]).Trim();
+				//userPassword = ((string)jsonConv["fiPassword"]).Trim();
+				sessionToken = ((string)jsonConv["fiToken"]).Trim();
+				invoiceId = ((string)jsonConv["fiInvoiceId"]).Trim();
             }
             catch
             {
                 // field tidak ditemukan atau formatnya salah
-                return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Field not found", "");
+                return HTTPRestDataConstruct.constructHTTPRestResponse(400, "408", "Mandatory field not found", "");
             }
             if (userPhone.Length <= 5)
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "409", "Bad phone number", "");
 
             ReformatPhoneNumber(ref userPhone);
+
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref sessionToken, ref httprepl)) {
+				return httprepl;
+			}
 
             //  Yang harus disiapkan
 			//string userId = commonSettings.getString("UserIdHeader") + userPhone;
@@ -966,7 +972,7 @@ namespace Process_MPAccountAccess
 
             if ((!jsonConv.ContainsKey("fiPhone")) || (!jsonConv.ContainsKey("fiAgentPhone")) ||
                 //                (!jsonConv.ContainsKey("fiTraceNumber")) || (!jsonConv.ContainsKey("fiReferenceNumber")) ||
-                (!jsonConv.ContainsKey("fiDateTime")) || (!jsonConv.ContainsKey("fiPassword")) ||
+                (!jsonConv.ContainsKey("fiDateTime")) || (!jsonConv.ContainsKey("fiToken")) ||
                 (!jsonConv.ContainsKey("fiAmount")) || (!jsonConv.ContainsKey("fiFeeIncluded"))
                 )
             {
@@ -974,7 +980,8 @@ namespace Process_MPAccountAccess
             }
             string userPhone;
             string agentPhone;
-            string passw;
+            //string passw;
+			string sessionToken = "";
             string trxTime;
             bool feeIncluded = false;
 			string appID = "";
@@ -983,8 +990,9 @@ namespace Process_MPAccountAccess
 				appID = ((string)jsonConv["fiApplicationId"]).Trim();
                 userPhone = ((string)jsonConv["fiPhone"]).Trim();
                 agentPhone = ((string)jsonConv["fiAgentPhone"]).Trim();
-                passw = ((string)jsonConv["fiPassword"]).Trim();
-                trxTime = ((string)jsonConv["fiDateTime"]).Trim();   //yyyy-MM-dd HH:mm:ss
+				//passw = ((string)jsonConv["fiPassword"]).Trim();
+				sessionToken = ((string)jsonConv["fiToken"]).Trim();
+				trxTime = ((string)jsonConv["fiDateTime"]).Trim();   //yyyy-MM-dd HH:mm:ss
                 feeIncluded = ((bool)jsonConv["fiFeeIncluded"]);
             }
             catch
@@ -1023,18 +1031,23 @@ namespace Process_MPAccountAccess
                 }
             }
 
-            if (!localDB.isUserPasswordEqual(userPhone, passw, out xError))
-            {
-                if (xError != null)
-                {
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
-                }
-                else
-                {
-                    // password error
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
-                }
-            }
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref sessionToken, ref httprepl)) {
+				return httprepl;
+			}
+
+//            if (!localDB.isUserPasswordEqual(userPhone, passw, out xError))
+//            {
+//                if (xError != null)
+//                {
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
+//                }
+//                else
+//                {
+//                    // password error
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
+//                }
+//            }
             // password ok
 
 			//string userId = commonSettings.getString("UserIdHeader") + userPhone;
@@ -1142,7 +1155,7 @@ namespace Process_MPAccountAccess
 
             if ((!jsonConv.ContainsKey("fiPhone")) || (!jsonConv.ContainsKey("fiCustomerPhone")) ||
                 //                (!jsonConv.ContainsKey("fiTraceNumber")) || (!jsonConv.ContainsKey("fiReferenceNumber")) ||
-                (!jsonConv.ContainsKey("fiRequestDateTime")) || (!jsonConv.ContainsKey("fiPassword")) ||
+				(!jsonConv.ContainsKey("fiRequestDateTime")) || (!jsonConv.ContainsKey("fiToken")) ||	//(!jsonConv.ContainsKey("fiPassword")) ||
 				(!jsonConv.ContainsKey("fiAmount")) || (!jsonConv.ContainsKey("fiApplicationId"))
                 )
             {
@@ -1151,8 +1164,9 @@ namespace Process_MPAccountAccess
 			string appID = ((string)jsonConv["fiApplicationId"]).Trim();
             string userPhone = ((string)jsonConv["fiPhone"]).Trim();
             string customerPhone = ((string)jsonConv["fiCustomerPhone"]).Trim();
-            string passw = ((string)jsonConv["fiPassword"]).Trim();
-            string requestTime = ((string)jsonConv["fiRequestDateTime"]).Trim();   //yyyy-MM-dd HH:mm:ss
+			//string passw = ((string)jsonConv["fiPassword"]).Trim();
+			string sessionToken = ((string)jsonConv["fiToken"]).Trim();
+			string requestTime = ((string)jsonConv["fiRequestDateTime"]).Trim();   //yyyy-MM-dd HH:mm:ss
 
             int amount = 0;
             try
@@ -1184,18 +1198,23 @@ namespace Process_MPAccountAccess
                 }
             }
 
-            if (!localDB.isUserPasswordEqual(userPhone, passw, out xError))
-            {
-                if (xError != null)
-                {
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
-                }
-                else
-                {
-                    // password error
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
-                }
-            }
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref sessionToken, ref httprepl)) {
+				return httprepl;
+			}
+
+//            if (!localDB.isUserPasswordEqual(userPhone, passw, out xError))
+//            {
+//                if (xError != null)
+//                {
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
+//                }
+//                else
+//                {
+//                    // password error
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
+//                }
+//            }
             // password ok
 
             // OK disini lakukan verifikasi dari table request cashin
@@ -1402,7 +1421,7 @@ namespace Process_MPAccountAccess
 
             if ((!jsonConv.ContainsKey("fiPhone")) || (!jsonConv.ContainsKey("fiAgentPhone")) ||
                 //                (!jsonConv.ContainsKey("fiTraceNumber")) || (!jsonConv.ContainsKey("fiReferenceNumber")) ||
-                (!jsonConv.ContainsKey("fiDateTime")) || (!jsonConv.ContainsKey("fiPassword")) ||
+				(!jsonConv.ContainsKey("fiDateTime")) || (!jsonConv.ContainsKey("fiToken")) ||	//(!jsonConv.ContainsKey("fiPassword")) ||
                 (!jsonConv.ContainsKey("fiAmount"))
                 )
             {
@@ -1411,7 +1430,8 @@ namespace Process_MPAccountAccess
 
             string userPhone;
             string agentPhone;
-            string passw;
+            //string passw;
+			string sessionToken;
             string trxTime;
 			string appID = "";
 
@@ -1420,7 +1440,8 @@ namespace Process_MPAccountAccess
 				appID = ((string)jsonConv["fiApplicationId"]).Trim();
                 userPhone = ((string)jsonConv["fiPhone"]).Trim();
                 agentPhone = ((string)jsonConv["fiAgentPhone"]).Trim();
-                passw = ((string)jsonConv["fiPassword"]).Trim();
+                //passw = ((string)jsonConv["fiPassword"]).Trim();
+				sessionToken = ((string)jsonConv["fiToken"]).Trim();
                 trxTime = ((string)jsonConv["fiDateTime"]).Trim();   //yyyy-MM-dd HH:mm:ss
             }
             catch
@@ -1459,18 +1480,23 @@ namespace Process_MPAccountAccess
                 }
             }
 
-            if (!localDB.isUserPasswordEqual(userPhone, passw, out xError))
-            {
-                if (xError != null)
-                {
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
-                }
-                else
-                {
-                    // password error
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
-                }
-            }
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref sessionToken, ref httprepl)) {
+				return httprepl;
+			}
+
+//            if (!localDB.isUserPasswordEqual(userPhone, passw, out xError))
+//            {
+//                if (xError != null)
+//                {
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
+//                }
+//                else
+//                {
+//                    // password error
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
+//                }
+//            }
             // password ok
 
 			//string userId = commonSettings.getString("UserIdHeader") + userPhone;
@@ -1510,10 +1536,10 @@ namespace Process_MPAccountAccess
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Failed on geting admin fee", "");
             }
 
-            string token = generateToken();
+            string tokenPin = generateToken();
 
             // insert ke table sementara untuk verifikasi agen
-            if (!localDB.insertCashTrxRequest(trxTime, userPhone, agentPhone, amount, adminFee, token,
+            if (!localDB.insertCashTrxRequest(trxTime, userPhone, agentPhone, amount, adminFee, tokenPin,
                 PPOBDatabase.PPOBdbLibs.CashTrxType.CashOut, false, ""))
             {
                 return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Failed on db write request", "");
@@ -1537,7 +1563,7 @@ namespace Process_MPAccountAccess
             jsonConv.Add("fiReplyCode", "00");
             jsonConv.Add("fiAdminFee", adminFee);
             jsonConv.Add("fiAmount", amount);
-            jsonConv.Add("fiToken", token);
+            jsonConv.Add("fiTokenPin", tokenPin);
             jsonConv.Add("fiAgentPhone", agentPhone);
             return HTTPRestDataConstruct.constructHTTPRestResponse(200, "00", "Success", jsonConv.JSONConstruct());
 
@@ -1573,7 +1599,7 @@ namespace Process_MPAccountAccess
                 (!jsonConv.ContainsKey("fiCustomerPhone")) ||
                 (!jsonConv.ContainsKey("fiToken")) ||
                 (!jsonConv.ContainsKey("fiRequestDateTime")) || 
-                (!jsonConv.ContainsKey("fiPassword")) ||
+                (!jsonConv.ContainsKey("fiTokenPin")) ||
 				(!jsonConv.ContainsKey("fiApplicationId")) ||
                 (!jsonConv.ContainsKey("fiAmount"))
                 )
@@ -1583,9 +1609,10 @@ namespace Process_MPAccountAccess
 			string appID = ((string)jsonConv["fiApplicationId"]).Trim();
             string userPhone = ((string)jsonConv["fiPhone"]).Trim();
             string customerPhone = ((string)jsonConv["fiCustomerPhone"]).Trim();
-            string passw = ((string)jsonConv["fiPassword"]).Trim();
-            string requestTime = ((string)jsonConv["fiRequestDateTime"]).Trim();   //yyyy-MM-dd HH:mm:ss
-            string token = ((string)jsonConv["fiToken"]).Trim();
+			//string passw = ((string)jsonConv["fiPassword"]).Trim();
+			string sessionToken = ((string)jsonConv["fiToken"]).Trim();
+			string requestTime = ((string)jsonConv["fiRequestDateTime"]).Trim();   //yyyy-MM-dd HH:mm:ss
+            string tokenPin = ((string)jsonConv["fiTokenPin"]).Trim();
 
             int amount = 0;
             try
@@ -1617,22 +1644,27 @@ namespace Process_MPAccountAccess
                 }
             }
 
-            if (!localDB.isUserPasswordEqual(userPhone, passw, out xError))
-            {
-                if (xError != null)
-                {
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
-                }
-                else
-                {
-                    // password error
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
-                }
-            }
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref sessionToken, ref httprepl)) {
+				return httprepl;
+			}
+
+//            if (!localDB.isUserPasswordEqual(userPhone, passw, out xError))
+//            {
+//                if (xError != null)
+//                {
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
+//                }
+//                else
+//                {
+//                    // password error
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
+//                }
+//            }
             // password ok
 
             // OK disini lakukan verifikasi dari table request cashin
-            if (!localDB.isCashTrxRequestExists(requestTime, customerPhone, userPhone, amount, token,
+            if (!localDB.isCashTrxRequestExists(requestTime, customerPhone, userPhone, amount, tokenPin,
                 PPOBDatabase.PPOBdbLibs.CashTrxType.CashOut))
             {
                 return HTTPRestDataConstruct.constructHTTPRestResponse(401, "493", "Request not found or invalid token", "");
@@ -1832,7 +1864,7 @@ namespace Process_MPAccountAccess
             if ((!jsonConv.ContainsKey("fiPhone")) || (!jsonConv.ContainsKey("fiCustomerPhone")) ||
                 (!jsonConv.ContainsKey("fiApplicationId")) || (!jsonConv.ContainsKey("fiInvoiceNumber")) ||
                 (!jsonConv.ContainsKey("fiDescription")) || (!jsonConv.ContainsKey("fiFooterNote")) ||
-                (!jsonConv.ContainsKey("fiInvoiceDateTime")) || (!jsonConv.ContainsKey("fiPassword")) ||
+				(!jsonConv.ContainsKey("fiInvoiceDateTime")) || (!jsonConv.ContainsKey("fiToken")) ||	//(!jsonConv.ContainsKey("fiPassword")) ||
 				(!jsonConv.ContainsKey("fiAmount")) || (!jsonConv.ContainsKey("fiProductCode")) ||
 				(!jsonConv.ContainsKey("fiApplicationId"))
 			)
@@ -1842,8 +1874,9 @@ namespace Process_MPAccountAccess
 
             string userPhone;
             string customerPhone;
-            string passw;
-            string invoiceDateTime;
+			//string passw;
+			string sessionToken;
+			string invoiceDateTime;
             string applicationId;
             string invoiceNumber;
             string invoiceDescription;
@@ -1855,8 +1888,9 @@ namespace Process_MPAccountAccess
 				appID = ((string)jsonConv["fiApplicationId"]).Trim();
                 userPhone = ((string)jsonConv["fiPhone"]).Trim();
                 customerPhone = ((string)jsonConv["fiCustomerPhone"]).Trim();
-                passw = ((string)jsonConv["fiPassword"]).Trim();
-                invoiceDateTime = ((string)jsonConv["fiInvoiceDateTime"]).Trim();   //yyyy-MM-dd HH:mm:ss
+				//passw = ((string)jsonConv["fiPassword"]).Trim();
+				sessionToken = ((string)jsonConv["fiToken"]).Trim();
+				invoiceDateTime = ((string)jsonConv["fiInvoiceDateTime"]).Trim();   //yyyy-MM-dd HH:mm:ss
                 applicationId = ((string)jsonConv["fiApplicationId"]).Trim();
                 invoiceNumber = ((string)jsonConv["fiInvoiceNumber"]).Trim();
                 invoiceDescription = ((string)jsonConv["fiDescription"]).Trim();
@@ -1908,18 +1942,23 @@ namespace Process_MPAccountAccess
                 }
             }
 
-            if (!localDB.isUserPasswordEqual(userPhone, passw, out xError))
-            {
-                if (xError != null)
-                {
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
-                }
-                else
-                {
-                    // password error
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
-                }
-            }
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref sessionToken, ref httprepl)) {
+				return httprepl;
+			}
+
+//            if (!localDB.isUserPasswordEqual(userPhone, passw, out xError))
+//            {
+//                if (xError != null)
+//                {
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
+//                }
+//                else
+//                {
+//                    // password error
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
+//                }
+//            }
             // password ok
 
 			//string userId = commonSettings.getString("UserIdHeader") + userPhone;
@@ -2009,7 +2048,7 @@ namespace Process_MPAccountAccess
 
             if ((!jsonConv.ContainsKey("fiPhone")) || (!jsonConv.ContainsKey("fiMerchantPhone")) ||
                 (!jsonConv.ContainsKey("fiInvoiceDateTime")) || (!jsonConv.ContainsKey("fiInvoiceNumber")) ||
-                (!jsonConv.ContainsKey("fiPassword")) || (!jsonConv.ContainsKey("fiPayDateTime")) ||
+                (!jsonConv.ContainsKey("fiToken")) || (!jsonConv.ContainsKey("fiPayDateTime")) ||
 				(!jsonConv.ContainsKey("fiAmount")) || (!jsonConv.ContainsKey("fiProductCode")) ||
 				(!jsonConv.ContainsKey("fiApplicationId"))
                 )
@@ -2019,7 +2058,8 @@ namespace Process_MPAccountAccess
 
             string userPhone;
             string merchantPhone;
-            string passw;
+            //string passw;
+			string sessionToken;
             string invoiceTime;
             string invoiceNumber;
             string payTime;
@@ -2030,8 +2070,9 @@ namespace Process_MPAccountAccess
 				appID = ((string)jsonConv["fiApplicationId"]).Trim();
                 userPhone = ((string)jsonConv["fiPhone"]).Trim();
                 merchantPhone = ((string)jsonConv["fiMerchantPhone"]).Trim();
-                passw = ((string)jsonConv["fiPassword"]).Trim();
-                invoiceTime = ((string)jsonConv["fiInvoiceDateTime"]).Trim();   //yyyy-MM-dd HH:mm:ss
+				//passw = ((string)jsonConv["fiPassword"]).Trim();
+				sessionToken = ((string)jsonConv["fiToken"]).Trim();
+				invoiceTime = ((string)jsonConv["fiInvoiceDateTime"]).Trim();   //yyyy-MM-dd HH:mm:ss
                 invoiceNumber = ((string)jsonConv["fiInvoiceNumber"]).Trim();
                 payTime = ((string)jsonConv["fiPayDateTime"]).Trim();
                 productCode = ((string)jsonConv["fiProductCode"]).Trim();
@@ -2071,18 +2112,23 @@ namespace Process_MPAccountAccess
                 }
             }
 
-            if (!localDB.isUserPasswordEqual(userPhone, passw, out xError))
-            {
-                if (xError != null)
-                {
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
-                }
-                else
-                {
-                    // password error
-                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
-                }
-            }
+			string httprepl = "";
+			if (!cek_TokenSecurity (userPhone, jsonConv, ref sessionToken, ref httprepl)) {
+				return httprepl;
+			}
+
+//            if (!localDB.isUserPasswordEqual(userPhone, passw, out xError))
+//            {
+//                if (xError != null)
+//                {
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(400, "492", "Server database error", "");
+//                }
+//                else
+//                {
+//                    // password error
+//                    return HTTPRestDataConstruct.constructHTTPRestResponse(401, "401", "Wrong password", "");
+//                }
+//            }
             // password ok
 
             // OK disini lakukan verifikasi dari table request cashin
@@ -2282,7 +2328,7 @@ namespace Process_MPAccountAccess
 				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "No fiType field found", "");
 			}
 			string fType = ((string)jsonConv["fiType"]).Trim();
-			string userLogin = ((string)jsonConv["fiLoginId"]).Trim();
+			//string userLogin = ((string)jsonConv["fiLoginId"]).Trim();
 
 			if((!fType.Equals("CREDIT")) && (!fType.Equals("DEBIT"))){
 				return HTTPRestDataConstruct.constructHTTPRestResponse(400, "406", "Invalid fiType", "");

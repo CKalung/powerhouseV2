@@ -50,9 +50,9 @@ namespace ConnectionServerPluginHttp
 		PhHttpConnectionCollector connectionCollector = null;
 
 		const string namaModule = "PH HttpServer Module";
-		const string ConfigFile = "HttpConfig.ini";
+		//const string ConfigFile = "HttpConfig.ini";
 
-		string ConfigFilePath = "";
+		//string ConfigFilePath = "";
 
 		string certFilePath = "";
 		string certPassword = "";
@@ -63,16 +63,26 @@ namespace ConnectionServerPluginHttp
 			connectionCollector = new PhHttpConnectionCollector ();
 			server = new TcpServerModule ();
 			server.onNewConnection += HandleOnNewConnection; 
+			//server.onNewSecureConnection += HandleOnNewSecureConnection; 
 		}
 
 		void HandleOnNewConnection (System.IO.Stream stream, System.Net.Sockets.TcpClient client)
 		{
+			Console.WriteLine ("["+this.ToString () + "] ON NEW CONNECTION : NONSECURE");
 			if (connectionCollector != null) {
 				connectionCollector.NewConnection (stream, client);
 			}
 		}
 
-		private void LoadConfig(){
+//		void HandleOnNewSecureConnection (System.Net.Security.SslStream stream, System.Net.Sockets.TcpClient client)
+//		{
+//			Console.WriteLine ("["+this.ToString () + "] ON NEW CONNECTION : SECURE");
+//			if (connectionCollector != null) {
+//				connectionCollector.NewConnection (stream, client);
+//			}
+//		}
+
+		private void LoadConfig(string ConfigFilePath){
 			using (CrossIniFile.INIFile a = 
 					new CrossIniFile.INIFile (ConfigFilePath)) {
 				port = a.GetValue("HttpServerModule", "Port", 443);
@@ -84,16 +94,17 @@ namespace ConnectionServerPluginHttp
 			}
 		}
 
-		public override void Start(string applicationPath ){ 
-			ConfigFilePath = System.IO.Path.Combine (applicationPath, ConfigFile);
+		public override void Start(string applicationPath, string ConfigFilePath){
+			//ConfigFilePath = System.IO.Path.Combine (applicationPath, ConfigFile);
+			//ConfigFilePath = configFilePath;
 			Console.WriteLine ("Start plugin http");
 			Console.WriteLine ("Paths : \r\n");
 			Console.WriteLine (
 				AppDomain.CurrentDomain.SetupInformation.ApplicationBase +"\r\n" +
 				System.Reflection.Assembly.GetExecutingAssembly().Location +"\r\n"
 				);
-			LoadConfig ();
-			server.ConfigFilePath = ConfigFilePath;
+			LoadConfig (ConfigFilePath);
+			//server.ConfigFilePath = ConfigFilePath;
 			server.CertificatePassword = certPassword;
 			connectionCollector.ConfigFilePath = ConfigFilePath;
 			server.StartListening (port, certFilePath);

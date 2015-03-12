@@ -109,6 +109,7 @@ namespace JsonLibs
                     base.Add(key, value);
                 else
                     base.Add(key, value.GetType().ToString());
+
             }
         }
         public void Add(string key, object value)
@@ -202,6 +203,17 @@ namespace JsonLibs
                 return false;
         }
 
+		new public object this[string index]
+		{
+			get
+			{
+				if (!base.ContainsKey (index))
+					return null;
+				else 
+					return base[index];
+			}
+		}
+
         //public override object this[object key]
         //{
         //    get
@@ -220,10 +232,9 @@ namespace JsonLibs
         //}
 
         /// <summary>
-        /// baru support 1 layer data json dengan tipe string, int, boolean dan double
+		/// JSONConstruct, Generate json
         /// </summary>
-        /// <param name="jsonItems"></param>
-        /// <returns></returns>
+        /// <returns>String json</returns>
         public string JSONConstruct()
         {
             return ConstructObject();

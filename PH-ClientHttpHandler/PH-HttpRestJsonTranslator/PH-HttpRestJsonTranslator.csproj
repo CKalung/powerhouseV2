@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7AC70355-0F4F-4F68-B50A-CB7A029BA5E3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>PHHttpRestJsonTranslator</RootNamespace>
+    <AssemblyName>PH-HttpRestJsonTranslator</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ReleaseVersion>2.1</ReleaseVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PhJsonToJsonTranslator.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\PH-ClientProtocolTranslatorInterface\PH-ClientProtocolTranslatorInterface.csproj">
+      <Project>{D58F3E35-6103-4248-AB4E-2D08606C85D3}</Project>
+      <Name>PH-ClientProtocolTranslatorInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\PPOBDatabase\PPOBDatabase.csproj">
+      <Project>{D0AD1740-3D52-404F-8EE0-B290D8DA3310}</Project>
+      <Name>PPOBDatabase</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

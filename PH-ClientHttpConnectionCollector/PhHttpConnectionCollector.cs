@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
+using System.Net.Security;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -86,6 +87,31 @@ namespace PHClientHttpConnectionCollector
 				}
 				return;
 			}
+
+			Console.WriteLine ("["+this.ToString () + "] ON NEW CONNECTION : NONSECURE");
+
+			PhHttpHandler HttpHandler = new PhHttpHandler (indexConnection, configFilePath);
+			HttpHandler.onDisconnected += new PhHttpHandler.onDisconnectedEvent (onDisconnected);
+			ConnectionList.Add (indexConnection, HttpHandler);
+			((PhHttpHandler)(ConnectionList[indexConnection])).Start (stream, client);
+			indexConnection++;
+			if (indexConnection == int.MaxValue)
+				indexConnection = 0;
+		}
+
+		public void NewConnection(SslStream stream, TcpClient client){
+			if (ConnectionList.ContainsKey (indexConnection)) {
+				if (client != null)
+					client.Close();
+				if (stream != null) {
+					stream.Close();
+					stream.Dispose ();
+				}
+				return;
+			}
+
+			Console.WriteLine ("["+this.ToString () + "] ON NEW CONNECTION : SECURE");
+
 			PhHttpHandler HttpHandler = new PhHttpHandler (indexConnection, configFilePath);
 			HttpHandler.onDisconnected += new PhHttpHandler.onDisconnectedEvent (onDisconnected);
 			ConnectionList.Add (indexConnection, HttpHandler);
@@ -97,6 +123,9 @@ namespace PHClientHttpConnectionCollector
 
 		[MethodImpl(MethodImplOptions.Synchronized)]
 		private void onDisconnected(int indexConn){
+
+			Console.WriteLine ("["+this.ToString () + "] ON DISCONNECTED");
+
 			if (ConnectionList.ContainsKey (indexConn)) {
 				try{ ((PhHttpHandler)ConnectionList [indexConn]).Dispose (); }catch{
 				}

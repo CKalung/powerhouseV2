@@ -1,6 +1,6 @@
 ﻿using System;
 
-using PHConnectionCollectorInterface;
+//using PHConnectionCollectorInterface;
 
 namespace PHClientsPluginsInterface
 {
@@ -17,7 +17,7 @@ namespace PHClientsPluginsInterface
 
 		//public abstract string SayHelloTo(string personName);
 //		public abstract void SetConnectionCollectorModule(IConnectionCollector ConnectionCollector);
-		public abstract void Start(string pluginPath);
+		public abstract void Start(string pluginPath, string ConfigFilePath);
 		public abstract void Stop();
 
 //		public abstract void StartListening (int Port);

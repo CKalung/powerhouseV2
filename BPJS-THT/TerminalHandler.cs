@@ -356,7 +356,7 @@ namespace BPJS_THT
 			}
 		}
 
-		public string PaymentOnline(){
+		public string PaymentOnline(string ProductCode){
 			string[] fields = { "fiApplicationId", "fiUser", "fiToken", 
 				"fiPurchaseChallenge", "fiTrxDateTime", "fiCardBalance", "fiAmount", 
 				"fiUserCardNumber"};
@@ -372,7 +372,7 @@ namespace BPJS_THT
 
 			Exception xError=null;
 
-			string productCode = "PRD00101";
+			string productCode = ProductCode; 	//"PRD00101";
 
 
 			if (!jsonConv.JSONParse(clientData.Body))

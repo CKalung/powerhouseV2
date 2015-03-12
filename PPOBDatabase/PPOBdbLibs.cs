@@ -2518,11 +2518,11 @@ namespace PPOBDatabase
             int i = localDB.ExecQuerySql(sql, tbl_mpProduct, out ExError);
             if (ExError != null)
             {
-                if (useLog)
-                {
+//                if (useLog)
+//                {
                     LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Failed on query: \r\n" + sql +
                         "\r\nResult: " + ExError.Message + ", at line: " + ExError.LineNumber().ToString());
-                }
+//                }
                 return false;
             }
             if (i <= 0) return false;
@@ -2559,11 +2559,11 @@ namespace PPOBDatabase
             int i = localDB.ExecQuerySql(sql, tbl_mpProduct, out ExError);
             if (ExError != null)
             {
-                if (useLog)
-                {
+//                if (useLog)
+//                {
                     LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Failed on query: \r\n" + sql +
                         "\r\nResult: " + ExError.Message + ", at line: " + ExError.LineNumber().ToString());
-                }
+//                }
                 return false;
             }
             if (i <= 0) return false;
@@ -2596,12 +2596,12 @@ namespace PPOBDatabase
             int i = localDB.ExecNonQuerySql(sql, out ExError); 
             if (ExError != null)
             {
-                if (useLog)
-                {
+//                if (useLog)
+//                {
                     LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Failed on query: \r\n" + sql +
                         "\r\nResult: " + ExError.Message + ", at line: " + ExError.LineNumber().ToString());
                     return false;
-                }
+//                }
             }
             if (i <= 0) return false;
             return true;
@@ -2620,11 +2620,11 @@ namespace PPOBDatabase
             int i = localDB.ExecNonQuerySql(sql, out ExError);
             if (ExError != null)
             {
-                if (useLog)
-                {
+//                if (useLog)
+//                {
                     LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Failed on query: \r\n" + sql +
                         "\r\nResult: " + ExError.Message + ", at line: " + ExError.LineNumber().ToString());
-                }
+//                }
                 return false;
             }
 
@@ -3971,6 +3971,117 @@ namespace PPOBDatabase
 			}
 			return true;
 		}
+
+		public bool isPersoDataExist(string DataHash, out Exception ExError)
+		{
+			ExError = null;
+			string sql = "SELECT id FROM ucard_perso WHERE data_hash = '" + DataHash + "'";
+			int i = localDB.ExecQuerySql(sql, tbl_mpAccount, out ExError);
+			if (ExError != null)
+			{
+				LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Failed on query: \r\n" + sql +
+					"\r\nResult: " + ExError.Message + ", at line: " + ExError.LineNumber().ToString());
+				return false;
+			}
+			return (i > 0);
+		}
+
+		public bool insertPersoData(string card_number, string agent_id, string package_code,
+			string group_number, string personal_id, string personal_id_type, string title,
+			string first_name, string middle_name, string last_name, string gender, string birth_place, 
+			DateTime birth_date, string address, DateTime issue_date, DateTime expiry_date,
+			string issue_place, string issue_country, string data_hash, 
+			DateTime first_perso_time, DateTime last_perso_time,
+			out Exception ExError)
+		{
+			ExError = null;
+			string sql = "INSERT INTO ucard_perso ( " +
+				"card_number, agent_id, package_code, group_number, personal_id, " +
+				"personal_id_type, title, first_name, middle_name, last_name, gender, " + 
+				"birth_place, birth_date, address, issue_date, expiry_date, issue_place, issue_country, " +
+				"data_hash, first_perso_time, last_perso_time" +
+				")" +
+				"VALUES (";
+			sql += "'" + card_number + "', '" + agent_id + "', '" + package_code + "', '" + 
+				group_number + "', '" + personal_id + "', '" + personal_id_type + "', '" + 
+				title + "', '" + first_name + "', '" + middle_name + "', '" + last_name + "', '" + 
+				gender + "', '" + birth_place + "', '" + birth_date.ToString ("yyyy-MM-dd") + "', '" + 
+				address + "', '" + issue_date.ToString ("yyyy-MM-dd") + "', '" + 
+				expiry_date.ToString ("yyyy-MM-dd") + "', '" + issue_place + "', '" + 
+				issue_country + "', '" + data_hash + "', '" + 
+				first_perso_time.ToString ("yyyy-MM-dd HH:mm:ss") + "', '" + 
+				last_perso_time.ToString ("yyyy-MM-dd HH:mm:ss") + "'" + 
+				")";
+			int i = localDB.ExecNonQuerySql(sql, out ExError);
+			if (ExError != null)
+			{
+				LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Failed on query: \r\n" + sql +
+					"\r\nResult: " + ExError.Message + ", at line: " + ExError.LineNumber().ToString());
+				return false;
+			}
+
+			return (i > 0);
+		}
+
+		public bool updatePersoData(string agent_id, string package_code,
+			string group_number, string personal_id_type, string title,
+			string first_name, string middle_name, string last_name, string gender, string birth_place, 
+			string address, DateTime issue_date, DateTime expiry_date,
+			string issue_place, string issue_country, string data_hash, 
+			DateTime first_perso_time, DateTime last_perso_time)
+		{
+			string sql = "UPDATE ucard_perso SET " +
+				" agent_id = '" + agent_id + "', " +
+				" package_code = '" + package_code + "', group_number = '" + group_number + "', " +
+				" personal_id_type = '" + personal_id_type + "', " +
+				" title = '" + title + "', first_name = '" + first_name + "', " +
+				" middle_name = '" + middle_name + "', last_name = '" + last_name + "', " +
+				" gender = '" + gender + "', birth_place = '" + birth_place + "', " +
+				" address = '" + address + "', " +
+				" issue_date = '" + issue_date.ToString ("yyyy-MM-dd") + "', " +
+				" expiry_date = '" + expiry_date.ToString ("yyyy-MM-dd") + "', " +
+				" issue_place = '" + issue_place + "', issue_country = '" + issue_country + "', " +
+				" last_perso_time = '" + last_perso_time.ToString ("yyyy-MM-dd HH:mm:ss") + "' " +
+				" WHERE data_hash = '" + data_hash + "';";
+
+			Exception ExError = null;
+			int i = localDB.ExecNonQuerySql(sql, out ExError);
+			if (ExError != null)
+			{
+				LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Failed on query: \r\n" + sql +
+					"\r\nResult: " + ExError.Message + ", at line: " + ExError.LineNumber().ToString());
+				return false;
+			}
+			if (i <= 0) {
+				LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Failed on query: \r\n" + sql +
+					"\r\nResult: No data to update");
+				return false;
+			}
+			return (i > 0);
+		}
+
+		public string getUserPhoneFromAlias(string userAlias, out Exception ExError)
+		{
+			ExError = null;
+			string sql = "SELECT mobile_phone_number FROM user_alias " +
+				"WHERE user_name = '" + userAlias + "' LIMIT 1;";
+
+			int i = localDB.ExecQuerySql(sql, tbl_mpAccount, out ExError);
+			if (ExError != null)
+			{
+				LogWriter.write(this, LogWriter.logCodeEnum.ERROR, "Failed on query: \r\n" + sql +
+					"\r\nResult: " + ExError.Message + ", at line: " + ExError.LineNumber().ToString());
+				return "";
+			}
+			if (i <= 0)
+			{
+				return "";
+			}
+			string userPhone = (string)(localDB.GetDataItem(tbl_mpAccount, 0, "mobile_phone_number"));
+			if (userPhone == null) return "";
+			return userPhone.Trim();
+		}
+
 
     }
 }

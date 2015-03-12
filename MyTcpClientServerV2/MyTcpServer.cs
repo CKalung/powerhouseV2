@@ -203,7 +203,12 @@ namespace MyTcpClientServerV2
 				if (this.started)
 				{
 					//start accepting the next connection...
-					listener.BeginAcceptTcpClient(this.onAcceptConnection, listener);
+					try{
+						listener.BeginAcceptTcpClient(this.onAcceptConnection, listener);
+					}catch{
+						// disini karena service di stop.
+						return;
+					}
 				}
 				else
 				{
@@ -262,10 +267,12 @@ namespace MyTcpClientServerV2
 		{
 			SecureConnectionResults scr = null;
 			SslStream sslStream = null;
+			TcpClient client = null;
 			try
 			{
 				//sslStream = result.AsyncState as SslStream;
 				scr = result.AsyncState as SecureConnectionResults;
+				client = scr.Client;
 				sslStream = scr.SecureStream;
 				sslStream.EndAuthenticateAsServer(result);
 
@@ -274,8 +281,14 @@ namespace MyTcpClientServerV2
 			}
 			catch (Exception ex)
 			{
-				if (sslStream != null)
-				{
+				if (client != null) {
+					try{client.Close ();} catch{
+					}
+					client = null;
+				}
+				if (sslStream != null){
+					try{sslStream.Close ();} catch{
+					}
 					sslStream.Dispose();
 					sslStream = null;
 				}

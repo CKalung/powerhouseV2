@@ -69,18 +69,20 @@ namespace PPOBHttpRestData
         #endregion
 
         const string HTTPStart = "HTTP/1.1 ";
-		const string X_Powered = "X-Powered-By: PowerHouse-Server/1.1 .NET/4.5\r\n";
+		const string X_Powered = "X-Powered-By: PowerHouse-Server/2.5 .NET/4.5\r\n";
 		const string X_HttpServer = "Server: PowerHouse-HTTPREST Server DAM\r\n";
         const string strResCode = "responseCode: ";
         const string strResMsg = "responseMessage: ";
-        const string contentType = "Content-Type: application/json\r\n";
+		const string contentTypeJson = "Content-Type: application/json\r\n";
+		const string contentTypeXml = "Content-Type: application/xml\r\n";
+		const string contentTypeAny = "Content-Type: application\r\n";
         const string contentLen = "Content-Length: ";
         const string strDate = "Date: ";
         string HTTPRestMsg = "";
 
         //List<string> msgReq = new List<string>();
 
-        public enum retParseCode { Completed, Uncompleted, Invalid }
+        public enum retParseCode { Completed = 0, Uncompleted = 1, Invalid = 2 }
         public enum enMethod { POST, GET, Unknown }
         public struct HttpRestRequest
         {
@@ -244,7 +246,13 @@ namespace PPOBHttpRestData
             else return false;
         }
 
-        public string constructHTTPRestResponse(int httpcode, string respCode, string respmessage, string jsonBody)
+		public enum httpBodyType
+		{
+			Others = 0,
+			JSON = 1,
+			XML = 2
+		}
+		public string constructHTTPRestResponse(int httpcode, string respCode, string respmessage, string contentBody, httpBodyType isJSONBodyType = httpBodyType.JSON)
         {
             HTTPRestMsg = HTTPStart + httpcode + " ";
             switch (httpcode)
@@ -298,17 +306,23 @@ namespace PPOBHttpRestData
 			HTTPRestMsg += X_HttpServer;
             HTTPRestMsg += strResCode+ respCode.Trim() + "\r\n";
             HTTPRestMsg += strResMsg + respmessage.Trim() + "\r\n";
-            if (jsonBody.Length != 0)
+			if (contentBody.Length != 0)
             {
-                HTTPRestMsg += contentType;
-                HTTPRestMsg += contentLen + jsonBody.Length.ToString() + "\r\n";
+				if(isJSONBodyType == httpBodyType.JSON)
+                	HTTPRestMsg += contentTypeJson;
+				else if(isJSONBodyType == httpBodyType.XML)
+					HTTPRestMsg += contentTypeXml;
+				else
+					HTTPRestMsg += contentTypeAny;
+
+				HTTPRestMsg += contentLen + contentBody.Length.ToString() + "\r\n";
             }
             HTTPRestMsg += strDate + DateTime.Now.ToString("r") + "\r\n";
             HTTPRestMsg += "\r\n";  // akhir dari header, siap ke body message
 
 			//Disini disiapkan encrypt untuk secured Body message
 
-            if (jsonBody.Length != 0) HTTPRestMsg += jsonBody;
+			if (contentBody.Length != 0) HTTPRestMsg += contentBody;
 
             return HTTPRestMsg;
         }

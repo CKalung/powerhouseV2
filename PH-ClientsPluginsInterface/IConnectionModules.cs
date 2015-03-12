@@ -6,9 +6,10 @@ namespace PHClientsPluginsInterface
 {
 	public interface IConnectionModules : IDisposable
 	{
-		void Start(string pluginPath);
+		void Start(string pluginPath, string ConfigFilePath);
 		void Stop();
 		string Name { get; }
+
 //		void SetConnectionCollectorModule(IConnectionCollector ConnectionCollector);
 		//IConnectionCollector ConnectionCollectorModule { set; }
 

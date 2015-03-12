@@ -39,15 +39,22 @@ namespace PhXml
 		private void disposeAll()
 		{
 			// disini dispose semua yang bisa di dispose
+			if (this.isHasChild) {
+				List<XmlSimple> childs = this.GetChildsList ();
+				foreach (XmlSimple child in childs) {
+					child.Dispose ();
+				}
+			}
 			xmlElement = null;
 		}
 
-		string xmlStr="";
+		//string xmlStr="";
 		string xmlTemplate = "<?xml version=\"1.0\" ?>";
 		XElement xmlElement=null;
 
 		public XmlSimple ()
 		{
+			XmlString = "";
 		}
 
 		public XmlSimple (string xmlData)
@@ -62,12 +69,13 @@ namespace PhXml
 
 		public string XmlString{
 			get { 
-				return xmlStr;
+				//return xmlStr;
+				return xmlElement.ToString ();
 			}
 			set{
-				xmlStr = value;
+				//xmlStr = value;
 				try{
-					xmlElement = XElement.Parse (xmlStr);
+					xmlElement = XElement.Parse (value);
 				}catch{
 					xmlElement = null;
 				}
@@ -83,13 +91,20 @@ namespace PhXml
 
 		public XElement GetSetXElement{
 			get { return xmlElement; }
-			set { xmlElement = value; xmlStr = xmlElement.ToString (); }
+			set { 
+				xmlElement = value; 
+				//xmlStr = xmlElement.ToString (); 
+			}
 		}
 
 		public string Name
 		{
 			get { return xmlElement.Name.ToString (); }
-			set { xmlElement.Name = value; }
+			set { 
+				if (xmlElement == null)
+					xmlElement = new XElement (value);
+				else
+					xmlElement.Name = value; }
 		}
 
 		public string Value
@@ -146,11 +161,37 @@ namespace PhXml
 			return rets;
 		}
 
+		public List<XmlSimple> GetChildsList(){
+			List<XmlSimple> rets = new List<XmlSimple> ();
+			foreach (XElement child in xmlElement.Elements()) {
+				if (child == null)
+					return null;
+				XmlSimple aRet = new XmlSimple ();
+				aRet.GetSetXElement = child;
+				rets.Add (aRet);
+			}
+			return rets;
+		}
+
 		public XmlSimple[] GetChilds(string Name){
 			int count = xmlElement.Elements (Name).Count ();
 			XmlSimple[] rets = new XmlSimple[count];
 			int i = 0;
 			foreach (XElement child in xmlElement.Elements(Name)) {
+				if (child == null)
+					return null;
+				XmlSimple aRet = new XmlSimple ();
+				aRet.GetSetXElement = child;
+				rets[i++] = aRet;
+			}
+			return rets;
+		}
+
+		public XmlSimple[] GetChilds(){
+			int count = xmlElement.Elements().Count ();
+			XmlSimple[] rets = new XmlSimple[count];
+			int i = 0;
+			foreach (XElement child in xmlElement.Elements()) {
 				if (child == null)
 					return null;
 				XmlSimple aRet = new XmlSimple ();
